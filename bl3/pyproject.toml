@@ -1,0 +1,10 @@
+[project]
+name = "BL3 Typing"
+version = "1"
+authors = [{ name = "Oh-yes-10-FPS`" }]
+description = "A tool for developers to strongly type their code in Borderlands 3."
+
+[tool.sdkmod]
+name = "BL3 Typing"
+license = {name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+download = ""

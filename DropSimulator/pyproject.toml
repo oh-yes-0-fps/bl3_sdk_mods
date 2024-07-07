@@ -1,0 +1,10 @@
+[project]
+name = "DropSimulator"
+version = "1"
+authors = [{ name = "Oh-yes-10-FPS`" }]
+description = ""
+
+[tool.sdkmod]
+name = "DropSimulator"
+license = {name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+download = ""

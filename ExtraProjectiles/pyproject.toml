@@ -1,0 +1,10 @@
+[project]
+name = "ExtraProjectiles"
+version = "1"
+authors = [{ name = "Oh-yes-10-FPS`" }]
+description = "Reverts the multi-element projectile nerfs to the recursion and many more"
+
+[tool.sdkmod]
+name = "ExtraProjectiles"
+license = {name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+download = ""

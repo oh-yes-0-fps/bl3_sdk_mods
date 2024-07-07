@@ -1,0 +1,10 @@
+[project]
+name = "Oak Libs"
+version = "1"
+authors = [{ name = "Oh-yes-10-FPS`" }]
+description = ""
+
+[tool.sdkmod]
+name = "Oak Libs"
+license = {name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+download = ""
