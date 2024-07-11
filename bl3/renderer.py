@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class LightPropagationVolumeSettings:
@@ -36,4 +33,3 @@ class LightPropagationVolumeSettings:
     LPVSpecularOcclusionIntensity: float
     LPVFadeRange: float
     LPVDirectionalOcclusionFadeRange: float
-

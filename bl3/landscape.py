@@ -1,12 +1,11 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
-
 
 
 class ControlPointMeshComponent(engine.StaticMeshComponent): ...
@@ -36,7 +35,9 @@ class LandscapeProxy(engine.Actor):
     PositiveZBoundsExtension: float
     LandscapeComponents: unreal.WrappedArray[LandscapeComponent]
     CollisionComponents: unreal.WrappedArray[LandscapeHeightfieldCollisionComponent]
-    FoliageComponents: unreal.WrappedArray[engine.HierarchicalInstancedStaticMeshComponent]
+    FoliageComponents: unreal.WrappedArray[
+        engine.HierarchicalInstancedStaticMeshComponent
+    ]
     bHasLandscapeGrass: bool
     StaticLightingResolution: float
     bCastStaticShadow: bool
@@ -62,16 +63,46 @@ class LandscapeProxy(engine.Actor):
     bUseDynamicMaterialInstance: bool
     NavigationGeometryGatheringMode: engine.ENavDataGatheringMode
     bUseLandscapeForCullingInvisibleHLODVertices: bool
-    def SetLandscapeMaterialVectorParameterValue(self, ParameterName: str, Value: core_uobject.LinearColor): ...
-    def SetLandscapeMaterialTextureParameterValue(self, ParameterName: str, Value: engine.Texture): ...
-    def SetLandscapeMaterialScalarParameterValue(self, ParameterName: str, Value: float): ...
-    def EditorSetLandscapeMaterial(self, NewLandscapeMaterial: engine.MaterialInterface): ...
-    def EditorApplySpline(self, InSplineComponent: engine.SplineComponent, StartWidth: float, EndWidth: float, StartSideFalloff: float, EndSideFalloff: float, StartRoll: float, EndRoll: float, NumSubdivisions: int, bRaiseHeights: bool, bLowerHeights: bool, PaintLayer: LandscapeLayerInfoObject): ...
-    def ChangeUseTessellationComponentScreenSizeFalloff(self, InComponentScreenSizeToUseSubSections: bool): ...
-    def ChangeTessellationComponentScreenSizeFalloff(self, InUseTessellationComponentScreenSizeFalloff: float): ...
-    def ChangeTessellationComponentScreenSize(self, InTessellationComponentScreenSize: float): ...
+
+    def SetLandscapeMaterialVectorParameterValue(
+        self, ParameterName: str, Value: core_uobject.LinearColor
+    ): ...
+    def SetLandscapeMaterialTextureParameterValue(
+        self, ParameterName: str, Value: engine.Texture
+    ): ...
+    def SetLandscapeMaterialScalarParameterValue(
+        self, ParameterName: str, Value: float
+    ): ...
+    def EditorSetLandscapeMaterial(
+        self, NewLandscapeMaterial: engine.MaterialInterface
+    ): ...
+    def EditorApplySpline(
+        self,
+        InSplineComponent: engine.SplineComponent,
+        StartWidth: float,
+        EndWidth: float,
+        StartSideFalloff: float,
+        EndSideFalloff: float,
+        StartRoll: float,
+        EndRoll: float,
+        NumSubdivisions: int,
+        bRaiseHeights: bool,
+        bLowerHeights: bool,
+        PaintLayer: LandscapeLayerInfoObject,
+    ): ...
+    def ChangeUseTessellationComponentScreenSizeFalloff(
+        self, InComponentScreenSizeToUseSubSections: bool
+    ): ...
+    def ChangeTessellationComponentScreenSizeFalloff(
+        self, InUseTessellationComponentScreenSizeFalloff: float
+    ): ...
+    def ChangeTessellationComponentScreenSize(
+        self, InTessellationComponentScreenSize: float
+    ): ...
     def ChangeLODDistanceFactor(self, InLODDistanceFactor: float): ...
-    def ChangeComponentScreenSizeToUseSubSections(self, InComponentScreenSizeToUseSubSections: float): ...
+    def ChangeComponentScreenSizeToUseSubSections(
+        self, InComponentScreenSizeToUseSubSections: float
+    ): ...
 
 
 class Landscape(LandscapeProxy): ...
@@ -95,6 +126,7 @@ class LandscapeComponent(engine.PrimitiveComponent):
     HeightmapScaleBias: core_uobject.Vector4
     HeightmapTexture: engine.Texture2D
     CachedLocalBox: core_uobject.Box
+    CollisionComponent: Any
     MapBuildDataId: core_uobject.Guid
     IrrelevantLights: unreal.WrappedArray[core_uobject.Guid]
     CollisionMipLevel: int
@@ -111,7 +143,10 @@ class LandscapeComponent(engine.PrimitiveComponent):
     MobileMaterialInterface: engine.MaterialInterface
     MobileWeightmapTextures: unreal.WrappedArray[engine.Texture2D]
     bHasBakedAutoPaint: bool
-    def GetMaterialInstanceDynamic(self, InIndex: int, ReturnValue: engine.MaterialInstanceDynamic) -> engine.MaterialInstanceDynamic: ...
+
+    def GetMaterialInstanceDynamic(
+        self, InIndex: int
+    ) -> engine.MaterialInstanceDynamic: ...
 
 
 class LandscapeGizmoActor(engine.Actor): ...
@@ -135,7 +170,6 @@ class LandscapeGrassType(unreal.UObject):
     AlignToSurface: bool
 
 
-
 class LandscapeHeightfieldCollisionComponent(engine.PrimitiveComponent):
     ComponentLayerInfos: unreal.WrappedArray[LandscapeLayerInfoObject]
     SectionBaseX: int
@@ -146,17 +180,18 @@ class LandscapeHeightfieldCollisionComponent(engine.PrimitiveComponent):
     CollisionQuadFlags: unreal.WrappedArray[int]
     HeightfieldGuid: core_uobject.Guid
     CachedLocalBox: core_uobject.Box
+    RenderComponent: Any
     CookedPhysicalMaterials: unreal.WrappedArray[engine.PhysicalMaterial]
 
 
-
 class LandscapeInfo(unreal.UObject):
+    LandscapeActor: Any
     LandscapeGuid: core_uobject.Guid
     ComponentSizeQuads: int
     SubsectionSizeQuads: int
     ComponentNumSubsections: int
     DrawScale: core_uobject.Vector
-
+    Proxies: Any
 
 
 class LandscapeInfoMap(unreal.UObject): ...
@@ -172,7 +207,6 @@ class LandscapeLayerInfoObject(unreal.UObject):
     LayerUsageDebugColor: core_uobject.LinearColor
 
 
-
 class LandscapeMaterialInstanceConstant(engine.MaterialInstanceConstant):
     bIsLayerThumbnail: bool
     bDisableTessellation: bool
@@ -180,15 +214,12 @@ class LandscapeMaterialInstanceConstant(engine.MaterialInstanceConstant):
     bEditorToolUsage: bool
 
 
-
 class LandscapeMeshCollisionComponent(LandscapeHeightfieldCollisionComponent):
     MeshGuid: core_uobject.Guid
 
 
-
 class LandscapeMeshProxyActor(engine.Actor):
     LandscapeMeshProxyComponent: LandscapeMeshProxyComponent
-
 
 
 class LandscapeMeshProxyComponent(engine.StaticMeshComponent):
@@ -197,12 +228,10 @@ class LandscapeMeshProxyComponent(engine.StaticMeshComponent):
     ProxyLOD: int
 
 
-
 class LandscapeSplinesComponent(engine.PrimitiveComponent):
     ControlPoints: unreal.WrappedArray[LandscapeSplineControlPoint]
     Segments: unreal.WrappedArray[LandscapeSplineSegment]
     CookedForeignMeshComponents: unreal.WrappedArray[engine.MeshComponent]
-
 
 
 class LandscapeSplineControlPoint(unreal.UObject):
@@ -217,7 +246,6 @@ class LandscapeSplineControlPoint(unreal.UObject):
     LocalMeshComponent: ControlPointMeshComponent
 
 
-
 class LandscapeSplineSegment(unreal.UObject):
     Connections: LandscapeSplineSegmentConnection
     SplineInfo: core_uobject.InterpCurveVector
@@ -226,8 +254,8 @@ class LandscapeSplineSegment(unreal.UObject):
     LocalMeshComponents: unreal.WrappedArray[engine.SplineMeshComponent]
 
 
-
-class LandscapeStreamingProxy(LandscapeProxy): ...
+class LandscapeStreamingProxy(LandscapeProxy):
+    LandscapeActor: Any
 
 
 class MaterialExpressionLandscapeAutoPaintLayers(engine.MaterialExpressionCustomOutput):
@@ -235,16 +263,13 @@ class MaterialExpressionLandscapeAutoPaintLayers(engine.MaterialExpressionCustom
     AutoPaintLayers: unreal.WrappedArray[AutoPaintLayerInput]
 
 
-
 class MaterialExpressionLandscapeGrassOutput(engine.MaterialExpressionCustomOutput):
     GrassTypes: unreal.WrappedArray[GrassInput]
-
 
 
 class MaterialExpressionLandscapeLayerBlend(engine.MaterialExpression):
     Layers: unreal.WrappedArray[LayerBlendInput]
     ExpressionGUID: core_uobject.Guid
-
 
 
 class MaterialExpressionLandscapeLayerCoords(engine.MaterialExpression):
@@ -256,12 +281,10 @@ class MaterialExpressionLandscapeLayerCoords(engine.MaterialExpression):
     MappingPanV: float
 
 
-
 class MaterialExpressionLandscapeLayerSample(engine.MaterialExpression):
     ParameterName: str
     PreviewWeight: float
     ExpressionGUID: core_uobject.Guid
-
 
 
 class MaterialExpressionLandscapeLayerSwitch(engine.MaterialExpression):
@@ -270,7 +293,6 @@ class MaterialExpressionLandscapeLayerSwitch(engine.MaterialExpression):
     ParameterName: str
     PreviewUsed: bool
     ExpressionGUID: core_uobject.Guid
-
 
 
 class MaterialExpressionLandscapeLayerWeight(engine.MaterialExpression):
@@ -282,17 +304,14 @@ class MaterialExpressionLandscapeLayerWeight(engine.MaterialExpression):
     ExpressionGUID: core_uobject.Guid
 
 
-
 class MaterialExpressionLandscapeVisibilityMask(engine.MaterialExpression):
     ExpressionGUID: core_uobject.Guid
-
 
 
 class WeightmapLayerAllocationInfo:
     LayerInfo: LandscapeLayerInfoObject
     WeightmapTextureIndex: int
     WeightmapTextureChannel: int
-
 
 
 class LandscapeEditToolRenderData:
@@ -303,7 +322,6 @@ class LandscapeEditToolRenderData:
     DebugChannelG: int
     DebugChannelB: int
     DataTexture: engine.Texture2D
-
 
 
 class GizmoSelectData: ...
@@ -331,11 +349,9 @@ class GrassVariety:
     bKeepInstanceBufferCPUCopy: bool
 
 
-
 class LandscapeInfoLayerSettings:
     LayerInfoObj: LandscapeLayerInfoObject
     LayerName: str
-
 
 
 class LandscapeImportLayerInfo: ...
@@ -345,7 +361,6 @@ class LandscapeLayerStruct:
     LayerInfoObj: LandscapeLayerInfoObject
 
 
-
 class LandscapeEditorLayerSettings: ...
 
 
@@ -353,11 +368,9 @@ class LandscapeWeightmapUsage:
     ChannelUsage: LandscapeComponent
 
 
-
 class LandscapeSplineConnection:
     Segment: LandscapeSplineSegment
     End: bool
-
 
 
 class ForeignWorldSplineData: ...
@@ -381,12 +394,10 @@ class LandscapeSplineMeshEntry:
     UpAxis: int
 
 
-
 class LandscapeSplineSegmentConnection:
     ControlPoint: LandscapeSplineControlPoint
     TangentLen: float
     SocketName: str
-
 
 
 class LandscapeSplineInterpPoint:
@@ -398,18 +409,15 @@ class LandscapeSplineInterpPoint:
     StartEndFalloff: float
 
 
-
 class AutoPaintLayerInput:
     LayerName: str
     Input: engine.ExpressionInput
-
 
 
 class GrassInput:
     Name: str
     GrassType: LandscapeGrassType
     Input: engine.ExpressionInput
-
 
 
 class LayerBlendInput:
@@ -420,7 +428,6 @@ class LayerBlendInput:
     PreviewWeight: float
     ConstLayerInput: core_uobject.Vector
     ConstHeightInput: float
-
 
 
 class ELandscapeSetupErrors(enum.Enum):

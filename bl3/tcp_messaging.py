@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class TcpMessagingSettings(unreal.UObject):
@@ -12,4 +9,3 @@ class TcpMessagingSettings(unreal.UObject):
     ListenEndpoint: str
     ConnectToEndpoints: unreal.WrappedArray[str]
     ConnectionRetryDelay: int
-

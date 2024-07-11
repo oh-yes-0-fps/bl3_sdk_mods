@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,25 +8,26 @@ from . import core_uobject
 from . import engine
 
 
-
 class AppleVisionDetectFacesAsyncTaskBlueprintProxy(unreal.UObject):
+    OnSuccess: Any
+    OnFailure: Any
     FaceDetectionResult: FaceDetectionResult
-    def CreateProxyObjectForDetectFaces(self, SourceImage: engine.Texture, ReturnValue: AppleVisionDetectFacesAsyncTaskBlueprintProxy) -> AppleVisionDetectFacesAsyncTaskBlueprintProxy: ...
+
+    def CreateProxyObjectForDetectFaces(
+        self, SourceImage: engine.Texture
+    ) -> AppleVisionDetectFacesAsyncTaskBlueprintProxy: ...
 
 
 class FaceDetectionResult:
     DetectedFaces: unreal.WrappedArray[DetectedFace]
 
 
-
 class DetectedFeature:
     Confidence: float
 
 
-
 class DetectedFeatureRegion(DetectedFeature):
     Points: unreal.WrappedArray[core_uobject.Vector2D]
-
 
 
 class DetectedFace(DetectedFeatureRegion):
@@ -35,20 +36,16 @@ class DetectedFace(DetectedFeatureRegion):
     FeatureRegions: unreal.WrappedArray[DetectedFaceFeatureRegion]
 
 
-
 class DetectedFaceFeatureRegion(DetectedFeatureRegion):
     FeatureType: EDetectedFaceFeatureType
-
 
 
 class DetectedFeature2D(DetectedFeature):
     BoundingBox: core_uobject.Box2D
 
 
-
 class DetectedFaceFeature2D(DetectedFeature2D):
     FeatureType: EDetectedFaceFeatureType
-
 
 
 class EDetectedFaceFeatureType(enum.Enum):

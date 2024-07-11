@@ -1,18 +1,15 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
-
-
-
-class MaterialShaderQualitySettings(unreal.UObject): ...
+class MaterialShaderQualitySettings(unreal.UObject):
+    ForwardSettingMap: Any
 
 
 class ShaderPlatformQualitySettings(unreal.UObject):
     QualityOverrides: MaterialQualityOverrides
-
 
 
 class MaterialQualityOverrides:
@@ -23,7 +20,6 @@ class MaterialQualityOverrides:
     bForceLQReflections: bool
     bDisableMaterialNormalCalculation: bool
     MobileCSMQuality: EMobileCSMQuality
-
 
 
 class EMobileCSMQuality(enum.Enum):

@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class JsonUtilitiesDummyObject(unreal.UObject): ...
@@ -12,4 +9,3 @@ class JsonUtilitiesDummyObject(unreal.UObject): ...
 
 class JsonObjectWrapper:
     JsonString: str
-

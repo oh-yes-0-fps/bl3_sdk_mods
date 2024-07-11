@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class CachedPropertyPath:
@@ -13,10 +12,8 @@ class CachedPropertyPath:
     CachedFunction: core_uobject.Function
 
 
-
 class PropertyPathSegment:
     Name: str
     ArrayIndex: int
     Struct: unreal.UStruct
     Field: core_uobject.Field
-

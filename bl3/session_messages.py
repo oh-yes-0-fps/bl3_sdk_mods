@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class SessionServiceLogUnsubscribe: ...
@@ -22,7 +21,6 @@ class SessionServiceLog:
     Verbosity: int
 
 
-
 class SessionServicePong:
     Authorized: bool
     BuildDate: str
@@ -37,7 +35,5 @@ class SessionServicePong:
     Standalone: bool
 
 
-
 class SessionServicePing:
     UserName: str
-

@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,7 +8,6 @@ from . import core_uobject
 from . import engine
 from . import gbx_runtime
 from . import anim_graph_runtime
-
 
 
 class GbxAnimNode_LegIK(anim_graph_runtime.AnimNode_LegIK):
@@ -30,7 +29,6 @@ class GbxAnimNode_LegIK(anim_graph_runtime.AnimNode_LegIK):
     SlopeNormalCharacterSpeedRange: gbx_runtime.NumericRange
     MinVelocity: float
     MaxVelocity: float
-
 
 
 class GbxAnimNode_LookAt(anim_graph_runtime.AnimNode_SkeletalControlBase):
@@ -60,7 +58,6 @@ class GbxAnimNode_LookAt(anim_graph_runtime.AnimNode_SkeletalControlBase):
     ReferencePoseLink: engine.PoseLink
 
 
-
 class BoneBlendParams:
     Bone: engine.BoneReference
     Weight: float
@@ -73,7 +70,6 @@ class BoneBlendParams:
     LookAtClamp: float
     LookAxis: int
     UpAxis: int
-
 
 
 class EGbxLookAxisOption(enum.Enum):

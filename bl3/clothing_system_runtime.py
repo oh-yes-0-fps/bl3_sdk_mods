@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import clothing_system_runtime_interface
-
 
 
 class ClothingAssetCustomData(unreal.UObject): ...
@@ -24,11 +23,14 @@ class ClothingAsset(clothing_system_runtime_interface.ClothingAssetBase):
     CustomData: ClothingAssetCustomData
 
 
+class ClothingSimulationFactoryNv(
+    clothing_system_runtime_interface.ClothingSimulationFactory
+): ...
 
-class ClothingSimulationFactoryNv(clothing_system_runtime_interface.ClothingSimulationFactory): ...
 
-
-class ClothingSimulationInteractorNv(clothing_system_runtime_interface.ClothingSimulationInteractor):
+class ClothingSimulationInteractorNv(
+    clothing_system_runtime_interface.ClothingSimulationInteractor
+):
 
     def SetAnimDriveSpringStiffness(self, InStiffness: float): ...
     def SetAnimDriveDamperStiffness(self, InStiffness: float): ...
@@ -64,7 +66,6 @@ class ClothConfig:
     AnimDriveDamperStiffness: float
 
 
-
 class ClothConstraintSetup:
     Stiffness: float
     StiffnessMultiplier: float
@@ -72,16 +73,15 @@ class ClothConstraintSetup:
     CompressionLimit: float
 
 
-
 class ClothLODData:
     PhysicalMeshData: ClothPhysicalMeshData
     CollisionData: clothing_system_runtime_interface.ClothCollisionData
 
 
-
 class ClothPhysicalMeshData:
     Vertices: unreal.WrappedArray[core_uobject.Vector]
     Normals: unreal.WrappedArray[core_uobject.Vector]
+    Indices: unreal.WrappedArray[int]
     MaxDistances: unreal.WrappedArray[float]
     BackstopDistances: unreal.WrappedArray[float]
     BackstopRadiuses: unreal.WrappedArray[float]
@@ -90,13 +90,13 @@ class ClothPhysicalMeshData:
     BoneData: unreal.WrappedArray[ClothVertBoneData]
     MaxBoneWeights: int
     NumFixedVerts: int
-
+    SelfCollisionIndices: unreal.WrappedArray[int]
 
 
 class ClothVertBoneData:
     NumInfluences: int
+    BoneIndices: int
     BoneWeights: float
-
 
 
 class ClothParameterMask_PhysMesh:
@@ -106,7 +106,6 @@ class ClothParameterMask_PhysMesh:
     MinValue: float
     Values: unreal.WrappedArray[float]
     bEnabled: bool
-
 
 
 class EClothingWindMethod(enum.Enum):

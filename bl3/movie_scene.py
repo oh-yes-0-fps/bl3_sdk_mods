@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,15 +8,12 @@ from . import core_uobject
 from . import engine
 
 
-
 class MovieSceneSignedObject(unreal.UObject):
     Signature: core_uobject.Guid
 
 
-
 class MovieSceneTrack(MovieSceneSignedObject):
     EvalOptions: MovieSceneTrackEvalOptions
-
 
 
 class MovieSceneNameableTrack(MovieSceneTrack): ...
@@ -41,7 +38,6 @@ class MovieSceneSection(MovieSceneSignedObject):
     BlendType: OptionalMovieSceneBlendType
 
 
-
 class MovieSceneSequence(MovieSceneSignedObject):
     PrecompiledEvaluationTemplate: MovieSceneEvaluationTemplate
     DefaultCompletionMode: EMovieSceneCompletionMode
@@ -49,8 +45,12 @@ class MovieSceneSequence(MovieSceneSignedObject):
     bDisableURO: bool
 
 
-
 class MovieSceneSequencePlayer(unreal.UObject):
+    OnPlay: Any
+    OnPlayReverse: Any
+    OnStop: Any
+    OnPause: Any
+    OnFinished: Any
     Status: int
     bReversePlayback: bool
     Sequence: MovieSceneSequence
@@ -58,6 +58,7 @@ class MovieSceneSequencePlayer(unreal.UObject):
     DurationFrames: int
     CurrentNumLoops: int
     PlaybackSettings: MovieSceneSequencePlaybackSettings
+
     def Stop(self): ...
     def SetTimeRange(self, StartTime: float, Duration: float): ...
     def SetPlayRate(self, PlayRate: float): ...
@@ -79,30 +80,31 @@ class MovieSceneSequencePlayer(unreal.UObject):
     def JumpToSeconds(self, TimeInSeconds: float): ...
     def JumpToPosition(self, NewPlaybackPosition: float): ...
     def JumpToFrame(self, NewPosition: core_uobject.FrameTime): ...
-    def IsReversed(self, ReturnValue: bool) -> bool: ...
-    def IsPlaying(self, ReturnValue: bool) -> bool: ...
-    def IsPaused(self, ReturnValue: bool) -> bool: ...
+    def IsReversed(self) -> bool: ...
+    def IsPlaying(self) -> bool: ...
+    def IsPaused(self) -> bool: ...
     def GoToEndAndStop(self): ...
-    def GetStartTime(self, ReturnValue: core_uobject.QualifiedFrameTime) -> core_uobject.QualifiedFrameTime: ...
-    def GetPlayRate(self, ReturnValue: float) -> float: ...
-    def GetPlaybackStart(self, ReturnValue: float) -> float: ...
-    def GetPlaybackPosition(self, ReturnValue: float) -> float: ...
-    def GetPlaybackEnd(self, ReturnValue: float) -> float: ...
-    def GetLength(self, ReturnValue: float) -> float: ...
-    def GetFrameRate(self, ReturnValue: core_uobject.FrameRate) -> core_uobject.FrameRate: ...
-    def GetFrameDuration(self, ReturnValue: int) -> int: ...
-    def GetEndTime(self, ReturnValue: core_uobject.QualifiedFrameTime) -> core_uobject.QualifiedFrameTime: ...
-    def GetEnableUpdateRateOptimizations(self, ReturnValue: bool) -> bool: ...
-    def GetDuration(self, ReturnValue: core_uobject.QualifiedFrameTime) -> core_uobject.QualifiedFrameTime: ...
-    def GetDisableCameraCuts(self, ReturnValue: bool) -> bool: ...
-    def GetCurrentTime(self, ReturnValue: core_uobject.QualifiedFrameTime) -> core_uobject.QualifiedFrameTime: ...
-    def GetBoundObjects(self, ObjectBinding: MovieSceneObjectBindingID, ReturnValue: unreal.WrappedArray[unreal.UObject]) -> unreal.WrappedArray[unreal.UObject]: ...
+    def GetStartTime(self) -> core_uobject.QualifiedFrameTime: ...
+    def GetPlayRate(self) -> float: ...
+    def GetPlaybackStart(self) -> float: ...
+    def GetPlaybackPosition(self) -> float: ...
+    def GetPlaybackEnd(self) -> float: ...
+    def GetLength(self) -> float: ...
+    def GetFrameRate(self) -> core_uobject.FrameRate: ...
+    def GetFrameDuration(self) -> int: ...
+    def GetEndTime(self) -> core_uobject.QualifiedFrameTime: ...
+    def GetEnableUpdateRateOptimizations(self) -> bool: ...
+    def GetDuration(self) -> core_uobject.QualifiedFrameTime: ...
+    def GetDisableCameraCuts(self) -> bool: ...
+    def GetCurrentTime(self) -> core_uobject.QualifiedFrameTime: ...
+    def GetBoundObjects(
+        self, ObjectBinding: MovieSceneObjectBindingID
+    ) -> unreal.WrappedArray[unreal.UObject]: ...
     def ChangePlaybackDirection(self): ...
 
 
 class MovieSceneBindingOverrides(unreal.UObject):
     BindingData: unreal.WrappedArray[MovieSceneBindingOverrideData]
-
 
 
 class MovieScene(MovieSceneSignedObject):
@@ -120,7 +122,6 @@ class MovieScene(MovieSceneSignedObject):
     DisableFrameSnapping: bool
 
 
-
 class MovieSceneBindingOverridesInterface(core_uobject.Interface): ...
 
 
@@ -131,15 +132,13 @@ class MovieSceneBuiltInEasingFunction(unreal.UObject):
     Type: EMovieSceneBuiltInEasing
 
 
-
 class MovieSceneEasingExternalCurve(unreal.UObject):
     Curve: engine.CurveFloat
 
 
-
 class MovieSceneEasingFunction(core_uobject.Interface):
 
-    def OnEvaluate(self, Interp: float, ReturnValue: float) -> float: ...
+    def OnEvaluate(self, Interp: float) -> float: ...
 
 
 class MovieSceneFolder(unreal.UObject):
@@ -149,14 +148,12 @@ class MovieSceneFolder(unreal.UObject):
     ChildObjectBindingStrings: unreal.WrappedArray[str]
 
 
-
 class MovieSceneKeyProxy(core_uobject.Interface): ...
 
 
 class MovieSceneSegmentCompilerTestTrack(MovieSceneTrack):
     bHighPassFilter: bool
     SectionArray: unreal.WrappedArray[MovieSceneSection]
-
 
 
 class MovieSceneSegmentCompilerTestSection(MovieSceneSection): ...
@@ -168,10 +165,8 @@ class MovieSceneSubSection(MovieSceneSection):
     TimeScale: float
 
 
-
 class MovieSceneSubTrack(MovieSceneNameableTrack):
     Sections: unreal.WrappedArray[MovieSceneSection]
-
 
 
 class MovieSceneEvalTemplateBase: ...
@@ -182,13 +177,12 @@ class MovieSceneEvalTemplate(MovieSceneEvalTemplateBase):
     SourceSection: MovieSceneSection
 
 
-
 class MovieSceneTrackLabels:
     Strings: unreal.WrappedArray[str]
 
 
-
 class MovieSceneEditorData:
+    ExpansionStates: Any
     ViewStart: float
     ViewEnd: float
     WorkStart: float
@@ -197,16 +191,13 @@ class MovieSceneEditorData:
     ViewRange: core_uobject.FloatRange
 
 
-
 class MovieSceneExpansionState:
     bExpanded: bool
-
 
 
 class MovieSceneTimecodeSource:
     Timecode: core_uobject.Timecode
     DeltaFrame: core_uobject.FrameNumber
-
 
 
 class MovieSceneBinding:
@@ -215,12 +206,10 @@ class MovieSceneBinding:
     Tracks: unreal.WrappedArray[MovieSceneTrack]
 
 
-
 class MovieSceneBindingOverrideData:
     ObjectBindingId: MovieSceneObjectBindingID
     Object: unreal.UObject
     bOverridesDefault: bool
-
 
 
 class MovieSceneObjectBindingID:
@@ -229,11 +218,9 @@ class MovieSceneObjectBindingID:
     Guid: core_uobject.Guid
 
 
-
 class OptionalMovieSceneBlendType:
     BlendType: EMovieSceneBlendType
     bIsValid: bool
-
 
 
 class MovieSceneChannel: ...
@@ -246,14 +233,12 @@ class MovieSceneBoolChannel(MovieSceneChannel):
     Values: unreal.WrappedArray[bool]
 
 
-
 class MovieSceneByteChannel(MovieSceneChannel):
     Times: unreal.WrappedArray[core_uobject.FrameNumber]
     DefaultValue: int
     bHasDefaultValue: bool
     Values: unreal.WrappedArray[int]
     Enum: unreal.UEnum
-
 
 
 class MovieSceneKeyHandleMap(engine.KeyHandleLookupTable): ...
@@ -271,28 +256,29 @@ class MovieSceneEvaluationField:
     MetaData: unreal.WrappedArray[MovieSceneEvaluationMetaData]
 
 
-
 class MovieSceneEvaluationMetaData:
     ActiveSequences: unreal.WrappedArray[MovieSceneSequenceID]
     ActiveEntities: unreal.WrappedArray[MovieSceneOrderedEvaluationKey]
+    SubTemplateSerialNumbers: Any
 
 
-
-class MovieSceneSequenceID: ...
+class MovieSceneSequenceID:
+    Value: int
 
 
 class MovieSceneOrderedEvaluationKey:
     Key: MovieSceneEvaluationKey
-
+    EvaluationIndex: int
 
 
 class MovieSceneEvaluationKey:
     SequenceID: MovieSceneSequenceID
     TrackIdentifier: MovieSceneTrackIdentifier
+    SectionIndex: int
 
 
-
-class MovieSceneTrackIdentifier: ...
+class MovieSceneTrackIdentifier:
+    Value: int
 
 
 class MovieSceneEvaluationGroup:
@@ -300,28 +286,23 @@ class MovieSceneEvaluationGroup:
     SegmentPtrLUT: unreal.WrappedArray[MovieSceneEvaluationFieldSegmentPtr]
 
 
-
 class MovieSceneEvaluationFieldTrackPtr:
     SequenceID: MovieSceneSequenceID
     TrackIdentifier: MovieSceneTrackIdentifier
-
 
 
 class MovieSceneEvaluationFieldSegmentPtr(MovieSceneEvaluationFieldTrackPtr):
     SegmentID: MovieSceneSegmentIdentifier
 
 
-
 class MovieSceneSegmentIdentifier:
     IdentifierIndex: int
-
 
 
 class MovieSceneEvaluationGroupLUTIndex:
     LUTOffset: int
     NumInitPtrs: int
     NumEvalPtrs: int
-
 
 
 class MovieSceneFrameRange: ...
@@ -332,8 +313,8 @@ class MovieSceneEvaluationOperand:
     SequenceID: MovieSceneSequenceID
 
 
-
 class MovieSceneEvaluationTemplate:
+    Tracks: Any
     EvaluationField: MovieSceneEvaluationField
     Hierarchy: MovieSceneSequenceHierarchy
     SequenceSignature: core_uobject.Guid
@@ -341,7 +322,6 @@ class MovieSceneEvaluationTemplate:
     TemplateLedger: MovieSceneTemplateGenerationLedger
     TrackFieldData: MovieSceneTrackFieldData
     SubSectionFieldData: MovieSceneSubSectionFieldData
-
 
 
 class MovieSceneSubSectionFieldData: ...
@@ -352,19 +332,22 @@ class MovieSceneTrackFieldData: ...
 
 class MovieSceneTemplateGenerationLedger:
     LastTrackIdentifier: MovieSceneTrackIdentifier
+    TrackSignatureToTrackIdentifier: Any
+    SubSectionRanges: Any
 
 
+class MovieSceneEvaluationTemplateSerialNumber:
+    Value: int
 
-class MovieSceneEvaluationTemplateSerialNumber: ...
 
-
-class MovieSceneSequenceHierarchy: ...
+class MovieSceneSequenceHierarchy:
+    SubSequences: Any
+    Hierarchy: Any
 
 
 class MovieSceneSequenceHierarchyNode:
     ParentId: MovieSceneSequenceID
     Children: unreal.WrappedArray[MovieSceneSequenceID]
-
 
 
 class MovieSceneSubSequenceData:
@@ -381,11 +364,9 @@ class MovieSceneSubSequenceData:
     OuterToInnerTransform: MovieSceneSequenceTransform
 
 
-
 class MovieSceneSequenceTransform:
     TimeScale: float
     Offset: core_uobject.FrameTime
-
 
 
 class MovieSceneSequenceInstanceDataPtr: ...
@@ -393,6 +374,7 @@ class MovieSceneSequenceInstanceDataPtr: ...
 
 class MovieSceneEvaluationTrack:
     ObjectBindingId: core_uobject.Guid
+    EvaluationPriority: int
     EvaluationMethod: EEvaluationMethod
     Segments: MovieSceneEvaluationTrackSegments
     SourceTrack: MovieSceneTrack
@@ -402,7 +384,6 @@ class MovieSceneEvaluationTrack:
     EvaluationGroup: str
     bEvaluateInPreroll: bool
     bEvaluateInPostroll: bool
-
 
 
 class MovieSceneTrackImplementationPtr: ...
@@ -416,7 +397,6 @@ class MovieSceneEvaluationTrackSegments:
     SortedSegments: unreal.WrappedArray[MovieSceneSegment]
 
 
-
 class MovieSceneSegment: ...
 
 
@@ -424,7 +404,6 @@ class MovieSceneSubSectionData:
     Section: MovieSceneSubSection
     ObjectBindingId: core_uobject.Guid
     Flags: ESectionEvaluationFlags
-
 
 
 class MovieSceneFloatChannel(MovieSceneChannel):
@@ -438,13 +417,11 @@ class MovieSceneFloatChannel(MovieSceneChannel):
     TickResolution: core_uobject.FrameRate
 
 
-
 class MovieSceneFloatValue:
     Value: float
     InterpMode: int
     TangentMode: int
     Tangent: MovieSceneTangentData
-
 
 
 class MovieSceneTangentData:
@@ -455,7 +432,6 @@ class MovieSceneTangentData:
     LeaveTangentWeight: float
 
 
-
 class MovieSceneIntegerChannel(MovieSceneChannel):
     Times: unreal.WrappedArray[core_uobject.FrameNumber]
     DefaultValue: int
@@ -463,13 +439,11 @@ class MovieSceneIntegerChannel(MovieSceneChannel):
     Values: unreal.WrappedArray[int]
 
 
-
 class MovieSceneKeyStruct: ...
 
 
 class MovieSceneKeyTimeStruct(MovieSceneKeyStruct):
     Time: core_uobject.FrameNumber
-
 
 
 class MovieScenePossessable:
@@ -480,10 +454,8 @@ class MovieScenePossessable:
     ParentGuid: core_uobject.Guid
 
 
-
 class MovieScenePropertySectionTemplate(MovieSceneEvalTemplate):
     PropertyData: MovieScenePropertySectionData
-
 
 
 class MovieScenePropertySectionData:
@@ -493,21 +465,20 @@ class MovieScenePropertySectionData:
     NotifyFunctionName: str
 
 
-
 class MovieSceneEasingSettings:
     AutoEaseInDuration: int
     AutoEaseOutDuration: int
+    EaseIn: Any
     bManualEaseIn: bool
     ManualEaseInDuration: int
+    EaseOut: Any
     bManualEaseOut: bool
     ManualEaseOutDuration: int
-
 
 
 class MovieSceneSectionEvalOptions:
     bCanEditCompletionMode: bool
     CompletionMode: EMovieSceneCompletionMode
-
 
 
 class MovieSceneSectionParameters:
@@ -519,12 +490,10 @@ class MovieSceneSectionParameters:
     PostrollTime: float
 
 
-
 class SectionEvaluationData:
     ImplIndex: int
     ForcedTime: core_uobject.FrameNumber
     Flags: ESectionEvaluationFlags
-
 
 
 class TestMovieSceneEvalTemplate(MovieSceneEvalTemplate): ...
@@ -546,8 +515,8 @@ class MovieSceneSequencePlaybackSettings:
     bDisableCameraCuts: bool
     bPauseAtEnd: bool
     InstanceData: unreal.UObject
+    BindingOverrides: Any
     bAllowUpdateRateOptimizations: bool
-
 
 
 class MovieSceneSpawnable:
@@ -561,14 +530,12 @@ class MovieSceneSpawnable:
     LevelName: str
 
 
-
 class MovieSceneTrackEvalOptions:
     bCanEvaluateNearestSection: bool
     bEvalNearestSection: bool
     bEvaluateInPreroll: bool
     bEvaluateInPostroll: bool
     bEvaluateNearestSection: bool
-
 
 
 class MovieSceneTrackImplementation(MovieSceneEvalTemplateBase): ...

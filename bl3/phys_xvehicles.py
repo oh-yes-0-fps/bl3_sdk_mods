@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import anim_graph_runtime
-
 
 
 class WheeledVehicleMovementComponent(engine.PawnMovementComponent):
@@ -67,6 +66,7 @@ class WheeledVehicleMovementComponent(engine.PawnMovementComponent):
     OverrideController: engine.Controller
     bAutoBrake: bool
     bDisableBrake: bool
+
     def SetUseAutoGears(self, bUseAuto: bool): ...
     def SetThrottleInput(self, Throttle: float): ...
     def SetTargetGear(self, GearNum: int, bImmediate: bool): ...
@@ -83,20 +83,27 @@ class WheeledVehicleMovementComponent(engine.PawnMovementComponent):
     def SetAvoidanceGroup(self, GroupFlags: int): ...
     def SetAvoidanceEnabled(self, bEnable: bool): ...
     def SetAutoBrake(self, bWantedAutoBrake: bool, Reason: str): ...
-    def ServerUpdateState(self, InSteeringInput: float, InThrottleInput: float, InBrakeInput: float, InHandbrakeInput: float, CurrentGear: int): ...
-    def IsAutoBraking(self, ReturnValue: bool) -> bool: ...
-    def GetUseAutoGears(self, ReturnValue: bool) -> bool: ...
-    def GetThrottleInput(self, ReturnValue: float) -> float: ...
-    def GetTargetGear(self, ReturnValue: int) -> int: ...
-    def GetSteeringInput(self, ReturnValue: float) -> float: ...
-    def GetPlanarSpeed(self, ReturnValue: float) -> float: ...
-    def GetLateralSpeed(self, ReturnValue: float) -> float: ...
-    def GetHandbrakeInput(self, ReturnValue: float) -> float: ...
-    def GetForwardSpeed(self, ReturnValue: float) -> float: ...
-    def GetEngineRotationSpeed(self, ReturnValue: float) -> float: ...
-    def GetEngineMaxRotationSpeed(self, ReturnValue: float) -> float: ...
-    def GetCurrentGear(self, ReturnValue: int) -> int: ...
-    def GetBrakeInput(self, ReturnValue: float) -> float: ...
+    def ServerUpdateState(
+        self,
+        InSteeringInput: float,
+        InThrottleInput: float,
+        InBrakeInput: float,
+        InHandbrakeInput: float,
+        CurrentGear: int,
+    ): ...
+    def IsAutoBraking(self) -> bool: ...
+    def GetUseAutoGears(self) -> bool: ...
+    def GetThrottleInput(self) -> float: ...
+    def GetTargetGear(self) -> int: ...
+    def GetSteeringInput(self) -> float: ...
+    def GetPlanarSpeed(self) -> float: ...
+    def GetLateralSpeed(self) -> float: ...
+    def GetHandbrakeInput(self) -> float: ...
+    def GetForwardSpeed(self) -> float: ...
+    def GetEngineRotationSpeed(self) -> float: ...
+    def GetEngineMaxRotationSpeed(self) -> float: ...
+    def GetCurrentGear(self) -> int: ...
+    def GetBrakeInput(self) -> float: ...
 
 
 class SimpleWheeledVehicleMovementComponent(WheeledVehicleMovementComponent):
@@ -111,10 +118,10 @@ class TireConfig(engine.DataAsset):
     TireFrictionScales: unreal.WrappedArray[TireConfigMaterialFriction]
 
 
-
 class VehicleAnimInstance(engine.AnimInstance):
     WheeledVehicleMovementComponent: WheeledVehicleMovementComponent
-    def GetVehicle(self, ReturnValue: WheeledVehicle) -> WheeledVehicle: ...
+
+    def GetVehicle(self) -> WheeledVehicle: ...
 
 
 class VehicleWheel(unreal.UObject):
@@ -144,16 +151,16 @@ class VehicleWheel(unreal.UObject):
     MaxHandBrakeTorque: float
     VehicleSim: WheeledVehicleMovementComponent
     WheelIndex: int
-    def IsInAir(self, ReturnValue: bool) -> bool: ...
-    def GetSuspensionOffset(self, ReturnValue: float) -> float: ...
-    def GetSteerAngle(self, ReturnValue: float) -> float: ...
-    def GetRotationAngle(self, ReturnValue: float) -> float: ...
+
+    def IsInAir(self) -> bool: ...
+    def GetSuspensionOffset(self) -> float: ...
+    def GetSteerAngle(self) -> float: ...
+    def GetRotationAngle(self) -> float: ...
 
 
 class WheeledVehicle(engine.Pawn):
     Mesh: engine.SkeletalMeshComponent
     VehicleMovement: WheeledVehicleMovementComponent
-
 
 
 class WheeledVehicleMovementComponent4W(WheeledVehicleMovementComponent):
@@ -162,7 +169,6 @@ class WheeledVehicleMovementComponent4W(WheeledVehicleMovementComponent):
     TransmissionSetup: VehicleTransmissionData
     SteeringCurve: engine.RuntimeFloatCurve
     AckermannAccuracy: float
-
 
 
 class AnimNode_WheelHandler(anim_graph_runtime.AnimNode_SkeletalControlBase): ...
@@ -176,14 +182,12 @@ class TireConfigMaterialFriction:
     FrictionScale: float
 
 
-
 class VehicleAnimInstanceProxy(engine.AnimInstanceProxy): ...
 
 
 class VehicleInputRate:
     RiseRate: float
     FallRate: float
-
 
 
 class ReplicatedVehicleState:
@@ -194,13 +198,11 @@ class ReplicatedVehicleState:
     CurrentGear: int
 
 
-
 class WheelSetup:
     WheelClass: unreal.UClass
     BoneName: str
     AdditionalOffset: core_uobject.Vector
     bDisableSteering: bool
-
 
 
 class VehicleTransmissionData:
@@ -214,12 +216,10 @@ class VehicleTransmissionData:
     ClutchStrength: float
 
 
-
 class VehicleGearData:
     Ratio: float
     DownRatio: float
     UpRatio: float
-
 
 
 class VehicleEngineData:
@@ -231,7 +231,6 @@ class VehicleEngineData:
     DampingRateZeroThrottleClutchDisengaged: float
 
 
-
 class VehicleDifferential4WData:
     DifferentialType: int
     FrontRearSplit: float
@@ -240,7 +239,6 @@ class VehicleDifferential4WData:
     CentreBias: float
     FrontBias: float
     RearBias: float
-
 
 
 class EWheelSweepType(enum.Enum):

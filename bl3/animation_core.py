@@ -1,17 +1,15 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 
 
-
 class AXIS:
     AXIS: core_uobject.Vector
     bInLocalSpace: bool
-
 
 
 class ConstraintData:
@@ -22,22 +20,18 @@ class ConstraintData:
     CurrentTransform: core_uobject.Transform
 
 
-
 class ConstraintDescriptor:
     Type: EConstraintType
-
 
 
 class ConstraintDescriptionEx:
     AxesFilterOption: FilterOptionPerAxis
 
 
-
 class FilterOptionPerAxis:
     bX: bool
     bY: bool
     bZ: bool
-
 
 
 class AimConstraintDescription(ConstraintDescriptionEx):
@@ -47,10 +41,8 @@ class AimConstraintDescription(ConstraintDescriptionEx):
     LookUpTarget: core_uobject.Vector
 
 
-
 class TransformConstraintDescription(ConstraintDescriptionEx):
     TransformType: ETransformConstraintType
-
 
 
 class TransformConstraint:
@@ -59,7 +51,6 @@ class TransformConstraint:
     TargetNode: str
     Weight: float
     bMaintainOffset: bool
-
 
 
 class ConstraintDescription:
@@ -72,13 +63,11 @@ class ConstraintDescription:
     ScaleAxes: FilterOptionPerAxis
 
 
-
 class ConstraintOffset:
     Translation: core_uobject.Vector
     Rotation: core_uobject.Quat
     Scale: core_uobject.Vector
     Parent: core_uobject.Transform
-
 
 
 class TransformFilter:
@@ -87,34 +76,29 @@ class TransformFilter:
     ScaleFilter: FilterOptionPerAxis
 
 
-
 class EulerTransform:
     Location: core_uobject.Vector
     Rotation: core_uobject.Rotator
     Scale: core_uobject.Vector
 
 
-
 class NodeChain:
     Nodes: unreal.WrappedArray[str]
-
 
 
 class NodeHierarchyWithUserData:
     Hierarchy: NodeHierarchyData
 
 
-
 class NodeHierarchyData:
     Nodes: unreal.WrappedArray[NodeObject]
     Transforms: unreal.WrappedArray[core_uobject.Transform]
-
+    NodeNameToIndexMapping: Any
 
 
 class NodeObject:
     Name: str
     ParentName: str
-
 
 
 class ETransformConstraintType(enum.Enum):

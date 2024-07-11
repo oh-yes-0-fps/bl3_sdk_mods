@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class EngineServiceNotification:
@@ -13,10 +12,8 @@ class EngineServiceNotification:
     TimeSeconds: float
 
 
-
 class EngineServiceTerminate:
     UserName: str
-
 
 
 class EngineServiceExecuteCommand:
@@ -24,17 +21,14 @@ class EngineServiceExecuteCommand:
     UserName: str
 
 
-
 class EngineServiceAuthGrant:
     UserName: str
     UserToGrant: str
 
 
-
 class EngineServiceAuthDeny:
     UserName: str
     UserToDeny: str
-
 
 
 class EngineServicePong:
@@ -45,7 +39,6 @@ class EngineServicePong:
     InstanceType: str
     SessionId: core_uobject.Guid
     WorldTimeSeconds: float
-
 
 
 class EngineServicePing: ...

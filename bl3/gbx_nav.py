@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -12,13 +12,13 @@ from . import gbx_game_system_core
 from . import navigation_system
 
 
-
 class GbxNavSystem(navigation_system.NavigationSystemV1):
     GbxNavWorld: GbxNavWorld
 
 
-
-class GbxNavCharacterMovementComponent(gbx_game_system_core.GbxCharacterMovementComponent):
+class GbxNavCharacterMovementComponent(
+    gbx_game_system_core.GbxCharacterMovementComponent
+):
     NavMovementOptions: GbxNavMovementOptions
     NavClientPopDistance: float
     NavAvoidanceOptions: GbxNavAvoidanceOptions
@@ -32,7 +32,6 @@ class GbxNavCharacterMovementComponent(gbx_game_system_core.GbxCharacterMovement
     ForcedNavMeshLayer: GbxNavMeshLayer
     bOverrideMaxAcceleration: bool
     StanceMaxAcceleration: float
-
 
 
 class GbxNavComponent(gbx_game_system_core.NavComponent):
@@ -50,10 +49,11 @@ class GbxNavComponent(gbx_game_system_core.NavComponent):
     Reachability: GbxReachabilityState
     MovementOptions: GbxNavMovementOptions
     AvoidanceOptions: GbxNavAvoidanceOptions
+
     def TryMoving(self, fDuration: float): ...
     def SetPathFindingData(self, NewPathFindingData: HavokPathFindingData): ...
     def ResetPathFindingData(self): ...
-    def GetPathFindingData(self, ReturnValue: HavokPathFindingData) -> HavokPathFindingData: ...
+    def GetPathFindingData(self) -> HavokPathFindingData: ...
 
 
 class GbxNavWorld(navigation_system.NavigationData):
@@ -82,7 +82,6 @@ class GbxNavWorld(navigation_system.NavigationData):
     VolumeGenSettings: navigation_system.HavokNavVolumeGenerationSettings
 
 
-
 class AIVehicleFlightComponent(engine.FloatingPawnMovement):
     RotationRate: core_uobject.Rotator
     GbxNavComponent: GbxNavComponent
@@ -94,6 +93,7 @@ class AIVehicleFlightComponent(engine.FloatingPawnMovement):
     MaxPitchInDegrees: float
     MaxRollInDegrees: float
     FlightState: FlightState
+
     def OnRep_FlightState(self): ...
 
 
@@ -102,7 +102,6 @@ class GbxNavAnimTable(gbx_game_system_core.GbxAnimTable):
     MinStopDistance: float
     MaxInterpDistance: float
     AutoFillAngle: float
-
 
 
 class GbxAnimStateManager_AINav(engine.GbxAnimStateManager):
@@ -115,6 +114,7 @@ class GbxAnimStateManager_AINav(engine.GbxAnimStateManager):
     ResolvedBlendSpaceYawMin: float
     ResolvedBlendSpaceYawMax: float
     BlendSpace: engine.BlendSpaceBase
+
     def Owner_PostBeginPlay(self): ...
 
 
@@ -124,13 +124,17 @@ class GbxAnimStateManager_NavIdle(engine.GbxAnimStateManager): ...
 class GbxNavIdleTurnTable(gbx_game_system_core.GbxAnimTable): ...
 
 
-class GbxAnimStateManager_NavIdleTurn(gbx_game_system_core.GbxAnimStateManager_RootMotion): ...
+class GbxAnimStateManager_NavIdleTurn(
+    gbx_game_system_core.GbxAnimStateManager_RootMotion
+): ...
 
 
 class GbxAnimStateManager_NavTable(GbxAnimStateManager_NavIdleTurn): ...
 
 
-class GbxAnimStateManager_NavHop(gbx_game_system_core.GbxAnimStateManager_RootMotion): ...
+class GbxAnimStateManager_NavHop(
+    gbx_game_system_core.GbxAnimStateManager_RootMotion
+): ...
 
 
 class GbxNavArea(engine.GbxNavAreaBase):
@@ -140,10 +144,8 @@ class GbxNavArea(engine.GbxNavAreaBase):
     HavokNavMaterial: navigation_system.EHavokNavMaterial
 
 
-
 class GbxNavAreaData(engine.DataAsset):
     NavAreas: unreal.WrappedArray[GbxNavAreaItem]
-
 
 
 class GbxNavBlueprintLibrary(engine.BlueprintFunctionLibrary):
@@ -151,19 +153,34 @@ class GbxNavBlueprintLibrary(engine.BlueprintFunctionLibrary):
     def SetAINavPathType(self, Actor: engine.Actor, PathType: EGbxPathType): ...
     def ResourceUnlockAvoidance(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockAvoidance(self, Actor: engine.Actor, Reason: str): ...
-    def ForceNavMeshLayer(self, Actor: engine.Actor, ForcedNavMeshLayer: GbxNavMeshLayer): ...
-    def FindNavMeshPointForActor(self, Actor: engine.Actor, Point: core_uobject.Vector, Radius: float, Result: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def FindNavMeshPoint(self, WorldContextObject: unreal.UObject, Point: core_uobject.Vector, Radius: float, Result: core_uobject.Vector, Layer: GbxNavMeshLayer, ReturnValue: bool) -> bool: ...
+    def ForceNavMeshLayer(
+        self, Actor: engine.Actor, ForcedNavMeshLayer: GbxNavMeshLayer
+    ): ...
+    def FindNavMeshPointForActor(
+        self,
+        Actor: engine.Actor,
+        Point: core_uobject.Vector,
+        Radius: float,
+        Result: core_uobject.Vector,
+    ) -> bool: ...
+    def FindNavMeshPoint(
+        self,
+        WorldContextObject: unreal.UObject,
+        Point: core_uobject.Vector,
+        Radius: float,
+        Result: core_uobject.Vector,
+        Layer: GbxNavMeshLayer,
+    ) -> bool: ...
 
 
 class GbxNavBoxComponent(engine.BoxComponent):
     AutoResize: gbx_runtime.GbxTriggerProperty
+
     def DoAutoResize(self): ...
 
 
 class GbxNavLayer(navigation_system.GbxNavLayerBase):
     DrawColor: core_uobject.Color
-
 
 
 class GbxNavFlyLayer(GbxNavLayer):
@@ -172,23 +189,20 @@ class GbxNavFlyLayer(GbxNavLayer):
     RoundingMode: EGbxNavFlyRoundingMode
 
 
-
 class GbxNavSection(navigation_system.NavMeshBoundsVolume):
     SectionComponent: GbxNavSectionComponent
-
 
 
 class GbxNavFlySection(GbxNavSection):
     FlySectionComponent: GbxNavFlySectionComponent
 
 
-
 class GbxNavSectionComponent(engine.PrimitiveComponent):
+    SectionID: int
     StreamingGuid: core_uobject.Guid
     GbxNavWorld: GbxNavWorld
     bAddAllConnectedComponentsToBounds: bool
     BuildTransform: core_uobject.Transform
-
 
 
 class GbxNavFlySectionComponent(GbxNavSectionComponent):
@@ -200,9 +214,9 @@ class GbxNavFlySectionComponent(GbxNavSectionComponent):
     DrawBoxSize: float
     DrawCullDistance: float
     NavVolume: navigation_system.HavokNavVolume
+    CellGroups: unreal.WrappedArray[int]
     Layer: unreal.UClass
     BuildLayer: unreal.UClass
-
 
 
 class GbxNavGlobalData(gbx_runtime.GbxDataAsset):
@@ -215,7 +229,6 @@ class GbxNavGlobalData(gbx_runtime.GbxDataAsset):
     GlobalUserEdges: unreal.WrappedArray[GbxUserEdge]
 
 
-
 class GbxNavMeshLayer(GbxNavLayer):
     MaxAgentHalfHeight: float
     MaxAgentRadius: float
@@ -224,11 +237,11 @@ class GbxNavMeshLayer(GbxNavLayer):
     bSetUserEdgeDistanceManually: bool
 
 
-
 class GbxNavMeshPainter(engine.Volume):
     PainterComponent: GbxNavMeshPainterComponent
+
     def SetPainterEnabled(self, bNewEnabled: bool): ...
-    def IsPainterEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsPainterEnabled(self) -> bool: ...
 
 
 class GbxNavMeshPainterComponent(engine.ActorComponent):
@@ -238,19 +251,20 @@ class GbxNavMeshPainterComponent(engine.ActorComponent):
     PainterType: EGbxPainterType
     GbxNavArea: GbxNavArea
     AssociatedComponentNames: unreal.WrappedArray[str]
+    PainterId: int
     PainterMovedThreshold: float
     bBlocksAutoGeneratedUserEdges: bool
     Painters: unreal.WrappedArray[GbxPainterItem]
     NavArea: unreal.UClass
+
     def SetPainterEnabled(self, bNewEnabled: bool): ...
     def SetPainterAlwaysEnabled(self, bNewAlwaysEnabled: bool): ...
     def ResetToStatic(self): ...
-    def IsPainterEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsPainterEnabled(self) -> bool: ...
 
 
 class GbxNavMeshSection(GbxNavSection):
     MeshSectionComponent: GbxNavMeshSectionComponent
-
 
 
 class GbxNavMeshSectionComponent(GbxNavSectionComponent):
@@ -260,7 +274,6 @@ class GbxNavMeshSectionComponent(GbxNavSectionComponent):
     NavMesh: navigation_system.HavokNavMesh
     Layer: unreal.UClass
     BuildLayer: unreal.UClass
-
 
 
 class GbxNavUserEdgeTrailComponent(engine.ActorComponent):
@@ -275,7 +288,6 @@ class GbxNavUserEdgeTrailComponent(engine.ActorComponent):
     GbxNavWorld: GbxNavWorld
     AgentProps: GbxNavAgentProperties
     UserEdge: unreal.UClass
-
 
 
 class HavokPathFollowingComponent(aimodule.PathFollowingComponent): ...
@@ -303,7 +315,6 @@ class GbxUserEdge(navigation_system.GbxUserEdgeBase):
     TeleportEdges: unreal.WrappedArray[GbxUserEdge]
 
 
-
 class GbxUserEdgeBlocker(engine.Volume): ...
 
 
@@ -320,9 +331,9 @@ class HavokNavObstacle(unreal.UObject):
     PrimitiveBase: engine.PrimitiveComponent
 
 
-
 class HavokNavObstacleComponent(engine.PrimitiveComponent):
     Obstacle: HavokNavObstacle
+
     def UnlockObstacle(self, Reason: str): ...
     def LockObstacle(self, Reason: str): ...
 
@@ -333,8 +344,9 @@ class HavokPathFindingData(engine.DataAsset):
     DefaultTeleportAction: unreal.UClass
 
 
-
-class HavokStreamingSet(unreal.UObject): ...
+class HavokStreamingSet(unreal.UObject):
+    SectionIdA: int
+    SectionIdB: int
 
 
 class HavokUserEdge_Jump(navigation_system.HavokUserEdge): ...
@@ -343,8 +355,9 @@ class HavokUserEdge_Jump(navigation_system.HavokUserEdge): ...
 class HavokUserEdgeActor(engine.Actor):
     EdgeEnd: core_uobject.Transform
     UserEdgeComponent: HavokUserEdgeComponent
+
     def SetEdgeEnabled(self, bNewEnabled: bool): ...
-    def IsEdgeEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsEdgeEnabled(self) -> bool: ...
 
 
 class HavokUserEdgeComponent(engine.PrimitiveComponent):
@@ -360,9 +373,11 @@ class HavokUserEdgeComponent(engine.PrimitiveComponent):
     EndAnchorBase: engine.Actor
     EndAnchorTransform: core_uobject.Transform
     RegisteredEndAnchorRoot: engine.SceneComponent
+    EdgeID: int
     UserEdge: unreal.UClass
+
     def SetEdgeEnabled(self, bNewEnabled: bool): ...
-    def IsEdgeEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsEdgeEnabled(self) -> bool: ...
     def AnchorDestroyed(self, Actor: engine.Actor): ...
 
 
@@ -394,11 +409,9 @@ class GbxAvoidanceProperties:
     bUseSimplifiedAvoiance: bool
 
 
-
 class GbxNavPathingData:
     Areas: GbxNavAreaData
     UserEdges: HavokPathFindingData
-
 
 
 class GbxNavAgent:
@@ -407,10 +420,8 @@ class GbxNavAgent:
     Context: engine.Actor
 
 
-
 class GbxNavAgentProperties:
     PathingData: GbxNavPathingData
-
 
 
 class GbxNavSlowdownData:
@@ -420,14 +431,12 @@ class GbxNavSlowdownData:
     SlowdownDistanceMax: float
 
 
-
 class GbxNavAvoidanceOptions:
     bAvoidanceSteering: bool
     bAvoidanceObstacle: bool
     bAvoidPawnsBehindMe: bool
     bAvoidWithNoGoal: bool
     AvoidanceProperties: GbxAvoidanceProperties
-
 
 
 class GbxNavMovementOptions:
@@ -443,7 +452,6 @@ class GbxNavMovementOptions:
     bMustBeFacingUserEdgeBeforeEntering: bool
 
 
-
 class GbxNavGoalModifiers:
     OffsetType: EGbxOffsetType
     Offset: core_uobject.Vector
@@ -456,14 +464,12 @@ class GbxNavGoalModifiers:
     VerticalFlyOffset: float
 
 
-
 class FlightState:
     CurrentMovementState: int
     VehicleSplineActor: engine.Actor
     DropOffSpawner: engine.Actor
     AscentTargetLocationZ: float
     AscentTargetRotation: core_uobject.Rotator
-
 
 
 class GbxNavIdleTurnTableRow(gbx_game_system_core.GbxAnimTableRow): ...
@@ -477,19 +483,16 @@ class GbxNavAnimTableRow(gbx_game_system_core.GbxAnimTableRow):
     bAutoFill: bool
 
 
-
 class GbxNavAreaItem:
     GbxNavArea: GbxNavArea
     CostScale: float
     NavArea: unreal.UClass
 
 
-
 class GbxNavBoundsTracker:
     Bounds: core_uobject.Box
     PrimitiveComponent: engine.PrimitiveComponent
     HullPoints: unreal.WrappedArray[core_uobject.Vector]
-
 
 
 class GbxNavCorrecter:
@@ -500,7 +503,6 @@ class GbxNavCorrecter:
     MoveComp: gbx_game_system_core.GbxCharacterMovementComponent
     NavAgentProps: engine.NavAgentProperties
     SavedCollision: gbx_game_system_core.SavedCollision
-
 
 
 class GbxNavForwardState:
@@ -519,11 +521,9 @@ class GbxNavForwardState:
     VehicleFlightComponent: AIVehicleFlightComponent
 
 
-
 class GbxNavLayerState:
     Layers: unreal.WrappedArray[GbxNavLayerItem]
     GbxNavWorld: GbxNavWorld
-
 
 
 class GbxNavLayerItem:
@@ -535,10 +535,8 @@ class GbxNavLayerItem:
     Layer: unreal.UClass
 
 
-
 class GbxPainterItem:
     Component: engine.PrimitiveComponent
-
 
 
 class GbxNavSectionBounds:
@@ -547,11 +545,9 @@ class GbxNavSectionBounds:
     DominationGuid: core_uobject.Guid
 
 
-
 class GbxNavStreamingData:
     Guid: core_uobject.Guid
     Sets: unreal.WrappedArray[HavokStreamingSet]
-
 
 
 class GbxNavStuckState:
@@ -567,22 +563,18 @@ class GbxNavStuckState:
     StuckFixStopTime: float
 
 
-
 class GbxPainterManager:
     NavAreas: unreal.WrappedArray[GbxNavArea]
     Painters: unreal.WrappedArray[GbxPainterData]
-
 
 
 class GbxPainterData:
     Painter: GbxNavMeshPainterComponent
 
 
-
 class GbxReachabilityState:
     GbxNavWorld: GbxNavWorld
     NavComp: GbxNavComponent
-
 
 
 class GbxReachabilityTracker:
@@ -591,24 +583,21 @@ class GbxReachabilityTracker:
     CachedGoalRoot: engine.SceneComponent
 
 
-
 class GbxUserEdgeManager:
     NormalEdgeTypes: unreal.WrappedArray[GbxUserEdge]
     TeleportTypes: unreal.WrappedArray[GbxUserEdgeTeleportType]
     Edges: unreal.WrappedArray[GbxUserEdgeData]
     UserEdgesToAdd: unreal.WrappedArray[GbxDynamicUserEdgeInfo]
+    UserEdgesToRemove: unreal.WrappedArray[int]
     NormalTypes: unreal.WrappedArray[unreal.UClass]
-
 
 
 class GbxDynamicUserEdgeInfo:
     Component: GbxNavUserEdgeTrailComponent
 
 
-
 class GbxUserEdgeData:
     Edge: HavokUserEdgeComponent
-
 
 
 class GbxUserEdgeTeleportType:
@@ -616,7 +605,6 @@ class GbxUserEdgeTeleportType:
     ExitEdge: GbxUserEdge
     Entry: unreal.UClass
     Exit: unreal.UClass
-
 
 
 class GbxUserEdgeState:
@@ -629,12 +617,10 @@ class GbxUserEdgeState:
     AIController: aimodule.AIController
 
 
-
 class TeleportUserEdgeData:
     EntryAction: unreal.UClass
     TeleportAction: unreal.UClass
     ExitAction: unreal.UClass
-
 
 
 class HavokUserEdgeTeleportItem:
@@ -646,7 +632,6 @@ class HavokUserEdgeTeleportItem:
     ExitEdge: unreal.UClass
 
 
-
 class HavokUserEdgeItem:
     GbxUserEdge: GbxUserEdge
     CostScale: float
@@ -655,12 +640,10 @@ class HavokUserEdgeItem:
     UserEdge: unreal.UClass
 
 
-
 class HavokUserEdgePreviewItem:
     ActorClass: unreal.UClass
     ForwardAction: unreal.UClass
     ReverseAction: unreal.UClass
-
 
 
 class EGbxNavMoveStyleDefault(enum.Enum):

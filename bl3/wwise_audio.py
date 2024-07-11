@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import movie_scene
-
 
 
 class AudioParametersProviderInterface(core_uobject.Interface): ...
@@ -20,16 +19,13 @@ class InterpTrackInstWwiseAudioEvent(engine.InterpTrackInst):
     LastUpdatePosition: float
 
 
-
 class InterpTrackInstWwiseAudioRTPC(engine.InterpTrackInst):
     LastUpdatePosition: float
-
 
 
 class InterpTrackWwiseAudioEvent(engine.InterpTrackVectorBase):
     Events: unreal.WrappedArray[WwiseAudioEventTrackKey]
     bContinueEventOnMatineeEnd: bool
-
 
 
 class InterpTrackWwiseAudioRTPC(engine.InterpTrackFloatBase):
@@ -38,11 +34,9 @@ class InterpTrackWwiseAudioRTPC(engine.InterpTrackFloatBase):
     bContinueRTPCOnMatineeEnd: bool
 
 
-
 class MovieSceneWwiseTrack(movie_scene.MovieSceneNameableTrack):
     bAllowRename: bool
     WwiseSections: unreal.WrappedArray[movie_scene.MovieSceneSection]
-
 
 
 class MovieSceneWwiseEventSection(movie_scene.MovieSceneSection):
@@ -52,7 +46,6 @@ class MovieSceneWwiseEventSection(movie_scene.MovieSceneSection):
     EmitterRadius: float
     bAllowPlaythrough: bool
     bIsLoopingEvent: bool
-
 
 
 class WwiseAmbientSound(engine.Actor):
@@ -69,16 +62,19 @@ class WwiseAmbientSound(engine.Actor):
     VolumetricAttenuationMaxDistance: float
     ExternalActiveRTPCAttenuationPortals: unreal.WrappedArray[WwiseAmbientSound]
     ActiveSuppressors: unreal.WrappedArray[WwiseAmbientSound]
+    SuppressorPortals: Any
+
     def ToggleAmbientSound(self): ...
     def StopAmbientSound(self): ...
     def StartAmbientSound(self): ...
-    def GetAudioEmitterLocation(self, ListenerLocation: core_uobject.Vector, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+    def GetAudioEmitterLocation(
+        self, ListenerLocation: core_uobject.Vector
+    ) -> core_uobject.Vector: ...
 
 
 class WwiseAssetSyncDestination(unreal.UObject):
     WwiseObjectID: core_uobject.Guid
     SyncPath: str
-
 
 
 class WwiseGameObjectComponent(engine.SceneComponent): ...
@@ -91,30 +87,65 @@ class WwiseAudioComponent(WwiseGameObjectComponent):
     EmitterGain: float
     OverrideLocations: unreal.WrappedArray[WwiseLocationOverride]
     bOverrideLocationsAreRelative: bool
+    AudioParametersProvider: Any
     WwiseMixBehavior: EWwiseAudioComponentMixBehavior
     AcousticsMode: EAcousticsMode
     ReverbBoost: float
+    OnStartedNewAudio: Any
+    OnMusicPlayStarted: Any
+    OnMusicBeat: Any
+    OnMusicSyncPoint: Any
+    OnRtpcSync: Any
+    OnPlaybackEnded: Any
+    PositioningProvider: Any
     PreviousRotationVector: core_uobject.Vector
+    RtpcCallbackValues: Any
     MultiPositionType: EWwiseMultiPositionType
+
     def StopManagedLoop(self, OptionalStopEvent: WwiseEvent): ...
     def StopAll(self): ...
     def StartManagedLoop(self, NewLoopEvent: WwiseEvent): ...
     def SetSwitch(self, WwiseSwitch: WwiseSwitch): ...
-    def SetRTPCValue(self, GameParameter: WwiseRtpc, Value: float, ValueChangeDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
-    def SetEmitterLocations(self, NewLocations: unreal.WrappedArray[WwiseLocationOverride], MultiPositionType: EWwiseMultiPositionType, bLocationsAreRelative: bool): ...
+    def SetRTPCValue(
+        self,
+        GameParameter: WwiseRtpc,
+        Value: float,
+        ValueChangeDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
+    def SetEmitterLocations(
+        self,
+        NewLocations: unreal.WrappedArray[WwiseLocationOverride],
+        MultiPositionType: EWwiseMultiPositionType,
+        bLocationsAreRelative: bool,
+    ): ...
     def ScaleToRadius(self, Radius: float): ...
     def ScaleAttenuation(self, ScalingFactor: float): ...
-    def RegisterRtpcValueCallback(self, CallbackRtpcs: unreal.WrappedArray[WwiseRtpc]): ...
-    def PostWwiseEvent(self, WwiseEvent: WwiseEvent, Flags: int, ReturnValue: WwisePlaybackInstance) -> WwisePlaybackInstance: ...
+    def RegisterRtpcValueCallback(
+        self, CallbackRtpcs: unreal.WrappedArray[WwiseRtpc]
+    ): ...
+    def PostWwiseEvent(
+        self, WwiseEvent: WwiseEvent, Flags: int
+    ) -> WwisePlaybackInstance: ...
     def PostTrigger(self, Trigger: WwiseTrigger): ...
-    def MakeMidiNote(self, NoteNum: int, Velocity: int, Channel: int, Duration: float, StartTime: float, AssociatedEvent: WwiseEvent): ...
+    def MakeMidiNote(
+        self,
+        NoteNum: int,
+        Velocity: int,
+        Channel: int,
+        Duration: float,
+        StartTime: float,
+        AssociatedEvent: WwiseEvent,
+    ): ...
     def Jettison(self): ...
-    def IsPossiblyAudible(self, WwiseEvent: WwiseEvent, EventAttenuationScale: float, ReturnValue: bool) -> bool: ...
-    def IsPlaying(self, ReturnValue: bool) -> bool: ...
-    def GetRtpcValue(self, RTPC: WwiseRtpc, ReturnValue: float) -> float: ...
-    def GetRadius(self, ReturnValue: float) -> float: ...
-    def GetPlayingInstances(self, ReturnValue: unreal.WrappedArray[WwisePlaybackInstance]) -> unreal.WrappedArray[WwisePlaybackInstance]: ...
-    def GetMaxAttenuationRadius(self, ReturnValue: float) -> float: ...
+    def IsPossiblyAudible(
+        self, WwiseEvent: WwiseEvent, EventAttenuationScale: float
+    ) -> bool: ...
+    def IsPlaying(self) -> bool: ...
+    def GetRtpcValue(self, RTPC: WwiseRtpc) -> float: ...
+    def GetRadius(self) -> float: ...
+    def GetPlayingInstances(self) -> unreal.WrappedArray[WwisePlaybackInstance]: ...
+    def GetMaxAttenuationRadius(self) -> float: ...
 
 
 class WwiseWorldComponentPool(engine.ActorComponent):
@@ -123,17 +154,18 @@ class WwiseWorldComponentPool(engine.ActorComponent):
     PooledComponents: unreal.WrappedArray[WwiseAudioComponent]
 
 
-
 class WwiseAudioComponentPool(engine.ActorComponent):
     MaxPoolSize: int
     PoolMode: EWwiseAudioComponentPoolMode
     bRecycleComponents: bool
     ReservedComponents: unreal.WrappedArray[WwiseAudioComponent]
     ActiveComponents: unreal.WrappedArray[WwiseAudioComponent]
-    def GetPooledComponent(self, ReturnValue: WwiseAudioComponent) -> WwiseAudioComponent: ...
+
+    def GetPooledComponent(self) -> WwiseAudioComponent: ...
 
 
-class WwiseObject(unreal.UObject): ...
+class WwiseObject(unreal.UObject):
+    ShortID: int
 
 
 class WwiseEvent(WwiseObject):
@@ -158,32 +190,33 @@ class WwiseEvent(WwiseObject):
     bUsesPerspectiveParameter: bool
     PrepareEventRefCount: int
     bPrepareEventDidLoadAllGameSyncs: bool
-    def GetMaxDuration(self, ReturnValue: float) -> float: ...
+
+    def GetMaxDuration(self) -> float: ...
 
 
 class WwiseAudioInputEvent(WwiseEvent):
     BaseWwiseEvent: WwiseEvent
     OverflowProtectionLimitInFrames: int
+    ConnectedSourceID: int
     PlayingInstances: unreal.WrappedArray[WwisePlaybackInstance]
-
 
 
 class WwiseAuxBus(WwiseObject):
     RequiredBank: WwiseBank
 
 
-
 class WwiseBank(WwiseObject):
     bAutoLoad: bool
     MediaSourceBanks: unreal.WrappedArray[WwiseBank]
+    IncludedEventCount: int
     bUsesPrepareEvent: bool
     bAutoPrepareEvents: bool
-
 
 
 class WwiseAudioEffect(unreal.UObject):
     AuxBus: WwiseAuxBus
     EffectStrengh: float
+
     def DeactivateEffect(self): ...
     def ActivateEffect(self): ...
 
@@ -197,7 +230,6 @@ class WwiseZoneAudioEffect(WwiseAudioEffect):
     EffectFadeDistance: float
 
 
-
 class WwiseEffectProviderInterface(core_uobject.Interface): ...
 
 
@@ -207,45 +239,164 @@ class WwiseEnvironmentalEffectProvider(core_uobject.Interface): ...
 class WwiseExternalSourcesEditorData(engine.DataAsset): ...
 
 
-class WwiseExternalSourceDebugData(engine.DataAsset): ...
+class WwiseExternalSourceDebugData(engine.DataAsset):
+    UniqueIdToFilename: Any
 
 
 class WwiseGameplayStatics(engine.BlueprintFunctionLibrary):
 
-    def WaitForAudioPlayback(self, PlaybackInstance: WwisePlaybackInstance, LatentInfo: engine.LatentActionInfo): ...
-    def WaitForAudioInputConnection(self, WorldContextObject: unreal.UObject, AudioInputEvent: WwiseAudioInputEvent, LatentInfo: engine.LatentActionInfo, MaxWaitTime: float): ...
+    def WaitForAudioPlayback(
+        self,
+        PlaybackInstance: WwisePlaybackInstance,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def WaitForAudioInputConnection(
+        self,
+        WorldContextObject: unreal.UObject,
+        AudioInputEvent: WwiseAudioInputEvent,
+        LatentInfo: engine.LatentActionInfo,
+        MaxWaitTime: float,
+    ): ...
     def UnloadBank(self, Bank: WwiseBank): ...
     def StopProfilerCapture(self): ...
     def StopOutputCapture(self): ...
-    def StopAudio(self, PlaybackInstance: WwisePlaybackInstance, TransitionDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
+    def StopAudio(
+        self,
+        PlaybackInstance: WwisePlaybackInstance,
+        TransitionDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
     def StartProfilerCapture(self, Filename: str): ...
     def StartOutputCapture(self, Filename: str): ...
-    def SpawnWwiseComponentAtLocation(self, WorldContextObject: unreal.UObject, Location: core_uobject.Vector, EmitterRadius: float, Orientation: core_uobject.Rotator, IsTemporaryComponent: bool, ReturnValue: WwiseAudioComponent) -> WwiseAudioComponent: ...
-    def SpawnAttachedWwiseComponent(self, Actor: engine.Actor, SocketName: str, IsTemporaryComponent: bool, AttachmentComponent: engine.SceneComponent, ReturnValue: WwiseAudioComponent) -> WwiseAudioComponent: ...
+    def SpawnWwiseComponentAtLocation(
+        self,
+        WorldContextObject: unreal.UObject,
+        Location: core_uobject.Vector,
+        EmitterRadius: float,
+        Orientation: core_uobject.Rotator,
+        IsTemporaryComponent: bool,
+    ) -> WwiseAudioComponent: ...
+    def SpawnAttachedWwiseComponent(
+        self,
+        Actor: engine.Actor,
+        SocketName: str,
+        IsTemporaryComponent: bool,
+        AttachmentComponent: engine.SceneComponent,
+    ) -> WwiseAudioComponent: ...
     def SetGlobalState(self, State: WwiseState): ...
-    def SetGlobalRTPCValue(self, GameParameter: WwiseRtpc, Value: float, TransitionDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
-    def SetAudioPlaybackPosition(self, PlaybackInstance: WwisePlaybackInstance, PlaybackPosition: float): ...
-    def ResumeAudio(self, PlaybackInstance: WwisePlaybackInstance, TransitionDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
-    def PostEventAtMultipleLocations(self, WorldContextObject: unreal.UObject, WwiseEvent: WwiseEvent, NewLocations: unreal.WrappedArray[WwiseLocationOverride], MultiPositionType: EWwiseMultiPositionType, ReturnValue: WwisePlaybackInstance) -> WwisePlaybackInstance: ...
-    def PostEventAtLocation(self, WorldContextObject: unreal.UObject, WwiseEvent: WwiseEvent, Location: core_uobject.Vector, EmitterRadius: float, Orientation: core_uobject.Rotator, ReturnValue: WwisePlaybackInstance) -> WwisePlaybackInstance: ...
-    def PostAttachedEvent(self, WwiseEvent: WwiseEvent, AttachToActor: engine.Actor, AttachToComponent: engine.SceneComponent, SocketName: str, EmitterRadius: float, ReturnValue: WwisePlaybackInstance) -> WwisePlaybackInstance: ...
-    def PauseAudio(self, PlaybackInstance: WwisePlaybackInstance, TransitionDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
+    def SetGlobalRTPCValue(
+        self,
+        GameParameter: WwiseRtpc,
+        Value: float,
+        TransitionDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
+    def SetAudioPlaybackPosition(
+        self, PlaybackInstance: WwisePlaybackInstance, PlaybackPosition: float
+    ): ...
+    def ResumeAudio(
+        self,
+        PlaybackInstance: WwisePlaybackInstance,
+        TransitionDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
+    def PostEventAtMultipleLocations(
+        self,
+        WorldContextObject: unreal.UObject,
+        WwiseEvent: WwiseEvent,
+        NewLocations: unreal.WrappedArray[WwiseLocationOverride],
+        MultiPositionType: EWwiseMultiPositionType,
+    ) -> WwisePlaybackInstance: ...
+    def PostEventAtLocation(
+        self,
+        WorldContextObject: unreal.UObject,
+        WwiseEvent: WwiseEvent,
+        Location: core_uobject.Vector,
+        EmitterRadius: float,
+        Orientation: core_uobject.Rotator,
+    ) -> WwisePlaybackInstance: ...
+    def PostAttachedEvent(
+        self,
+        WwiseEvent: WwiseEvent,
+        AttachToActor: engine.Actor,
+        AttachToComponent: engine.SceneComponent,
+        SocketName: str,
+        EmitterRadius: float,
+    ) -> WwisePlaybackInstance: ...
+    def PauseAudio(
+        self,
+        PlaybackInstance: WwisePlaybackInstance,
+        TransitionDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
     def LoadBank(self, Bank: WwiseBank): ...
-    def IsPossiblyAudible(self, WorldContextObject: unreal.UObject, inWwiseEvent: WwiseEvent, Location: core_uobject.Vector, AttenuationScale: float, EmitterRadius: float, ReturnValue: bool) -> bool: ...
-    def IsAudioPlaying(self, PlaybackInstance: WwisePlaybackInstance, ReturnValue: bool) -> bool: ...
-    def IsAudioPaused(self, PlaybackInstance: WwisePlaybackInstance, ReturnValue: bool) -> bool: ...
-    def GetWwiseBankEfficiencyReport(self, ReportData: unreal.WrappedArray[WwiseBankEfficiencyReportDatum]): ...
-    def GetPlayingEvent(self, PlaybackInstance: WwisePlaybackInstance, ReturnValue: WwiseEvent) -> WwiseEvent: ...
-    def GetEstimatedAudioDuration(self, PlaybackInstance: WwisePlaybackInstance, ReturnValue: float) -> float: ...
-    def GetDefaultWwiseComponent(self, Actor: engine.Actor, bCreateIfNotFound: bool, ReturnValue: WwiseAudioComponent) -> WwiseAudioComponent: ...
-    def GetClosestListenerLocation(self, WorldContextObject: unreal.UObject, TestPosition: core_uobject.Vector, ClosestLocation: core_uobject.Vector, bSuccess: bool): ...
-    def GetAudioPlaybackPosition(self, PlaybackInstance: WwisePlaybackInstance, bExtrapolateSubFrameTime: bool, ReturnValue: float) -> float: ...
-    def GetAudioComponentFromPlaybackInstance(self, PlaybackInstance: WwisePlaybackInstance, bCreateIfNotFound: bool, ReturnValue: WwiseAudioComponent) -> WwiseAudioComponent: ...
-    def ExecuteActionOnAudioInstance(self, PlaybackInstance: WwisePlaybackInstance, Action: EWwiseEventAction, TransitionDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
-    def CreateZoneAudioEffect(self, WorldContextObject: unreal.UObject, AuxBus: WwiseAuxBus, EffectLocation: core_uobject.Vector, EffectSize: float, EffectAttenuationDistance: float, ReturnValue: WwiseZoneAudioEffect) -> WwiseZoneAudioEffect: ...
-    def CreateListenerAudioEffect(self, AuxBus: WwiseAuxBus, TargetActor: engine.Actor, WetAmount: float, ReturnValue: WwiseListenerEnvironmentalEffect) -> WwiseListenerEnvironmentalEffect: ...
-    def CreateAudioEffect(self, AuxBus: WwiseAuxBus, EffectType: EWwiseEffectType, WetAmount: float, TargetActor: engine.Actor, ReturnValue: WwiseAudioEffect) -> WwiseAudioEffect: ...
-    def ConvertLocationsToWwiseLocationOverrides(self, Locations: unreal.WrappedArray[core_uobject.Vector], Orientation: core_uobject.Rotator, Gain: float, Radius: float, ReturnValue: unreal.WrappedArray[WwiseLocationOverride]) -> unreal.WrappedArray[WwiseLocationOverride]: ...
+    def IsPossiblyAudible(
+        self,
+        WorldContextObject: unreal.UObject,
+        inWwiseEvent: WwiseEvent,
+        Location: core_uobject.Vector,
+        AttenuationScale: float,
+        EmitterRadius: float,
+    ) -> bool: ...
+    def IsAudioPlaying(self, PlaybackInstance: WwisePlaybackInstance) -> bool: ...
+    def IsAudioPaused(self, PlaybackInstance: WwisePlaybackInstance) -> bool: ...
+    def GetWwiseBankEfficiencyReport(
+        self, ReportData: unreal.WrappedArray[WwiseBankEfficiencyReportDatum]
+    ): ...
+    def GetPlayingEvent(
+        self, PlaybackInstance: WwisePlaybackInstance
+    ) -> WwiseEvent: ...
+    def GetEstimatedAudioDuration(
+        self, PlaybackInstance: WwisePlaybackInstance
+    ) -> float: ...
+    def GetDefaultWwiseComponent(
+        self, Actor: engine.Actor, bCreateIfNotFound: bool
+    ) -> WwiseAudioComponent: ...
+    def GetClosestListenerLocation(
+        self,
+        WorldContextObject: unreal.UObject,
+        TestPosition: core_uobject.Vector,
+        ClosestLocation: core_uobject.Vector,
+        bSuccess: bool,
+    ): ...
+    def GetAudioPlaybackPosition(
+        self, PlaybackInstance: WwisePlaybackInstance, bExtrapolateSubFrameTime: bool
+    ) -> float: ...
+    def GetAudioComponentFromPlaybackInstance(
+        self, PlaybackInstance: WwisePlaybackInstance, bCreateIfNotFound: bool
+    ) -> WwiseAudioComponent: ...
+    def ExecuteActionOnAudioInstance(
+        self,
+        PlaybackInstance: WwisePlaybackInstance,
+        Action: EWwiseEventAction,
+        TransitionDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
+    def CreateZoneAudioEffect(
+        self,
+        WorldContextObject: unreal.UObject,
+        AuxBus: WwiseAuxBus,
+        EffectLocation: core_uobject.Vector,
+        EffectSize: float,
+        EffectAttenuationDistance: float,
+    ) -> WwiseZoneAudioEffect: ...
+    def CreateListenerAudioEffect(
+        self, AuxBus: WwiseAuxBus, TargetActor: engine.Actor, WetAmount: float
+    ) -> WwiseListenerEnvironmentalEffect: ...
+    def CreateAudioEffect(
+        self,
+        AuxBus: WwiseAuxBus,
+        EffectType: EWwiseEffectType,
+        WetAmount: float,
+        TargetActor: engine.Actor,
+    ) -> WwiseAudioEffect: ...
+    def ConvertLocationsToWwiseLocationOverrides(
+        self,
+        Locations: unreal.WrappedArray[core_uobject.Vector],
+        Orientation: core_uobject.Rotator,
+        Gain: float,
+        Radius: float,
+    ) -> unreal.WrappedArray[WwiseLocationOverride]: ...
     def AddOutputCaptureMarker(self, MarkerText: str): ...
 
 
@@ -254,8 +405,16 @@ class WwiseImplementerInterface(core_uobject.Interface): ...
 
 class WwiseListenerComponent(WwiseGameObjectComponent):
 
-    def SetBusRTPCValue(self, GameParameter: WwiseRtpc, Value: float, ValueChangeDuration: float, FadeCurve: EWwiseCurveInterpolation): ...
-    def FindAssociatedListener(self, TargetActor: engine.Actor, ReturnValue: WwiseListenerComponent) -> WwiseListenerComponent: ...
+    def SetBusRTPCValue(
+        self,
+        GameParameter: WwiseRtpc,
+        Value: float,
+        ValueChangeDuration: float,
+        FadeCurve: EWwiseCurveInterpolation,
+    ): ...
+    def FindAssociatedListener(
+        self, TargetActor: engine.Actor
+    ) -> WwiseListenerComponent: ...
     def ConfigureListener(self, WwiseEvent: WwiseEvent): ...
 
 
@@ -264,17 +423,17 @@ class WwiseMediaAudioSinkProvider(engine.DataAsset):
     bAutoPlayOnLocalPlayer: bool
 
 
-
 class WwiseRtpc(WwiseObject):
     ValueRange: core_uobject.FloatInterval
     DefaultValue: float
-
 
 
 class WwiseSettings(unreal.UObject):
     WwiseWindowsInstallationPath: engine.DirectoryPath
     WwiseMacInstallationPath: engine.FilePath
     WwiseProjectPath: engine.FilePath
+    WwiseLocalizationEquivalents: Any
+    LocalizedAudioChunks: Any
     ExternalSourcesDebugData: core_uobject.SoftObjectPath
     pExternalSourcesDebugData: WwiseExternalSourceDebugData
     WorldPoolSize: int
@@ -282,8 +441,11 @@ class WwiseSettings(unreal.UObject):
     DefaultSpeakerAngles: unreal.WrappedArray[float]
     PlaybackConfigurationRtpcName: str
     MinVolumeForCaptionDB: float
+    MaxMemoryPoolsEditor: int
+    MaxMemoryPoolsCooked: int
     StreamManagerPoolSizeMB: float
     IOMemoryPoolSizeMB: float
+    IODeviceGranularityB: int
     bEnableStreamCache: bool
     DefaultPoolSizeEditorMB: float
     DefaultPoolSizeCookedMB: float
@@ -297,12 +459,13 @@ class WwiseSettings(unreal.UObject):
     bEnableHardwareXMADecoding: bool
     APUCachedHeapSizeMB: float
     APUNoncachedHeapSizeMB: float
-
+    MaxHardwareAcceleratedXMAVoices: int
 
 
 class WwiseUserSettings(unreal.UObject):
     SpriteSize: EWwiseAudioComponentSpriteSize
     bShowWwiseAudioComponents: bool
+    WwiseDebugFlags: int
     ActiveComponentColor: core_uobject.Color
     HibernatingComponentColor: core_uobject.Color
     ComponentHighlightColor: core_uobject.Color
@@ -311,10 +474,8 @@ class WwiseUserSettings(unreal.UObject):
     bDrawAudioThresholdManagerDebug: bool
 
 
-
 class WwiseState(WwiseObject):
     StateGroup: WwiseStateGroup
-
 
 
 class WwiseStateGroup(WwiseObject):
@@ -322,15 +483,12 @@ class WwiseStateGroup(WwiseObject):
     NoneState: WwiseState
 
 
-
 class WwiseSwitch(WwiseObject):
     SwitchGroup: WwiseSwitchGroup
 
 
-
 class WwiseSwitchGroup(WwiseObject):
     ChildSwitches: unreal.WrappedArray[WwiseSwitch]
-
 
 
 class WwiseTrigger(WwiseObject): ...
@@ -347,17 +505,14 @@ class WwiseMusicTiming:
     GridLengthInBeats: float
 
 
-
 class WwiseAudioEventTrackKey:
     Time: float
     AkAudioEvent: WwiseEvent
     EventName: str
 
 
-
 class MovieSceneWwiseSectionTemplate(movie_scene.MovieSceneEvalTemplate):
     TemplateData: MovieSceneWwiseSectionTemplateData
-
 
 
 class MovieSceneWwiseSectionTemplateData:
@@ -373,10 +528,8 @@ class MovieSceneWwiseSectionTemplateData:
     CachedFrameRate: core_uobject.FrameRate
 
 
-
 class WwiseAmbSoundCheckpointRecord:
     bCurrentlyPlaying: bool
-
 
 
 class WwiseLocationOverride:
@@ -386,16 +539,15 @@ class WwiseLocationOverride:
     Gain: float
 
 
-
 class WwiseEventConfiguration:
     Event: WwiseEvent
     ExternalSourceMedia: unreal.WrappedArray[WwiseExternalSourceMediaInfo]
 
 
-
 class WwiseExternalSourceMediaInfo:
+    ExternalSourceCookie: int
+    FileID: int
     bLocalize: bool
-
 
 
 class WwiseEmitterAcousticData:
@@ -407,17 +559,14 @@ class WwiseEmitterAcousticData:
     DirectionAmbiY: float
 
 
-
 class WwiseEffectInfo:
     EffectID: int
     WetVolume: float
     DryVolume: float
 
 
-
 class WwiseEmitter:
     OwnerComponent: WwiseAudioComponent
-
 
 
 class WwiseEmitterSource:
@@ -425,16 +574,15 @@ class WwiseEmitterSource:
     Gain: float
 
 
-
 class WwiseExternalAssetData:
+    WwiseEventPtr: Any
     EstimatedDuration: float
-
 
 
 class WwiseBankEfficiencyReportDatum:
     BankName: str
     TotalEvents: int
-
+    LoadedEvents: Any
 
 
 class WwiseAcousticEmulationParameters:
@@ -444,7 +592,6 @@ class WwiseAcousticEmulationParameters:
     EarlyReflectionDecay: float
     LateReflectionDecay: float
     DryVolumeCorrectionDistance: float
-
 
 
 class EWwiseTrackDirectionality(enum.Enum):

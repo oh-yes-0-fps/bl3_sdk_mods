@@ -1,12 +1,11 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
-
 
 
 class NavigationSystemV1(engine.NavigationSystemBase):
@@ -28,18 +27,70 @@ class NavigationSystemV1(engine.NavigationSystemBase):
     DirtyAreasUpdateFreq: float
     NavDataSet: unreal.WrappedArray[NavigationData]
     NavDataRegistrationQueue: unreal.WrappedArray[NavigationData]
+    OnNavDataRegisteredEvent: Any
+    OnNavigationGenerationFinishedDelegate: Any
     OperationMode: engine.FNavigationSystemRunMode
     NavigationDataClassName: core_uobject.SoftClassPath
-    def SimpleMoveToLocation(self, Controller: engine.Controller, Goal: core_uobject.Vector): ...
+
+    def SimpleMoveToLocation(
+        self, Controller: engine.Controller, Goal: core_uobject.Vector
+    ): ...
     def SimpleMoveToActor(self, Controller: engine.Controller, Goal: engine.Actor): ...
-    def ProjectPointToNavigation(self, WorldContextObject: unreal.UObject, Point: core_uobject.Vector, NavData: NavigationData, FilterClass: unreal.UClass, QueryExtent: core_uobject.Vector, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+    def ProjectPointToNavigation(
+        self,
+        WorldContextObject: unreal.UObject,
+        Point: core_uobject.Vector,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+        QueryExtent: core_uobject.Vector,
+    ) -> core_uobject.Vector: ...
     def OnNavigationBoundsUpdated(self, NavVolume: NavMeshBoundsVolume): ...
-    def K2_ProjectPointToNavigation(self, WorldContextObject: unreal.UObject, Point: core_uobject.Vector, ProjectedLocation: core_uobject.Vector, NavData: NavigationData, FilterClass: unreal.UClass, QueryExtent: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def K2_GetRandomReachablePointInRadius(self, WorldContextObject: unreal.UObject, Origin: core_uobject.Vector, RandomLocation: core_uobject.Vector, Radius: float, NavData: NavigationData, FilterClass: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def K2_GetRandomPointInNavigableRadius(self, WorldContextObject: unreal.UObject, Origin: core_uobject.Vector, RandomLocation: core_uobject.Vector, Radius: float, NavData: NavigationData, FilterClass: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def GetRandomReachablePointInRadius(self, WorldContextObject: unreal.UObject, Origin: core_uobject.Vector, Radius: float, NavData: NavigationData, FilterClass: unreal.UClass, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetRandomPointInNavigableRadius(self, WorldContextObject: unreal.UObject, Origin: core_uobject.Vector, Radius: float, NavData: NavigationData, FilterClass: unreal.UClass, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetNavigationSystem(self, WorldContextObject: unreal.UObject, ReturnValue: NavigationSystemV1) -> NavigationSystemV1: ...
+    def K2_ProjectPointToNavigation(
+        self,
+        WorldContextObject: unreal.UObject,
+        Point: core_uobject.Vector,
+        ProjectedLocation: core_uobject.Vector,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+        QueryExtent: core_uobject.Vector,
+    ) -> bool: ...
+    def K2_GetRandomReachablePointInRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        Origin: core_uobject.Vector,
+        RandomLocation: core_uobject.Vector,
+        Radius: float,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+    ) -> bool: ...
+    def K2_GetRandomPointInNavigableRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        Origin: core_uobject.Vector,
+        RandomLocation: core_uobject.Vector,
+        Radius: float,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+    ) -> bool: ...
+    def GetRandomReachablePointInRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        Origin: core_uobject.Vector,
+        Radius: float,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+    ) -> core_uobject.Vector: ...
+    def GetRandomPointInNavigableRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        Origin: core_uobject.Vector,
+        Radius: float,
+        NavData: NavigationData,
+        FilterClass: unreal.UClass,
+    ) -> core_uobject.Vector: ...
+    def GetNavigationSystem(
+        self, WorldContextObject: unreal.UObject
+    ) -> NavigationSystemV1: ...
 
 
 class NavigationData(engine.Actor):
@@ -52,8 +103,8 @@ class NavigationData(engine.Actor):
     bRebuildAtRuntime: bool
     RuntimeGeneration: ERuntimeGenerationType
     ObservedPathsTickInterval: float
+    DataVersion: int
     SupportedAreas: unreal.WrappedArray[SupportedAreaData]
-
 
 
 class AbstractNavData(NavigationData): ...
@@ -71,7 +122,6 @@ class NavigationQueryFilter(unreal.UObject):
     ExcludeFlags: NavigationFilterFlags
 
 
-
 class HavokNavigationQueryFilter(NavigationQueryFilter): ...
 
 
@@ -83,7 +133,6 @@ class HavokNavLayer(engine.HavokNavLayerBase):
     DrawColor: core_uobject.Color
 
 
-
 class HavokNavLayerRegistry(unreal.UObject): ...
 
 
@@ -92,7 +141,6 @@ class HavokNavMesh(HavokNavData): ...
 
 class NavTraversalData(engine.DataAsset):
     Settings: HavokTraversalAnalysisSettings
-
 
 
 class HavokNavMeshGenerationSettings(unreal.UObject):
@@ -118,13 +166,11 @@ class HavokNavMeshGenerationSettings(unreal.UObject):
     bSaveInputSnapshot: bool
 
 
-
 class HavokNavMeshLayer(HavokNavLayer):
     CharacterRadius: float
     CharacterHalfHeight: float
     UserEdgeEntryDistance: float
     bErodeWidth: bool
-
 
 
 class HavokNavMeshLayer_Default(HavokNavMeshLayer): ...
@@ -141,12 +187,10 @@ class HavokNavVolumeGenerationSettings(unreal.UObject):
     bSaveInputSnapshot: bool
 
 
-
 class HavokNavVolumeLayer(HavokNavLayer):
     CharacterRadius: float
     CellWidth: float
     ResolutionRoundingMode: int
-
 
 
 class HavokNavVolumeLayer_Default(HavokNavVolumeLayer): ...
@@ -161,7 +205,6 @@ class HavokTraversalType(unreal.UObject):
     UserEdge: unreal.UClass
 
 
-
 class HavokTraversalType_ClimbUp(HavokTraversalType):
     MaxUnderhang: float
     MinUpHeight: float
@@ -173,7 +216,6 @@ class HavokTraversalType_ClimbUp(HavokTraversalType):
     ResolveHangExtraDist: float
 
 
-
 class HavokTraversalType_DropDown(HavokTraversalType):
     MinDropDistance: float
     MaxDropDistance: float
@@ -182,14 +224,12 @@ class HavokTraversalType_DropDown(HavokTraversalType):
     VerticalLipHeight: float
 
 
-
 class HavokTraversalType_Jump(HavokTraversalType):
     MaxHorizontalDistance: float
     MinHorizontalDistance: float
     MaxUpHeight: float
     MaxDownHeight: float
     VerticalApex: float
-
 
 
 class HavokTraversalType_Vault(HavokTraversalType):
@@ -204,7 +244,6 @@ class HavokTraversalType_Vault(HavokTraversalType):
     HandPlantLeftExtent: float
     HandPlantRightExtent: float
     HandPlantMaxProfileAngle: float
-
 
 
 class GbxUserEdgeBase(engine.DataAsset): ...
@@ -230,7 +269,6 @@ class HavokUserEdge(unreal.UObject):
     TeleportEdges: unreal.WrappedArray[unreal.UClass]
 
 
-
 class NavArea(engine.NavAreaBase):
     DefaultCost: float
     FixedAreaEnteringCost: float
@@ -254,7 +292,6 @@ class NavArea(engine.NavAreaBase):
     HavokNavMaterial: EHavokNavMaterial
     IgnoreLayers: unreal.WrappedArray[GbxNavLayerBase]
     EffectiveArea: unreal.UClass
-
 
 
 class NavArea_Default(NavArea): ...
@@ -289,13 +326,11 @@ class NavAreaMeta_SwitchByAgent(NavAreaMeta):
     Agent15Area: unreal.UClass
 
 
-
 class NavCollision(engine.NavCollisionBase):
     CylinderCollision: unreal.WrappedArray[NavCollisionCylinder]
     BoxCollision: unreal.WrappedArray[NavCollisionBox]
     AreaClass: unreal.UClass
     bGatherConvexGeometry: bool
-
 
 
 class NavigationGraph(NavigationData): ...
@@ -310,24 +345,26 @@ class NavigationGraphNodeComponent(engine.SceneComponent):
     PrevNodeComponent: NavigationGraphNodeComponent
 
 
-
 class NavigationInvokerComponent(engine.ActorComponent):
     TileGenerationRadius: float
     TileRemovalRadius: float
 
 
-
 class NavigationPath(unreal.UObject):
+    PathUpdatedNotifier: Any
     PathPoints: unreal.WrappedArray[core_uobject.Vector]
     RecalculateOnInvalidation: int
-    def IsValid(self, ReturnValue: bool) -> bool: ...
-    def IsStringPulled(self, ReturnValue: bool) -> bool: ...
-    def IsPartial(self, ReturnValue: bool) -> bool: ...
-    def GetPathLength(self, ReturnValue: float) -> float: ...
-    def GetPathCost(self, ReturnValue: float) -> float: ...
-    def GetDebugString(self, ReturnValue: str) -> str: ...
+
+    def IsValid(self) -> bool: ...
+    def IsStringPulled(self) -> bool: ...
+    def IsPartial(self) -> bool: ...
+    def GetPathLength(self) -> float: ...
+    def GetPathCost(self) -> float: ...
+    def GetDebugString(self) -> str: ...
     def EnableRecalculationOnInvalidation(self, DoRecalculation: int): ...
-    def EnableDebugDrawing(self, bShouldDrawDebugData: bool, PathColor: core_uobject.LinearColor): ...
+    def EnableDebugDrawing(
+        self, bShouldDrawDebugData: bool, PathColor: core_uobject.LinearColor
+    ): ...
 
 
 class NavigationPathGenerator(core_uobject.Interface): ...
@@ -338,7 +375,6 @@ class NavigationSystemModuleConfig(engine.NavigationSystemConfig):
     bCreateOnClient: bool
     bAutoSpawnMissingNavData: bool
     bSpawnNavDataInNavBoundsLevel: bool
-
 
 
 class NavigationTestingActor(engine.Actor):
@@ -372,19 +408,19 @@ class NavigationTestingActor(engine.Actor):
     OffsetFromCornersDistance: float
 
 
-
 class NavLinkComponent(engine.PrimitiveComponent):
     Links: unreal.WrappedArray[engine.NavigationLink]
-
 
 
 class NavRelevantComponent(engine.ActorComponent):
     bAttachToOwnersRoot: bool
     CachedNavParent: unreal.UObject
+
     def SetNavigationRelevancy(self, bRelevant: bool): ...
 
 
 class NavLinkCustomComponent(NavRelevantComponent):
+    NavLinkUserId: int
     EnabledAreaClass: unreal.UClass
     DisabledAreaClass: unreal.UClass
     LinkRelativeStart: core_uobject.Vector
@@ -400,7 +436,6 @@ class NavLinkCustomComponent(NavRelevantComponent):
     BroadcastRadius: float
     BroadcastInterval: float
     BroadcastChannel: int
-
 
 
 class NavLinkCustomInterface(core_uobject.Interface): ...
@@ -419,7 +454,6 @@ class NavMeshBoundsVolume(engine.Volume):
     SupportedAgents: engine.NavAgentSelector
 
 
-
 class NavMeshRenderingComponent(engine.PrimitiveComponent): ...
 
 
@@ -427,11 +461,13 @@ class NavModifierComponent(NavRelevantComponent):
     AreaClass: unreal.UClass
     FailsafeExtent: core_uobject.Vector
     bIncludeAgentHeight: bool
+
     def SetAreaClass(self, NewAreaClass: unreal.UClass): ...
 
 
 class NavModifierVolume(engine.Volume):
     AreaClass: unreal.UClass
+
     def SetAreaClass(self, NewAreaClass: unreal.UClass): ...
 
 
@@ -504,7 +540,6 @@ class RecastNavMesh(NavigationData):
     VerticalDeviationFromGroundCompensation: float
 
 
-
 class RecastNavMeshDataChunk(engine.NavigationDataChunk): ...
 
 
@@ -513,7 +548,6 @@ class HavokTraversalAnalysisSettings:
     MinEdgeLength: float
     MaxSectionDistance: float
     RaiseEdgeHeightLimit: float
-
 
 
 class HavokNavMeshSimplificationSettings:
@@ -542,7 +576,6 @@ class HavokNavMeshSimplificationSettings:
     ExtraVertexSettings: HavokNavMeshExtraVertexSettings
 
 
-
 class HavokNavMeshExtraVertexSettings:
     VertexSelectionMethod: int
     VertexFraction: float
@@ -556,12 +589,10 @@ class HavokNavMeshExtraVertexSettings:
     PartitionBordersSplitLength: float
 
 
-
 class HavokNavMeshOverlappingTrianglesSettings:
     CoplanarityTolerance: float
     RayCastLengthMultiplier: float
     WalkableTriangleSetting: int
-
 
 
 class HavokNavMeshRegionPruningSettings:
@@ -571,7 +602,6 @@ class HavokNavMeshRegionPruningSettings:
     bPreserveVerticalBorderRegions: bool
     bPruneBeforeTriangulation: bool
     bUseRegionSeeds: bool
-
 
 
 class HavokNavMeshEdgeMatchingSettings:
@@ -587,7 +617,6 @@ class HavokNavMeshEdgeMatchingSettings:
     bUseSafeEdgeTraversibilityHorizontalEpsilon: bool
 
 
-
 class HavokNavSectionFixedBound:
     Layer: unreal.UClass
     WorldBoxBound: core_uobject.Box
@@ -595,11 +624,9 @@ class HavokNavSectionFixedBound:
     DominationGuid: core_uobject.Guid
 
 
-
 class HavokNavVolumePruningSettings:
     MinRegionVolume: float
     MinDistanceToSeedPoints: float
-
 
 
 class HavokNavVolumeMergingSettings:
@@ -613,22 +640,21 @@ class HavokNavVolumeMergingSettings:
     bUseSimpleFirstMergePass: bool
 
 
-
 class HavokNavVolumeBorderSettings:
     Border: float
     bUseBorderCells: bool
 
 
-
 class HavokNavVolumeChunkSettings:
+    MaxChunkSizeX: int
+    MaxChunkSizeY: int
+    MaxChunkSizeZ: int
     bDoGreedyMergeAfterCombine: bool
-
 
 
 class NavCollisionBox:
     Offset: core_uobject.Vector
     Extent: core_uobject.Vector
-
 
 
 class NavCollisionCylinder:
@@ -637,17 +663,14 @@ class NavCollisionCylinder:
     Height: float
 
 
-
 class SupportedAreaData:
     AreaClassName: str
     AreaID: int
     AreaClass: unreal.UClass
 
 
-
 class NavGraphNode:
     Owner: unreal.UObject
-
 
 
 class NavGraphEdge: ...
@@ -670,7 +693,6 @@ class NavigationFilterFlags:
     bNavFlag15: bool
 
 
-
 class NavigationFilterArea:
     AreaClass: unreal.UClass
     TravelCostOverride: float
@@ -678,7 +700,6 @@ class NavigationFilterArea:
     bIsExcluded: bool
     bOverrideTravelCost: bool
     bOverrideEnteringCost: bool
-
 
 
 class EHavokNavMeshVertexSelectionMethod(enum.Enum):

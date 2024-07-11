@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class GbxMixerSettings(unreal.UObject):
@@ -12,4 +9,3 @@ class GbxMixerSettings(unreal.UObject):
     RequiredAuthScope: str
     MixplayProjectVersionID: str
     BackendServiceURL: str
-

@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class UdpMessagingSettings(unreal.UObject):
@@ -19,7 +16,5 @@ class UdpMessagingSettings(unreal.UObject):
     RemoteTunnelEndpoints: unreal.WrappedArray[str]
 
 
-
 class UdpMockMessage:
     Data: unreal.WrappedArray[int]
-

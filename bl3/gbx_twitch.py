@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class GbxTwitchSettings(unreal.UObject):
@@ -16,16 +15,26 @@ class GbxTwitchSettings(unreal.UObject):
     GameID: str
 
 
+class TwitchAPI(unreal.UObject):
 
-class TwitchAPI(unreal.UObject): ...
+    def RequestTwitchStreams(
+        self,
+        MaxNbStreams: int,
+        GameName: str,
+        UserLogin: str,
+        Language: str,
+        StreamInfoReceivedDelegate: Any,
+    ): ...
 
 
 class TwitchIRCClient(unreal.UObject):
     PendingChannels: unreal.WrappedArray[TwitchChannel]
     ConnectedChannels: unreal.WrappedArray[TwitchChannel]
     IRCCommandsMessages: unreal.WrappedArray[str]
+
     def SendChatMessage(self, ChannelName: str, MESSAGE: str): ...
     def QuitChannel(self, ChannelName: str): ...
+    def JoinChannel(self, ChannelName: str, OnMessageReceived: Any): ...
     def InitChatBot(self): ...
     def ExitChatBot(self): ...
 
@@ -44,17 +53,16 @@ class TwitchStreamInfo:
     Language: str
 
 
-
 class TwitchChannelMessage:
     Channel: str
     UserName: str
     UserMessage: str
 
 
-
 class TwitchStreamsRequest:
     RequestGuid: core_uobject.Guid
     StreamsFound: unreal.WrappedArray[TwitchStreamInfo]
+    OnStreamInfoReceived: Any
     bResponseReceived: bool
     bGameNameResolved: bool
     bUserNameResolved: bool
@@ -64,12 +72,10 @@ class TwitchStreamsRequest:
     Language: str
 
 
-
 class TwitchActiveExtensionsInfo:
     PanelExtensions: unreal.WrappedArray[TwitchExtensionInfo]
     OverlayExtensions: unreal.WrappedArray[TwitchExtensionInfo]
     ComponentExtensions: unreal.WrappedArray[TwitchExtensionInfo]
-
 
 
 class TwitchExtensionInfo:
@@ -81,7 +87,6 @@ class TwitchExtensionInfo:
     bActive: bool
 
 
-
 class TwitchUserInfo:
     ID: str
     Login: str
@@ -91,10 +96,9 @@ class TwitchUserInfo:
     ViewCount: int
 
 
-
 class TwitchChannel:
     ChannelName: str
     ChannelDescription: str
     ChannelActiveUsers: unreal.WrappedArray[str]
     IncomingChannelMessage: unreal.WrappedArray[TwitchChannelMessage]
-
+    OnMessageReceived: Any

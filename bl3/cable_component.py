@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,10 +8,8 @@ from . import core_uobject
 from . import engine
 
 
-
 class CableActor(engine.Actor):
     CableComponent: CableComponent
-
 
 
 class CableComponent(engine.MeshComponent):
@@ -34,13 +32,22 @@ class CableComponent(engine.MeshComponent):
     NumSides: int
     TileMaterial: float
     SavedCablePoints: unreal.WrappedArray[core_uobject.Vector]
-    def SetAttachEndTo(self, Actor: engine.Actor, ComponentProperty: str, SocketName: str): ...
-    def GetTransformAtRatio(self, Ratio: float, RefUp: core_uobject.Vector, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetTransformAtDistance(self, Distance: float, RefUp: core_uobject.Vector, bOutIsAtEnd: bool, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetSimulatedCableLength(self, ReturnValue: float) -> float: ...
-    def GetCableParticleLocations(self, Locations: unreal.WrappedArray[core_uobject.Vector]): ...
-    def GetAttachedComponent(self, ReturnValue: engine.SceneComponent) -> engine.SceneComponent: ...
-    def GetAttachedActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
+
+    def SetAttachEndTo(
+        self, Actor: engine.Actor, ComponentProperty: str, SocketName: str
+    ): ...
+    def GetTransformAtRatio(
+        self, Ratio: float, RefUp: core_uobject.Vector
+    ) -> core_uobject.Transform: ...
+    def GetTransformAtDistance(
+        self, Distance: float, RefUp: core_uobject.Vector, bOutIsAtEnd: bool
+    ) -> core_uobject.Transform: ...
+    def GetSimulatedCableLength(self) -> float: ...
+    def GetCableParticleLocations(
+        self, Locations: unreal.WrappedArray[core_uobject.Vector]
+    ): ...
+    def GetAttachedComponent(self) -> engine.SceneComponent: ...
+    def GetAttachedActor(self) -> engine.Actor: ...
 
 
 class FollowCableMovementComponent(engine.MovementComponent):
@@ -54,6 +61,7 @@ class FollowCableMovementComponent(engine.MovementComponent):
     bUpdateRotation: bool
     RotationOffset: core_uobject.Rotator
     CableComponentToFollow: CableComponent
+
     def EnableMovement(self, bEnable: bool, bResetPosition: bool): ...
 
 

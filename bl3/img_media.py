@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -9,11 +9,11 @@ from . import engine
 from . import media_assets
 
 
-
 class ImgMediaSource(media_assets.BaseMediaSource):
     FrameRateOverride: core_uobject.FrameRate
     ProxyOverride: str
     SequencePath: engine.DirectoryPath
+
     def SetSequencePath(self, Path: str): ...
-    def GetSequencePath(self, ReturnValue: str) -> str: ...
+    def GetSequencePath(self) -> str: ...
     def GetProxies(self, OutProxies: unreal.WrappedArray[str]): ...

@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,10 +8,8 @@ from . import core_uobject
 from . import live_link_interface
 
 
-
 class LiveLinkClearSubject:
     SubjectName: str
-
 
 
 class LiveLinkHeartbeatMessage: ...
@@ -26,10 +24,8 @@ class LiveLinkPongMessage:
     PollRequest: core_uobject.Guid
 
 
-
 class LiveLinkPingMessage:
     PollRequest: core_uobject.Guid
-
 
 
 class LiveLinkSubjectFrameMessage:
@@ -40,8 +36,6 @@ class LiveLinkSubjectFrameMessage:
     Time: float
 
 
-
 class LiveLinkSubjectDataMessage:
     RefSkeleton: live_link_interface.LiveLinkRefSkeleton
     SubjectName: str
-

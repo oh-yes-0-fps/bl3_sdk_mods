@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -10,11 +10,11 @@ from . import gbx_runtime
 from . import gbx_game_system_core
 
 
-
 class CameraBehavior(unreal.UObject):
     bEnabled: bool
     bUpdatePreViewTarget: bool
     bUpdateForRemoteClient: bool
+
     def Update(self, DeltaTime: float, State: CameraState): ...
     def Start(self, State: CameraState): ...
     def End(self, State: CameraState): ...
@@ -28,7 +28,6 @@ class CameraBehavior_InitialRotation(CameraBehavior):
     Pitch: InitialRotationAxisParams
     Yaw: InitialRotationAxisParams
     InitialCondition: gbx_runtime.GbxCondition
-
 
 
 class CameraBehavior_BlendToFOV(CameraBehavior):
@@ -48,7 +47,6 @@ class CameraBehavior_BlendToFOV(CameraBehavior):
     bTransitioningToTargetFoV: bool
 
 
-
 class CameraBehavior_Look(CameraBehavior):
     UpAxis: ECameraLookSpaces
     YawSpeedScale: float
@@ -59,10 +57,8 @@ class CameraBehavior_Look(CameraBehavior):
     FeatheringFunction: gbx_game_system_core.GbxEasingFunc
 
 
-
 class CameraBehavior_FOV(CameraBehavior):
     FOV: float
-
 
 
 class CameraBehavior_OffsetViewModel(CameraBehavior):
@@ -73,14 +69,18 @@ class CameraBehavior_OffsetViewModel(CameraBehavior):
     QuadSplitScreenLocationOffset: core_uobject.Vector
 
 
-
 class PlayerCameraModesManager(gbx_game_system_core.GbxPlayerCameraManager):
     ViewTargetClippingRadius: float
     CameraModesManager: CameraModesManager
     LastViewTarget: engine.Actor
     ViewTargetFlags: int
-    def UpdateCameraShakeFromGbxFeedback(self, TrackedFeedback: gbx_game_system_core.ActiveGbxFeedbackEffect): ...
-    def UpdateCameraShakeFromFeedback(self, TrackedFeedback: gbx_game_system_core.ActiveTrackedFeedback): ...
+
+    def UpdateCameraShakeFromGbxFeedback(
+        self, TrackedFeedback: gbx_game_system_core.ActiveGbxFeedbackEffect
+    ): ...
+    def UpdateCameraShakeFromFeedback(
+        self, TrackedFeedback: gbx_game_system_core.ActiveTrackedFeedback
+    ): ...
 
 
 class CameraInputs(unreal.UObject):
@@ -100,17 +100,14 @@ class CameraInputs(unreal.UObject):
     AttachSocket: str
 
 
-
 class CameraBehavior_AnchorToEyeLocation(CameraBehavior):
     bSetRotation: bool
-
 
 
 class CameraBehavior_AnchorToSocket(CameraBehavior):
     bSetLocation: bool
     bSetRotation: bool
     SocketName: str
-
 
 
 class CameraBehavior_AutoFollowRotation(CameraBehavior):
@@ -122,14 +119,12 @@ class CameraBehavior_AutoFollowRotation(CameraBehavior):
     RotationRate: float
 
 
-
 class CameraBehavior_CollisionOffsetTrace(CameraBehavior):
     CollisionRadius: float
     TraceOffsetZ: float
     bUseAnchorAsStartLocation: bool
     bIgnoreChildToViewTarget: bool
     bIgnoreViewTargetAttachParent: bool
-
 
 
 class CameraBehavior_DefaultFOV(CameraBehavior):
@@ -140,12 +135,10 @@ class CameraBehavior_DefaultFOV(CameraBehavior):
     MaxFOV: float
 
 
-
 class CameraBehavior_FromAnimation(CameraBehavior):
     bSetLocation: bool
     bSetRotation: bool
     SocketName: str
-
 
 
 class CameraBehavior_LimitLook(CameraBehavior):
@@ -157,7 +150,6 @@ class CameraBehavior_LimitLook(CameraBehavior):
     bSnapOnStart: bool
 
 
-
 class CameraBehavior_LimitPitch(CameraBehavior):
     MinPitch: float
     MaxPitch: float
@@ -165,16 +157,13 @@ class CameraBehavior_LimitPitch(CameraBehavior):
     InitialPitch: float
 
 
-
 class CameraBehavior_OffsetAbsolute(CameraBehavior):
     LocationOffset: core_uobject.Vector
-
 
 
 class CameraBehavior_OffsetCameraRelative(CameraBehavior):
     LocationOffset: core_uobject.Vector
     RotationOffset: core_uobject.Rotator
-
 
 
 class CameraBehavior_OffsetCameraRelativeFromInputs(CameraBehavior):
@@ -185,7 +174,6 @@ class CameraBehavior_OffsetCameraRelativeFromInputs(CameraBehavior):
     MoveLimit: core_uobject.Box
 
 
-
 class CameraBehavior_RestoreControllerRotation(CameraBehavior): ...
 
 
@@ -193,11 +181,9 @@ class CameraBehavior_RestoreStartRotation(CameraBehavior):
     Rotation: core_uobject.Rotator
 
 
-
 class CameraMode(unreal.UObject):
     Data: CameraModeData
     Behaviors: unreal.WrappedArray[CameraBehavior]
-
 
 
 class CameraModeData(gbx_runtime.GbxDataAsset):
@@ -219,27 +205,51 @@ class CameraModeData(gbx_runtime.GbxDataAsset):
     bDisableSeparateTranslucency: bool
 
 
-
 class CameraModeSet(unreal.UObject):
     Data: CameraModeSetData
     Modes: unreal.WrappedArray[CameraMode]
-
 
 
 class CameraModeSetData(gbx_runtime.GbxDataAsset):
     Modes: unreal.WrappedArray[CameraModeData]
 
 
-
 class CameraModesFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetCameraMode(self, Controller: engine.PlayerController, ModeName: str, BlendTimeOverride: float, bTeleport: bool, bForceResetMode: bool): ...
-    def ResetCameraRotation(self, Controller: engine.PlayerController, NewRotation: core_uobject.Rotator): ...
-    def RemoveCameraModeSet(self, Controller: engine.PlayerController, ModeSet: CameraModeSetData): ...
-    def PushCameraMode(self, Controller: engine.PlayerController, ModeName: str, BlendTimeOverride: float, bTeleport: bool): ...
-    def PopCameraMode(self, Controller: engine.PlayerController, ModeName: str, BlendTimeOverride: float, bTeleport: bool): ...
-    def ApplyCameraRotation(self, Controller: engine.PlayerController, DeltaRotation: core_uobject.Rotator): ...
-    def AddCameraModeSet(self, Controller: engine.PlayerController, ModeSet: CameraModeSetData): ...
+    def SetCameraMode(
+        self,
+        Controller: engine.PlayerController,
+        ModeName: str,
+        BlendTimeOverride: float,
+        bTeleport: bool,
+        bForceResetMode: bool,
+    ): ...
+    def ResetCameraRotation(
+        self, Controller: engine.PlayerController, NewRotation: core_uobject.Rotator
+    ): ...
+    def RemoveCameraModeSet(
+        self, Controller: engine.PlayerController, ModeSet: CameraModeSetData
+    ): ...
+    def PushCameraMode(
+        self,
+        Controller: engine.PlayerController,
+        ModeName: str,
+        BlendTimeOverride: float,
+        bTeleport: bool,
+    ): ...
+    def PopCameraMode(
+        self,
+        Controller: engine.PlayerController,
+        ModeName: str,
+        BlendTimeOverride: float,
+        bTeleport: bool,
+    ): ...
+    def ApplyCameraRotation(
+        self, Controller: engine.PlayerController, DeltaRotation: core_uobject.Rotator
+    ): ...
+    def AddCameraModeSet(
+        self, Controller: engine.PlayerController, ModeSet: CameraModeSetData
+    ): ...
 
 
 class CameraModesManager(unreal.UObject):
@@ -254,7 +264,6 @@ class CameraModesManager(unreal.UObject):
     State: CameraState
     CameraStateClassName: core_uobject.SoftClassPath
     CameraInputsClassName: core_uobject.SoftClassPath
-
 
 
 class CameraState(unreal.UObject):
@@ -282,15 +291,26 @@ class CameraState(unreal.UObject):
     ClampedLookRotationRemainder: core_uobject.Rotator
     PostProcessBlends: unreal.WrappedArray[CameraStatePostProcessBlend]
     FocusDistance: float
+
     def SetViewModelFOV(self, NewFOV: float, bDefault: bool): ...
     def SetBaseRotation(self, NewRotation: core_uobject.Rotator): ...
     def SetBaseLocation(self, NewLocation: core_uobject.Vector): ...
     def SetBaseFOV(self, NewFOV: float, bDefault: bool): ...
-    def GetBaseRotation(self, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
-    def GetBaseLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetBaseFOV(self, ReturnValue: float) -> float: ...
-    def CameraTrace(self, Start: core_uobject.Vector, End: core_uobject.Vector, Radius: float, TraceChannel: int, IgnoreMask: int, OutHit: engine.HitResult, ReturnValue: bool) -> bool: ...
-    def AddPostProcessBlend(self, Settings: engine.PostProcessSettings, BlendWeight: float): ...
+    def GetBaseRotation(self) -> core_uobject.Rotator: ...
+    def GetBaseLocation(self) -> core_uobject.Vector: ...
+    def GetBaseFOV(self) -> float: ...
+    def CameraTrace(
+        self,
+        Start: core_uobject.Vector,
+        End: core_uobject.Vector,
+        Radius: float,
+        TraceChannel: int,
+        IgnoreMask: int,
+        OutHit: engine.HitResult,
+    ) -> bool: ...
+    def AddPostProcessBlend(
+        self, Settings: engine.PostProcessSettings, BlendWeight: float
+    ): ...
 
 
 class CameraViewTargetInterface(core_uobject.Interface): ...
@@ -299,7 +319,6 @@ class CameraViewTargetInterface(core_uobject.Interface): ...
 class ReplicatedCameraModeState:
     ModeName: str
     BlendTimeOverride: float
-
 
 
 class InitialRotationAxisParams:
@@ -312,7 +331,6 @@ class InitialRotationAxisParams:
     Delay: float
 
 
-
 class CameraBehaviorLookAxis:
     InputScale: float
     bLimit: bool
@@ -320,7 +338,6 @@ class CameraBehaviorLookAxis:
     MaxAngle: float
     FeatheringAngle: float
     FeatheringInputScale: float
-
 
 
 class CameraStatePostProcessBlend: ...

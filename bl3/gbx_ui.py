@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -15,7 +15,6 @@ from . import media_assets
 from . import scaleform_ui
 from . import input_core
 from . import slate_core
-
 
 
 class GbxGFxMovie(scaleform_ui.GFxMoviePlayer):
@@ -36,29 +35,52 @@ class GbxGFxMovie(scaleform_ui.GFxMoviePlayer):
     OwningGPC: gbx_game_system_core.GbxPlayerController
     Tickables: unreal.WrappedArray[GbxGFxObject]
     bGbxMovieStarted: bool
-    def TranslateWorldToLocal(self, LocationWorldSpace: core_uobject.Vector, OutPositionLocal: core_uobject.Vector2D, bPlayerViewportRelative: bool, bUseMovieDimensions: bool, ReturnValue: bool) -> bool: ...
-    def TranslateToScreen(self, Point: core_uobject.Vector2D, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def TranslateScreenToLocal(self, Point: core_uobject.Vector2D, bUseMovieDimensions: bool, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def TranslateRectToScreen(self, Rect: core_uobject.Box2D, ReturnValue: core_uobject.Box2D) -> core_uobject.Box2D: ...
-    def SpawnMovie(self, NewGPCOwner: gbx_game_system_core.GbxPlayerController, RenderTarget: engine.TextureRenderTarget2D): ...
-    def SpawnGbxGFxMovie(self, GbxPlayerController: gbx_game_system_core.GbxPlayerController, MovieClass: unreal.UClass, ReturnValue: GbxGFxMovie) -> GbxGFxMovie: ...
-    def SetViewportToPlayerScreen(self, pc: gbx_game_system_core.GbxPlayerController): ...
+
+    def TranslateWorldToLocal(
+        self,
+        LocationWorldSpace: core_uobject.Vector,
+        OutPositionLocal: core_uobject.Vector2D,
+        bPlayerViewportRelative: bool,
+        bUseMovieDimensions: bool,
+    ) -> bool: ...
+    def TranslateToScreen(
+        self, Point: core_uobject.Vector2D
+    ) -> core_uobject.Vector2D: ...
+    def TranslateScreenToLocal(
+        self, Point: core_uobject.Vector2D, bUseMovieDimensions: bool
+    ) -> core_uobject.Vector2D: ...
+    def TranslateRectToScreen(self, Rect: core_uobject.Box2D) -> core_uobject.Box2D: ...
+    def SpawnMovie(
+        self,
+        NewGPCOwner: gbx_game_system_core.GbxPlayerController,
+        RenderTarget: engine.TextureRenderTarget2D,
+    ): ...
+    def SpawnGbxGFxMovie(
+        self,
+        GbxPlayerController: gbx_game_system_core.GbxPlayerController,
+        MovieClass: unreal.UClass,
+    ) -> GbxGFxMovie: ...
+    def SetViewportToPlayerScreen(
+        self, pc: gbx_game_system_core.GbxPlayerController
+    ): ...
     def SetOffsetDisplayTransform(self, Transform: core_uobject.Transform): ...
     def SetBaseDisplayTransform(self, Transform: core_uobject.Transform): ...
     def SetAudioEnabled(self, bEnabled: bool): ...
     def SetAnchor(self, Anchor: GbxGFxAnchor): ...
-    def RunUIEventAudio(self, EventName: str, ProviderHistory: str, ReturnValue: bool) -> bool: ...
-    def GetViewportOffset(self, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def GetViewportDimensions(self, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def GetStageDimensions(self, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def GetOwningPlayerPawn(self, ReturnValue: engine.Pawn) -> engine.Pawn: ...
-    def GetOwningPlayerController(self, ReturnValue: gbx_game_system_core.GbxPlayerController) -> gbx_game_system_core.GbxPlayerController: ...
-    def GetOffsetDisplayTransform(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetMovieDimensions(self, ReturnValue: core_uobject.Vector2D) -> core_uobject.Vector2D: ...
-    def GetBaseDisplayTransform(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
+    def RunUIEventAudio(self, EventName: str, ProviderHistory: str) -> bool: ...
+    def GetViewportOffset(self) -> core_uobject.Vector2D: ...
+    def GetViewportDimensions(self) -> core_uobject.Vector2D: ...
+    def GetStageDimensions(self) -> core_uobject.Vector2D: ...
+    def GetOwningPlayerPawn(self) -> engine.Pawn: ...
+    def GetOwningPlayerController(self) -> gbx_game_system_core.GbxPlayerController: ...
+    def GetOffsetDisplayTransform(self) -> core_uobject.Transform: ...
+    def GetMovieDimensions(self) -> core_uobject.Vector2D: ...
+    def GetBaseDisplayTransform(self) -> core_uobject.Transform: ...
     def extTransitionComplete(self): ...
     def extAnimationFinished(self, TargetName: str): ...
-    def ApplyNewAudioSettings(self, NewDataTable: engine.DataTable, MergeOperation: EUIAudioSettingOperation): ...
+    def ApplyNewAudioSettings(
+        self, NewDataTable: engine.DataTable, MergeOperation: EUIAudioSettingOperation
+    ): ...
 
 
 class GbxGFxMenu(GbxGFxMovie):
@@ -71,6 +93,8 @@ class GbxGFxMenu(GbxGFxMovie):
     NavigateBackAudioEventName: str
     OpenMenuAudioEventName: str
     CloseMenuAudioEventName: str
+    OnMenuTransitionOutCompleted: Any
+    OnMenuInputChanged: Any
     HintBarAlignment: EGbxGFxListAlignment
     bCallMenuTickOnlyIfMenuIsStarted: bool
     SplitscreenRootOffset: float
@@ -99,9 +123,33 @@ class GbxGFxMenu(GbxGFxMovie):
     bBlockPauseMenu: bool
     bGFxMenuWasStarted: bool
     LastFocusedButton: GbxGFxButton
+
+    def SetWidgetAdjacency(
+        self, Widget: Any, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo
+    ): ...
+    def SetFocusedWidget(self, WidgetToFocus: Any, bFromMouse: bool): ...
+    def SetFocusableWidgetAdjancency(
+        self,
+        Widget: Any,
+        AdjacentUp: unreal.UObject,
+        AdjacentDown: unreal.UObject,
+        AdjacentLeft: unreal.UObject,
+        AdjacentRight: unreal.UObject,
+    ): ...
+    def RegisterFocusableWidgetWithAdjacency(
+        self,
+        Widget: Any,
+        AdjacentUp: unreal.UObject,
+        AdjacentDown: unreal.UObject,
+        AdjacentLeft: unreal.UObject,
+        AdjacentRight: unreal.UObject,
+    ): ...
+    def RegisterFocusableWidget(
+        self, Widget: Any, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo
+    ): ...
     def MenuStack_Clear(self): ...
-    def IsWidgetFocused(self, WidgetInQuestion: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def GetFocusedWidget(self, ReturnValue: unreal.UObject) -> unreal.UObject: ...
+    def IsWidgetFocused(self, WidgetInQuestion: unreal.UObject) -> bool: ...
+    def GetFocusedWidget(self) -> unreal.UObject: ...
 
 
 class GbxGFxHUDWidget(GbxGFxMovie):
@@ -125,6 +173,7 @@ class GbxGFxHUDWidget(GbxGFxMovie):
     GameInstanceRef: engine.GameInstance
     UIGlobalsRef: GbxUIGlobals
     bDynamicallyLoaded: bool
+
     def extInitAnimationFinished(self): ...
     def extHideAnimationFinished(self): ...
 
@@ -140,6 +189,8 @@ class GbxUserWidget(umg.UserWidget):
     OnClickedAudioEventName: str
     bNeverCreateMouseFocusButton: bool
     MouseFocusButton: umg.BUTTON
+    OnWidgetClicked: Any
+    OnWidgetFocused: Any
     FocusableWidgetNavUp: str
     FocusableWidgetNavDown: str
     FocusableWidgetNavLeft: str
@@ -147,18 +198,29 @@ class GbxUserWidget(umg.UserWidget):
     bFocusOnMenuCreation: bool
     MenuThatOwnsFocus: GbxUmgMenu
     AudioDataTable: engine.DataTable
+
     def SetLabelText(self, LabelText: str): ...
     def OnFocusableWidgetUnhovered(self): ...
     def OnFocusableWidgetReleased(self): ...
     def OnFocusableWidgetPressed(self): ...
     def OnFocusableWidgetHovered(self): ...
     def OnFocusableWidgetClicked(self): ...
-    def IsRegisteredAsFocusableWidget(self, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateHovered(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateFocused(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def HandleFocusableWidgetStateChanged(self, NewState: EGbxFocusableWidgetState, bBecameFocused: bool, bLostFocus: bool): ...
-    def GotoAndStop(self, StopTime: core_uobject.FrameTime, InAnimation: umg.WidgetAnimation): ...
-    def GetAllChildWidgetsOfClass(self, TargetClass: unreal.UClass, OutputArray: unreal.WrappedArray[umg.Widget]): ...
+    def IsRegisteredAsFocusableWidget(self) -> bool: ...
+    def IsFocusableWidgetStateHovered(
+        self, State: EGbxFocusableWidgetState
+    ) -> bool: ...
+    def IsFocusableWidgetStateFocused(
+        self, State: EGbxFocusableWidgetState
+    ) -> bool: ...
+    def HandleFocusableWidgetStateChanged(
+        self, NewState: EGbxFocusableWidgetState, bBecameFocused: bool, bLostFocus: bool
+    ): ...
+    def GotoAndStop(
+        self, StopTime: core_uobject.FrameTime, InAnimation: umg.WidgetAnimation
+    ): ...
+    def GetAllChildWidgetsOfClass(
+        self, TargetClass: unreal.UClass, OutputArray: unreal.WrappedArray[umg.Widget]
+    ): ...
 
 
 class GbxUmgMenu(GbxUserWidget):
@@ -168,22 +230,45 @@ class GbxUmgMenu(GbxUserWidget):
     FocusManager: GbxWidgetFocusManager
     HintBar: GbxHintBar
     DefaultMouseFocusBehavior: EGbxFocusableWidgetMouseBehavior
-    def SetWidgetAdjacency(self, Widget: unreal.UObject, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo): ...
+
+    def SetWidgetAdjacency(
+        self, Widget: unreal.UObject, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo
+    ): ...
     def SetSlateFocusedWidget(self, Widget: umg.Widget): ...
+    def SetHintBarContainer(self, InContainer: Any): ...
     def SetFocusedWidget(self, Widget: unreal.UObject, bFromMouse: bool): ...
-    def SetFocusableWidgetAdjancency(self, Widget: unreal.UObject, AdjacentUp: unreal.UObject, AdjacentDown: unreal.UObject, AdjacentLeft: unreal.UObject, AdjacentRight: unreal.UObject): ...
-    def RegisterFocusableWidgetWithAdjacency(self, Widget: unreal.UObject, AdjacentUp: unreal.UObject, AdjacentDown: unreal.UObject, AdjacentLeft: unreal.UObject, AdjacentRight: unreal.UObject): ...
-    def RegisterFocusableWidget(self, Widget: unreal.UObject, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo): ...
+    def SetFocusableWidgetAdjancency(
+        self,
+        Widget: unreal.UObject,
+        AdjacentUp: unreal.UObject,
+        AdjacentDown: unreal.UObject,
+        AdjacentLeft: unreal.UObject,
+        AdjacentRight: unreal.UObject,
+    ): ...
+    def RegisterStagePlacedHint(self, InHintWidget: Any, InInputAction: str): ...
+    def RegisterFocusableWidgetWithAdjacency(
+        self,
+        Widget: unreal.UObject,
+        AdjacentUp: unreal.UObject,
+        AdjacentDown: unreal.UObject,
+        AdjacentLeft: unreal.UObject,
+        AdjacentRight: unreal.UObject,
+    ): ...
+    def RegisterFocusableWidget(
+        self, Widget: unreal.UObject, AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo
+    ): ...
     def PopulateHintBar(self): ...
     def NavigateBack(self): ...
-    def MenuStack_SwitchTo(self, MenuDataIn: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def MenuStack_Push(self, MenuDataIn: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def MenuStack_PopToSwitchTo(self, Menu: unreal.UObject, MenuDataIn: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
+    def MenuStack_SwitchTo(self, MenuDataIn: GbxMenuData) -> unreal.UObject: ...
+    def MenuStack_Push(self, MenuDataIn: GbxMenuData) -> unreal.UObject: ...
+    def MenuStack_PopToSwitchTo(
+        self, Menu: unreal.UObject, MenuDataIn: GbxMenuData
+    ) -> unreal.UObject: ...
     def MenuStack_PopTo(self, Menu: unreal.UObject): ...
     def MenuStack_Pop(self): ...
     def MenuStack_Clear(self): ...
-    def IsWidgetFocused(self, WidgetInQuestion: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def IsActiveMenuOnStack(self, ReturnValue: bool) -> bool: ...
+    def IsWidgetFocused(self, WidgetInQuestion: unreal.UObject) -> bool: ...
+    def IsActiveMenuOnStack(self) -> bool: ...
     def HandleMenuInputDeviceChanged(self, NewInputDevice: EGbxMenuInputDevice): ...
     def HandleMenuInputAction(self, InputAction: str, ControllerId: int): ...
     def HandleMenuInit(self): ...
@@ -191,14 +276,13 @@ class GbxUmgMenu(GbxUserWidget):
     def HandleMenuDeactivate(self): ...
     def HandleMenuAspectRatioChanged(self, NewAspectRatio: float): ...
     def HandleMenuActivate(self): ...
-    def GetListItemFactory(self, ReturnValue: GbxListItemFactory) -> GbxListItemFactory: ...
-    def GetFocusedWidget(self, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def GetCurrentInputDevice(self, ReturnValue: EGbxMenuInputDevice) -> EGbxMenuInputDevice: ...
+    def GetListItemFactory(self) -> GbxListItemFactory: ...
+    def GetFocusedWidget(self) -> unreal.UObject: ...
+    def GetCurrentInputDevice(self) -> EGbxMenuInputDevice: ...
 
 
 class GbxMenuSwitcherSubmenu(GbxUmgMenu):
     OwnerMenuSwitcher: GbxMenuSwitcher
-
 
 
 class GbxDebugMenuSubmenu(GbxMenuSwitcherSubmenu): ...
@@ -216,8 +300,8 @@ class GbxMenuData(gbx_runtime.GbxDataAsset):
     IdleDialogTargetParamater: gbx_dialog.DialogParameter
 
 
-
 class GbxGFxMenuData(GbxMenuData):
+    MovieClass: Any
     TransitionMovieClipTarget: str
     TransitionOutAnimation: str
     TransitionOutTimeout: float
@@ -226,20 +310,29 @@ class GbxGFxMenuData(GbxMenuData):
     CreatedMenus: unreal.WrappedArray[unreal.UObject]
 
 
-
 class GbxGFxObject(scaleform_ui.GFxObject):
     OwningMovie: GbxGFxMovie
+
     def SetOffsetDisplayTransform(self, Transform: core_uobject.Transform): ...
     def SetBaseDisplayTransform(self, Transform: core_uobject.Transform): ...
     def RotateAboutPoint(self, Degrees: float, Point: core_uobject.Vector2D): ...
-    def GetOffsetDisplayTransform(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetBaseDisplayTransform(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
+    def GetOffsetDisplayTransform(self) -> core_uobject.Transform: ...
+    def GetBaseDisplayTransform(self) -> core_uobject.Transform: ...
 
 
 class GbxGFxButton(GbxGFxObject):
     MouseFocusBehavior: EGbxFocusableWidgetMouseBehavior
     OnFocusedAudioEventName: str
     OnClickedAudioEventName: str
+    OnClicked: Any
+    OnSecondaryClicked: Any
+    OnFocused: Any
+    OnUnfocused: Any
+    OnPressed: Any
+    OnReleased: Any
+    OnHovered: Any
+    OnUnhovered: Any
+    OnHeld: Any
     OwningMenu: GbxGFxMenu
     Label: GbxTextField
     AppearanceFrameClip: GbxGFxObject
@@ -248,24 +341,39 @@ class GbxGFxButton(GbxGFxObject):
     bWantsHeld: bool
     bIgnoreNextClick: bool
     bNewIndicatorUsesLabels: bool
-    def SetLockedState(self, InLockedState: EGbxGFxButtonLockedState, bShouldRefresh: bool): ...
+
+    def SetLockedState(
+        self, InLockedState: EGbxGFxButtonLockedState, bShouldRefresh: bool
+    ): ...
     def SetLabelText(self, Text: str, bForceUpdate: bool): ...
-    def SetCheckedState(self, InCheckedState: EGbxGFxButtonCheckedState, bShouldRefresh: bool): ...
+    def SetCheckedState(
+        self, InCheckedState: EGbxGFxButtonCheckedState, bShouldRefresh: bool
+    ): ...
     def SetButtonType(self, InButtonType: EGbxGFxButtonType): ...
     def RefreshView(self, PrevState: EGbxFocusableWidgetState): ...
-    def K2_HandleFocusableWidgetStateChanged(self, NewState: EGbxFocusableWidgetState, bBecameFocused: bool, bLostFocus: bool): ...
-    def IsRegisteredAsFocusableWidget(self, ReturnValue: bool) -> bool: ...
-    def IsLocked(self, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateUp(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateHovered(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateFocused(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateDown(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetStateDisabled(self, State: EGbxFocusableWidgetState, ReturnValue: bool) -> bool: ...
-    def IsChecked(self, ReturnValue: bool) -> bool: ...
-    def GetLockedState(self, ReturnValue: EGbxGFxButtonLockedState) -> EGbxGFxButtonLockedState: ...
-    def GetCheckedState(self, ReturnValue: EGbxGFxButtonCheckedState) -> EGbxGFxButtonCheckedState: ...
-    def GetButtonType(self, ReturnValue: EGbxGFxButtonType) -> EGbxGFxButtonType: ...
-    def GbxGFxButtonEvent__DelegateSignature(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
+    def K2_HandleFocusableWidgetStateChanged(
+        self, NewState: EGbxFocusableWidgetState, bBecameFocused: bool, bLostFocus: bool
+    ): ...
+    def IsRegisteredAsFocusableWidget(self) -> bool: ...
+    def IsLocked(self) -> bool: ...
+    def IsFocusableWidgetStateUp(self, State: EGbxFocusableWidgetState) -> bool: ...
+    def IsFocusableWidgetStateHovered(
+        self, State: EGbxFocusableWidgetState
+    ) -> bool: ...
+    def IsFocusableWidgetStateFocused(
+        self, State: EGbxFocusableWidgetState
+    ) -> bool: ...
+    def IsFocusableWidgetStateDown(self, State: EGbxFocusableWidgetState) -> bool: ...
+    def IsFocusableWidgetStateDisabled(
+        self, State: EGbxFocusableWidgetState
+    ) -> bool: ...
+    def IsChecked(self) -> bool: ...
+    def GetLockedState(self) -> EGbxGFxButtonLockedState: ...
+    def GetCheckedState(self) -> EGbxGFxButtonCheckedState: ...
+    def GetButtonType(self) -> EGbxGFxButtonType: ...
+    def GbxGFxButtonEvent__DelegateSignature(
+        self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent
+    ): ...
 
 
 class GbxGFxListCell(GbxGFxButton):
@@ -280,21 +388,19 @@ class GbxGFxListCell(GbxGFxButton):
     bIsReadjustingFocus: bool
 
 
-
 class GbxGFxListCellWithData(GbxGFxListCell):
     TextID: str
     DataAsset: engine.DataAsset
 
 
-
 class GbxGFxListItemSpinner(GbxGFxListCellWithData):
     SpinnerItem: GbxSpinner
+
     def OnSpinnerValueUpdated(self): ...
 
 
 class GbxGFxMenuSwitcherSubmenu(GbxGFxMenu):
     OwnerMenuSwitcher: GbxGFxMenuSwitcher
-
 
 
 class GbxGFxMenuSwitcher(GbxGFxMenu):
@@ -304,12 +410,11 @@ class GbxGFxMenuSwitcher(GbxGFxMenu):
     NumSubMenus: int
 
 
-
 class GbxGFxMovieLoader(GbxGFxObject):
+    OnMovieLoadCompleteDelegate: Any
     LoadedMovie: GbxGFxObject
     QueuedLoadMovie: scaleform_ui.SwfMovie
     CurrentMovie: scaleform_ui.SwfMovie
-
 
 
 class GbxGFxProgressBar(GbxGFxObject):
@@ -326,21 +431,51 @@ class GbxGFxProgressBar(GbxGFxObject):
     BackgroundBarId: str
     CurrentValueLabelId: str
     MaxValueLabelId: str
+    OnInterpolationComplete: Any
+    OnEnterRange: Any
     Interpolator: GbxProgressBarInterpolator
+
     def SetPercent(self, InPercent: float): ...
     def SetMaxValueText(self, Text: str): ...
     def SetFillColorAndOpacity(self, InColor: core_uobject.LinearColor): ...
     def SetCurrentValueText(self, Text: str): ...
-    def PassedPercentThreshold(self, Threshold: float, OldValue: float, CurrentValue: float, bIncreasing: bool, bDecreasing: bool, ReturnValue: bool) -> bool: ...
-    def InterpolateToPercentWithInterpolator(self, InPercent: float, Interpolator: GbxProgressBarInterpolator): ...
+    def PassedPercentThreshold(
+        self,
+        Threshold: float,
+        OldValue: float,
+        CurrentValue: float,
+        bIncreasing: bool,
+        bDecreasing: bool,
+    ) -> bool: ...
+    def InterpolateToPercentWithInterpolator(
+        self, InPercent: float, Interpolator: GbxProgressBarInterpolator
+    ): ...
     def InterpolateToPercent(self, InPercent: float): ...
-    def HandlePercentChanged(self, OldValue: float, CurrentValue: float, bIsInterpolating: bool, ActiveInterpolator: GbxProgressBarInterpolator): ...
+    def HandlePercentChanged(
+        self,
+        OldValue: float,
+        CurrentValue: float,
+        bIsInterpolating: bool,
+        ActiveInterpolator: GbxProgressBarInterpolator,
+    ): ...
     def HandleEnterPercentRange(self, RangeName: str): ...
-    def GetPercent(self, ReturnValue: float) -> float: ...
-    def EnteredPercentRange(self, RangeMin: float, RangeMax: float, OldValue: float, CurrentValue: float, bIncreasing: bool, bDecreasing: bool, ReturnValue: bool) -> bool: ...
+    def GetPercent(self) -> float: ...
+    def EnteredPercentRange(
+        self,
+        RangeMin: float,
+        RangeMax: float,
+        OldValue: float,
+        CurrentValue: float,
+        bIncreasing: bool,
+        bDecreasing: bool,
+    ) -> bool: ...
 
 
 class GbxGFxGridScrollingList(GbxGFxObject):
+    SelectionChangedDelegate: Any
+    ItemPressedDelegate: Any
+    ItemClickedDelegate: Any
+    ItemSecondaryClickedDelegate: Any
     Config: GbxGFxListConfig
     SelectedIndex: int
     SelectedIndexWhenFocusWasLost: int
@@ -356,10 +491,14 @@ class GbxGFxGridScrollingList(GbxGFxObject):
     AverageItemDims: core_uobject.Vector2D
     ScrollBar: GbxGFxSlider
     bScrollbarIsChildOfThis: bool
+
     def OnScrollBarPositionUpdated(self, SliderPercentage: float): ...
 
 
 class GbxGFxPooledGridList(GbxGFxGridScrollingList):
+    CellChangedDelegate: Any
+    CellFocusedDelegate: Any
+    CellClickedDelegate: Any
     PooledConfig: GbxGFxPooledGridListConfig
     HelperDataDirDim: float
     HelperDataItemsInDir: int
@@ -368,7 +507,6 @@ class GbxGFxPooledGridList(GbxGFxGridScrollingList):
     HelperDataNumVisibleItems: int
     HelperDataScrollOffset: float
     MasterCellPool: unreal.WrappedArray[GbxGFxPooledGridPoolInfo]
-
 
 
 class GbxGFxRadioButtonList(GbxGFxGridScrollingList): ...
@@ -380,6 +518,7 @@ class GbxGFxListItemNumber(GbxGFxListCellWithData):
     SliderFastestSteps: int
     SliderItem: GbxGFxSlider
     ValueItem: GbxTextField
+
     def OnSliderUpdated(self, SliderPct: float): ...
 
 
@@ -394,7 +533,6 @@ class GbxGFxEditableTextField(GbxGFxListCell):
     OnTextInputAudioEventName: str
 
 
-
 class GbxGFxGridScrollingListPaged(GbxGFxGridScrollingList): ...
 
 
@@ -403,13 +541,13 @@ class GbxGFxMenuSwitcherMenuData(GbxGFxMenuData):
     Submenus: unreal.WrappedArray[GbxGFxMenuSwitcherSubmenuInfo]
 
 
-
 class GbxHUDContainer(GbxUserWidget):
     RootPanel: umg.CanvasPanel
     OwningPlayerController: gbx_game_system_core.GbxPlayerController
     OwningHUD: GbxHUD
     ProjectedContainerZOrder: int
     DebugPanel: umg.CanvasPanel
+
     def HandleInit(self): ...
     def HandleDeinit(self): ...
     def HandleDeactivate(self): ...
@@ -421,6 +559,7 @@ class GbxHUDWidget(GbxUserWidget):
     OwningHUDContainer: GbxHUDContainer
     OwningHUD: GbxHUD
     OwningPlayerController: gbx_game_system_core.GbxPlayerController
+
     def HandleInit(self): ...
     def HandleDeinit(self): ...
     def HandleDeactivate(self): ...
@@ -428,8 +567,11 @@ class GbxHUDWidget(GbxUserWidget):
 
 
 class GbxListItem(GbxUserWidget):
+    OnListItemValueChanged: Any
+    ListOwner: Any
     ChangedAudioEventName: str
-    def GetItemIndex(self, ReturnValue: int) -> int: ...
+
+    def GetItemIndex(self) -> int: ...
 
 
 class GbxListItemText(GbxListItem): ...
@@ -446,7 +588,6 @@ class GbxGFxHUDContainer(GbxGFxMovie):
     bFinishedInitializing: bool
 
 
-
 class GbxHUD(engine.HUD):
     HudStateManager: GbxHUDStateManager
     bDisplayScaleformHUD: bool
@@ -457,27 +598,173 @@ class GbxHUD(engine.HUD):
     OwningPC: gbx_game_system_core.GbxPlayerController
     OwningPrimaryCharacter: gbx_game_system_core.GbxCharacter
     OwningPawn: engine.Pawn
-    def SwitchToHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, State: GbxHUDStateData): ...
-    def SetHUDContainer(self, PlayerController: gbx_game_system_core.GbxPlayerController, ContainerDefinition: GbxHUDData): ...
-    def PushHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, State: GbxHUDStateData, bAllowDuplicatePush: bool): ...
-    def PopToSwitchToHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, PopToState: GbxHUDStateData, SwitchToState: GbxHUDStateData): ...
-    def PopToHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, State: GbxHUDStateData): ...
-    def PopSpecifiedHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, State: GbxHUDStateData): ...
-    def PopHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController): ...
-    def OnPrimaryCharacterChanged(self, Character: gbx_game_system_core.GbxCharacter): ...
+
+    def SwitchToHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        State: GbxHUDStateData,
+    ): ...
+    def SetHUDContainer(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        ContainerDefinition: GbxHUDData,
+    ): ...
+    def PushHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        State: GbxHUDStateData,
+        bAllowDuplicatePush: bool,
+    ): ...
+    def PopToSwitchToHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        PopToState: GbxHUDStateData,
+        SwitchToState: GbxHUDStateData,
+    ): ...
+    def PopToHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        State: GbxHUDStateData,
+    ): ...
+    def PopSpecifiedHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        State: GbxHUDStateData,
+    ): ...
+    def PopHUDState(
+        self, PlayerController: gbx_game_system_core.GbxPlayerController
+    ): ...
+    def OnPrimaryCharacterChanged(
+        self, Character: gbx_game_system_core.GbxCharacter
+    ): ...
     def OnPawnChanged(self, Pawn: engine.Pawn, OldPawn: engine.Pawn): ...
-    def GotoPreviousHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController): ...
-    def GotoHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, State: GbxHUDStateData): ...
-    def GetCurrentHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController, ReturnValue: GbxHUDStateData) -> GbxHUDStateData: ...
-    def ClearToDefaultHUDState(self, PlayerController: gbx_game_system_core.GbxPlayerController): ...
-    def ClearHUDStates(self, PlayerController: gbx_game_system_core.GbxPlayerController): ...
+    def GotoPreviousHUDState(
+        self, PlayerController: gbx_game_system_core.GbxPlayerController
+    ): ...
+    def GotoHUDState(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        State: GbxHUDStateData,
+    ): ...
+    def GetCurrentHUDState(
+        self, PlayerController: gbx_game_system_core.GbxPlayerController
+    ) -> GbxHUDStateData: ...
+    def ClearToDefaultHUDState(
+        self, PlayerController: gbx_game_system_core.GbxPlayerController
+    ): ...
+    def ClearHUDStates(
+        self, PlayerController: gbx_game_system_core.GbxPlayerController
+    ): ...
 
 
 class GbxUILibrary(engine.BlueprintFunctionLibrary):
 
-    def SendTextToDebugHUD(self, WorldContextObject: unreal.UObject, Text: str, Color: core_uobject.LinearColor, TextSize: int, Duration: float): ...
-    def PlayFullScreenMovie(self, GbxPC: gbx_game_system_core.GbxPlayerController, MediaSource: media_assets.MediaSource, bPlayOnceAndDestroy: bool, ReturnValue: GbxFullScreenMovie) -> GbxFullScreenMovie: ...
-    def AbbreviateNumberText(self, ValueToFormat: float, ReturnValue: str) -> str: ...
+    def SendTextToDebugHUD(
+        self,
+        WorldContextObject: unreal.UObject,
+        Text: str,
+        Color: core_uobject.LinearColor,
+        TextSize: int,
+        Duration: float,
+    ): ...
+    def PlayFullScreenMovie(
+        self,
+        GbxPC: gbx_game_system_core.GbxPlayerController,
+        MediaSource: media_assets.MediaSource,
+        bPlayOnceAndDestroy: bool,
+    ) -> GbxFullScreenMovie: ...
+    def CreateTextListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        ClickedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemText: ...
+    def CreateTextListItem(
+        self, OwningList: Any, OwningPlayer: engine.PlayerController, LabelText: str
+    ) -> GbxListItemText: ...
+    def CreateNumberListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        InitialValue: float,
+        SliderMin: float,
+        SliderMax: float,
+        SliderStep: float,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemNumber: ...
+    def CreateNumberListItem(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        InitialValue: float,
+        SliderMin: float,
+        SliderMax: float,
+        SliderStep: float,
+    ) -> GbxListItemNumber: ...
+    def CreateListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        ItemClass: unreal.UClass,
+        ClickedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItem: ...
+    def CreateListItem(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        ItemClass: unreal.UClass,
+    ) -> GbxListItem: ...
+    def CreateDefaultListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        ClickedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItem: ...
+    def CreateDefaultListItem(
+        self, OwningList: Any, OwningPlayer: engine.PlayerController
+    ) -> GbxListItem: ...
+    def CreateComboBoxListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        Items: unreal.WrappedArray[str],
+        InitialIndex: int,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemComboBox: ...
+    def CreateComboBoxListItem(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        Items: unreal.WrappedArray[str],
+        InitialIndex: int,
+    ) -> GbxListItemComboBox: ...
+    def CreateBooleanListItemWithDelegates(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        InitialValue: bool,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemBoolean: ...
+    def CreateBooleanListItem(
+        self,
+        OwningList: Any,
+        OwningPlayer: engine.PlayerController,
+        LabelText: str,
+        InitialValue: bool,
+    ) -> GbxListItemBoolean: ...
+    def AbbreviateNumberText(self, ValueToFormat: float) -> str: ...
 
 
 class GbxUIGlobals(gbx_runtime.GbxDataAsset):
@@ -493,12 +780,17 @@ class GbxUIGlobals(gbx_runtime.GbxDataAsset):
     GFxContextualMenuTemplate: GbxGFxContextualMenuData
     MarkupStartCharacter: str
     MarkupEndCharacter: str
+    MarkupDictionary: Any
     DefaultGlyphSize: core_uobject.Vector2D
     GlyphMarkupStartCharacter: str
     GlyphMarkupEndCharacter: str
+    ClosedCaptioningTable: Any
     AlwaysLoadedGFxMenus: unreal.WrappedArray[GbxMenuData]
+    AlwaysLoadedGFxMovies: unreal.WrappedArray[Any]
     HintGlyphVSpace: int
-
+    SplitscreenLayouts: Any
+    DLCSplitscreenLayouts: Any
+    SoftDLCSpltiscreenLayouts: Any
 
 
 class GbxUmgMenuData(GbxMenuData):
@@ -506,12 +798,15 @@ class GbxUmgMenuData(GbxMenuData):
     ListItemFactory: GbxListItemFactory
 
 
-
 class GbxCascadingList(GbxUserWidget):
     DefaultListItemClass: unreal.UClass
     ListViews: unreal.WrappedArray[GbxGridListWidget]
+    OnItemSelected: Any
+    OnItemClicked: Any
+    OnItemCreated: Any
     ActiveList: GbxGridListWidget
     NavigationStack: unreal.WrappedArray[GbxCascadingListItemData]
+
     def SetActiveList(self, List: GbxGridListWidget): ...
     def PushItems(self, Items: unreal.WrappedArray[GbxCascadingListItemData]): ...
     def Pop(self): ...
@@ -519,8 +814,8 @@ class GbxCascadingList(GbxUserWidget):
     def OnShiftListsBack(self): ...
     def OnItemSelected_Internal(self, Item: GbxListItem): ...
     def OnItemClicked_Internal(self, Item: GbxListItem): ...
-    def HasItems(self, ReturnValue: bool) -> bool: ...
-    def GetStackDepth(self, ReturnValue: int) -> int: ...
+    def HasItems(self) -> bool: ...
+    def GetStackDepth(self) -> int: ...
     def Clear(self): ...
 
 
@@ -529,6 +824,7 @@ class GbxComboBoxDropdownMenu(GbxUmgMenu):
     ChoiceListContainer: umg.Widget
     ChoiceList: GbxGridListWidget
     ComboBoxOwner: GbxComboBox
+
     def OnChoiceClicked(self, ListItem: GbxListItem): ...
     def DismissWithoutChanging(self): ...
 
@@ -536,20 +832,53 @@ class GbxComboBoxDropdownMenu(GbxUmgMenu):
 class GbxComboBox(GbxListItem):
     DropdownMenuClass: unreal.UClass
     DropdownMenuOffset: core_uobject.Vector2D
+    OnComboChoiceChanged: Any
     ChoiceListArray: unreal.WrappedArray[GbxComboBoxItemInfo]
     CurrentChoiceReferenceIndex: int
     LastKnownGeometry: slate_core.Geometry
-    def OnComboBoxClicked(self, Widget: GbxUserWidget, InputInfo: GbxMenuInputEvent): ...
-    def GetCurentChoiceReferenceIndex(self, ReturnValue: int) -> int: ...
+
+    def OnComboBoxClicked(
+        self, Widget: GbxUserWidget, InputInfo: GbxMenuInputEvent
+    ): ...
+    def GetCurentChoiceReferenceIndex(self) -> int: ...
 
 
 class GbxCoreDialogBoxHelpers(engine.BlueprintFunctionLibrary):
 
-    def ShowYesNoDialog(self, pc: gbx_game_system_core.GbxPlayerController, HeaderText: str, MessageText: str, bAnyUserCanInteract: bool, ReturnValue: GbxDialogBox) -> GbxDialogBox: ...
-    def ShowOkayDialog(self, pc: gbx_game_system_core.GbxPlayerController, HeaderText: str, MessageText: str, bAnyUserCanInteract: bool, Template: EGbxDialogBoxHelpersDialogTemplate, ReturnValue: GbxDialogBox) -> GbxDialogBox: ...
-    def ShowDialog(self, pc: gbx_game_system_core.GbxPlayerController, DialogBoxInfo: GbxDialogBoxInfo, ReturnValue: GbxDialogBox) -> GbxDialogBox: ...
-    def ShowConfirmCancelDialog(self, pc: gbx_game_system_core.GbxPlayerController, HeaderText: str, MessageText: str, bAnyUserCanInteract: bool, ReturnValue: GbxDialogBox) -> GbxDialogBox: ...
-    def ShowBlockingDialog(self, pc: gbx_game_system_core.GbxPlayerController, HeaderText: str, MessageText: str, bBlocksAllUsers: bool, ReturnValue: GbxDialogBox) -> GbxDialogBox: ...
+    def ShowYesNoDialog(
+        self,
+        pc: gbx_game_system_core.GbxPlayerController,
+        HeaderText: str,
+        MessageText: str,
+        bAnyUserCanInteract: bool,
+    ) -> GbxDialogBox: ...
+    def ShowOkayDialog(
+        self,
+        pc: gbx_game_system_core.GbxPlayerController,
+        HeaderText: str,
+        MessageText: str,
+        bAnyUserCanInteract: bool,
+        Template: EGbxDialogBoxHelpersDialogTemplate,
+    ) -> GbxDialogBox: ...
+    def ShowDialog(
+        self,
+        pc: gbx_game_system_core.GbxPlayerController,
+        DialogBoxInfo: GbxDialogBoxInfo,
+    ) -> GbxDialogBox: ...
+    def ShowConfirmCancelDialog(
+        self,
+        pc: gbx_game_system_core.GbxPlayerController,
+        HeaderText: str,
+        MessageText: str,
+        bAnyUserCanInteract: bool,
+    ) -> GbxDialogBox: ...
+    def ShowBlockingDialog(
+        self,
+        pc: gbx_game_system_core.GbxPlayerController,
+        HeaderText: str,
+        MessageText: str,
+        bBlocksAllUsers: bool,
+    ) -> GbxDialogBox: ...
 
 
 class GbxCrosshairDataAsset(gbx_runtime.GbxDataAsset):
@@ -560,10 +889,8 @@ class GbxCrosshairDataAsset(gbx_runtime.GbxDataAsset):
     ChargeClipState: EChargeClipState
 
 
-
 class GbxMenuSwitcherMenuData(GbxUmgMenuData):
     Submenus: unreal.WrappedArray[GbxMenuSwitcherSubmenuInfo]
-
 
 
 class GbxDebugMenuData(GbxMenuSwitcherMenuData): ...
@@ -574,7 +901,7 @@ class GbxMenuSwitcher(GbxUmgMenu):
     def SwitchToPage(self, SubMenuId: str): ...
     def PrevPage(self): ...
     def NextPage(self): ...
-    def GetCurrentSubmenuId(self, ReturnValue: str) -> str: ...
+    def GetCurrentSubmenuId(self) -> str: ...
 
 
 class GbxDebugMenu(GbxMenuSwitcher):
@@ -582,8 +909,11 @@ class GbxDebugMenu(GbxMenuSwitcher):
     CloseButton: umg.BUTTON
     SubmenuContainer: umg.PanelWidget
     HiddenSubmenus: unreal.WrappedArray[str]
+
     def OnCloseClicked(self): ...
-    def OnCategorySelected(self, Widget: GbxUserWidget, InputInfo: GbxMenuInputEvent): ...
+    def OnCategorySelected(
+        self, Widget: GbxUserWidget, InputInfo: GbxMenuInputEvent
+    ): ...
 
 
 class GbxDebugRumbleMenu(GbxDebugMenuSubmenu):
@@ -593,6 +923,7 @@ class GbxDebugRumbleMenu(GbxDebugMenuSubmenu):
     LeftSmallSlider: GbxListItemNumber
     RightLargeSlider: GbxListItemNumber
     RightSmallSlider: GbxListItemNumber
+
     def OnSliderValueChanged(self, Item: GbxListItem): ...
 
 
@@ -601,12 +932,12 @@ class GbxDialogBoxData(GbxUmgMenuData):
     Templates: unreal.WrappedArray[GbxDialogBoxTemplateMapItem]
 
 
-
 class GbxDialogBox(GbxUmgMenu):
     bWantsToDismiss: bool
     HeaderText: str
     BodyText: str
     ChoiceList: GbxScrollBoxList
+
     def UpdateText(self, NewHeaderText: str, NewBodyText: str): ...
     def SetupDialog(self, DialogBoxInfo: GbxDialogBoxInfo): ...
     def SetHeaderTextFormatArg(self, ArgName: str, ReplacementText: str): ...
@@ -621,7 +952,6 @@ class GbxDialogBoxChoiceWidget(GbxListItem):
     ChoiceNameId: str
 
 
-
 class GbxDragDropContainerInterface(core_uobject.Interface): ...
 
 
@@ -631,23 +961,22 @@ class GbxFocusableWidgetStyleData(gbx_runtime.GbxDataAsset):
     DefaultNotFocusedStyle: GbxFocusableWidgetItemStyle
 
 
-
 class GbxFocusableWidget(core_uobject.Interface):
 
     def SetFocusableWidgetEnabled(self, bEnabled: bool): ...
-    def IsFocusableWidgetFocused(self, ReturnValue: bool) -> bool: ...
-    def IsFocusableWidgetEnabled(self, ReturnValue: bool) -> bool: ...
-    def GetFocusableWidgetState(self, ReturnValue: EGbxFocusableWidgetState) -> EGbxFocusableWidgetState: ...
+    def IsFocusableWidgetFocused(self) -> bool: ...
+    def IsFocusableWidgetEnabled(self) -> bool: ...
+    def GetFocusableWidgetState(self) -> EGbxFocusableWidgetState: ...
 
 
 class GbxFullScreenMovie(GbxUserWidget):
     CurrentPlayer: media_assets.MediaPlayer
+
     def OnMovieFinishedPlaying(self): ...
 
 
 class GbxGFxContextualMenuData(GbxGFxMenuData):
     ContextualMenuInfo: ContextualMenuInfo
-
 
 
 class GbxGFxContextualMenu(GbxGFxMenu):
@@ -661,8 +990,11 @@ class GbxGFxContextualMenu(GbxGFxMenu):
     BlockShiftUserText: str
     UnblockShiftUserText: str
     ReportShiftPlayerText: str
+
     def OnSelectionChanged(self, Item: GbxGFxListCell): ...
-    def OnContextualMenuItemClicked(self, PressedButton: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
+    def OnContextualMenuItemClicked(
+        self, PressedButton: GbxGFxButton, InputInfo: GbxMenuInputEvent
+    ): ...
 
 
 class GbxGFxContextualMenuHelpers(unreal.UObject): ...
@@ -670,8 +1002,12 @@ class GbxGFxContextualMenuHelpers(unreal.UObject): ...
 
 class GbxGFxDragDropManager(unreal.UObject):
 
-    def OnDropButtonUnhovered(self, UnhoveredButton: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
-    def OnDropButtonHovered(self, HoveredButton: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
+    def OnDropButtonUnhovered(
+        self, UnhoveredButton: GbxGFxButton, InputInfo: GbxMenuInputEvent
+    ): ...
+    def OnDropButtonHovered(
+        self, HoveredButton: GbxGFxButton, InputInfo: GbxMenuInputEvent
+    ): ...
 
 
 class GbxGFxDropDownList(GbxGFxObject):
@@ -683,8 +1019,11 @@ class GbxGFxDropDownList(GbxGFxObject):
     DropDownList: GbxGFxComboBoxScrollingList
     EntriesList: unreal.WrappedArray[str]
     CurrentlySelectedEntry: str
+
     def OnEntryClicked(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
-    def OnDropDownButtonClicked(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
+    def OnDropDownButtonClicked(
+        self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent
+    ): ...
 
 
 class GbxGFxComboBoxScrollingList(GbxGFxGridScrollingList): ...
@@ -693,7 +1032,6 @@ class GbxGFxComboBoxScrollingList(GbxGFxGridScrollingList): ...
 class GbxGFxHintBarContainer(GbxGFxGridScrollingList):
     HintBarOwningBar: GbxHintBar
     HintBarOwnerPC: gbx_game_system_core.GbxPlayerController
-
 
 
 class GbxGFxHintWidget(GbxGFxListCell):
@@ -716,11 +1054,13 @@ class GbxGFxHintWidget(GbxGFxListCell):
     bIsAvailable: bool
     bInputNeedsResetBeforeShowingProgress: bool
     ExternalHintHeldProgress: float
+
     def OnThisHintClicked(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
 
 
 class GbxGFxListItemComboBox(GbxGFxListCellWithData):
     DropDownListItem: GbxGFxDropDownList
+
     def OnSelectionUpdated(self, Item: GbxGFxListCell): ...
     def OnOwningListSelectionChanged(self, Item: GbxGFxListCell): ...
     def OnDropDownButtonClicked(self): ...
@@ -733,11 +1073,13 @@ class GbxGFxListItemControls(GbxGFxListCellWithData):
     LinkedRebindButton: GbxGFxObject
 
 
-
 class GbxGFxMediaPlayer(unreal.UObject):
+    OnMovieStartedPlaying: Any
+    OnMovieStoppedPlaying: Any
     PlayerConfig: GbxGFxMediaPlayerConfig
     MaterialRenderer: GbxGFxMaterialRenderer
     MediaPlayer: media_assets.MediaPlayer
+
     def OnMovieTracksChanged(self): ...
     def OnMovieSeekCompleted(self): ...
     def OnMoviePlaybackSuspended(self): ...
@@ -753,14 +1095,15 @@ class GbxGFxMenuSwitcherNavCell(GbxGFxListCell):
     bOuterFocusedState: bool
 
 
-
 class GbxGFxMenuSwitcherNavWidget(GbxGFxObject):
+    OnNavTabClickedDelegate: Any
     PrevTabHintClip: GbxGFxHintWidget
     NextTabHintClip: GbxGFxHintWidget
     NavListClip: GbxGFxGridScrollingList
     NavType: EGbxGFxMenuSwitchNavWidgetType
     NavListSubmenuDatas: unreal.WrappedArray[GbxGFxMenuSwitcherSubmenuInfo]
     NavListItemDatas: unreal.WrappedArray[GbxGFxMenuSwitcherNavWidgetCustomItem]
+
     def OnTabClicked(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
 
 
@@ -768,10 +1111,8 @@ class GbxGFxSprite(GbxGFxObject):
     Graphics: GbxGFxObject
 
 
-
 class GbxGFxMouseBlocker(GbxGFxSprite):
     bIsBlocking: bool
-
 
 
 class GbxGFxMouseCapturePanel(GbxGFxObject): ...
@@ -789,6 +1130,7 @@ class GbxGFxSlider(GbxGFxButton):
     SliderTrackButton: GbxGFxObject
     MaskFill: GbxGFxObject
     SliderDefaultThumb: GbxGFxObject
+
     def GbxGFxSliderUpdateEvent__DelegateSignature(self, SliderPercent: float): ...
     def EndSlide(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
     def BeginRightSlide(self, BUTTON: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
@@ -803,6 +1145,8 @@ class GbxGridListWidget(umg.GridPanel):
     GridColumns: int
     GridRows: int
     GridFill: EGbxGridWidgetFill
+    SelectionChangedDelegate: Any
+    ItemClickedDelegate: Any
     RowWrapMode: EGbxListWrapMode
     ColumnWrapMode: EGbxListWrapMode
     DefaultItemSelectionBehavior: EGbxFocusableWidgetMouseBehavior
@@ -817,26 +1161,32 @@ class GbxGridListWidget(umg.GridPanel):
     bFocusOnMenuCreation: bool
 
 
-
 class GbxGuidePanel(umg.CanvasPanel): ...
 
 
 class GbxHintBarWidgetContainer(core_uobject.Interface):
 
     def HintBarSetVisible(self, bVisible: bool): ...
-    def HintBarInitOwnerInfo(self, HintBarOwner: GbxHintBar, PlayerControllerContext: gbx_game_system_core.GbxPlayerController): ...
+    def HintBarInitOwnerInfo(
+        self,
+        HintBarOwner: GbxHintBar,
+        PlayerControllerContext: gbx_game_system_core.GbxPlayerController,
+    ): ...
     def HintBarClearAllHints(self): ...
     def HintBarAppendHint(self, HintInfo: GbxHintInfo): ...
 
 
 class GbxHintBar(unreal.UObject):
     Container: unreal.UObject
+    ContainerInterface: Any
+    MenuOwner: Any
     HintInfos: unreal.WrappedArray[GbxHintInfo]
     StagePlacedHints: unreal.WrappedArray[GbxHintWidgetMapItem]
     bAreHintsVisible: bool
     bIsInputBlocked: bool
     bHideOnOwnerMenuDeactivate: bool
     bSendInputActionEvenIfOwnerIsDeactivated: bool
+
     def OnHintClicked(self, InputAction: str, bHeld: bool): ...
 
 
@@ -844,7 +1194,11 @@ class GbxHintWidget(core_uobject.Interface):
 
     def HintWidgetSetVisible(self, bVisible: bool): ...
     def HintWidgetSetInfo(self, HintInfo: GbxHintInfo): ...
-    def HintWidgetInitOwnerInfo(self, HintBarOwner: GbxHintBar, PlayerControllerContext: gbx_game_system_core.GbxPlayerController): ...
+    def HintWidgetInitOwnerInfo(
+        self,
+        HintBarOwner: GbxHintBar,
+        PlayerControllerContext: gbx_game_system_core.GbxPlayerController,
+    ): ...
 
 
 class GbxHUDData(gbx_runtime.GbxDataAsset):
@@ -862,60 +1216,73 @@ class GbxHUDData(gbx_runtime.GbxDataAsset):
     StartState: GbxHUDStateData
 
 
-
 class HUDDataProviderInterface(core_uobject.Interface): ...
 
 
-class GbxGFxHUDFeedbackData(gbx_game_system_core.GbxHUDFeedbackData): ...
+class GbxGFxHUDFeedbackData(gbx_game_system_core.GbxHUDFeedbackData):
+    ValidWidgetTypes: unreal.WrappedArray[Any]
 
 
 class GbxHUDStateData(gbx_runtime.GbxDataAsset):
     StateName: str
     InitializationAnimSet: EHUDInitializationAnimationSet
     ListType: EGbxHUDStateListType
+    ValidWidgetTypes: unreal.WrappedArray[Any]
     StayOnTopOfStack: bool
-
 
 
 class GbxList(core_uobject.Interface):
 
     def TryToAcquireMenuFocus(self, bFromMouse: bool): ...
-    def SetSelectedItem(self, Item: GbxListItem, bScrollIntoView: bool, bAnimateScroll: bool): ...
-    def SetSelectedIndex(self, NewSelection: int, bScrollIntoView: bool, bAnimateScroll: bool): ...
+    def SetSelectionChangedDelegate(self, InSelectionChangedDelegate: Any): ...
+    def SetSelectedItem(
+        self, Item: GbxListItem, bScrollIntoView: bool, bAnimateScroll: bool
+    ): ...
+    def SetSelectedIndex(
+        self, NewSelection: int, bScrollIntoView: bool, bAnimateScroll: bool
+    ): ...
+    def SetItemClickedDelegate(self, InItemClickedDelegate: Any): ...
     def RemoveListItem(self, Item: GbxListItem): ...
     def RemoveAllListItems(self): ...
     def OnItemClicked(self, Item: GbxListItem): ...
-    def MoveSelectionUp(self, ReturnValue: bool) -> bool: ...
-    def MoveSelectionRight(self, ReturnValue: bool) -> bool: ...
-    def MoveSelectionLeft(self, ReturnValue: bool) -> bool: ...
-    def MoveSelectionDown(self, ReturnValue: bool) -> bool: ...
-    def IsListFocused(self, ReturnValue: bool) -> bool: ...
-    def IsListEnabled(self, ReturnValue: bool) -> bool: ...
+    def MoveSelectionUp(self) -> bool: ...
+    def MoveSelectionRight(self) -> bool: ...
+    def MoveSelectionLeft(self) -> bool: ...
+    def MoveSelectionDown(self) -> bool: ...
+    def IsListFocused(self) -> bool: ...
+    def IsListEnabled(self) -> bool: ...
     def InsertListItem(self, Item: GbxListItem): ...
-    def GetSelectedItem(self, ReturnValue: GbxListItem) -> GbxListItem: ...
-    def GetSelectedIndex(self, ReturnValue: int) -> int: ...
-    def GetNumItemsInList(self, ReturnValue: int) -> int: ...
-    def GetListItemFactory(self, ReturnValue: GbxListItemFactory) -> GbxListItemFactory: ...
-    def GetItemAtIndex(self, Index: int, ReturnValue: GbxListItem) -> GbxListItem: ...
-    def GetDefaultItemClass(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
+    def GetSelectedItem(self) -> GbxListItem: ...
+    def GetSelectedIndex(self) -> int: ...
+    def GetNumItemsInList(self) -> int: ...
+    def GetListItemFactory(self) -> GbxListItemFactory: ...
+    def GetItemAtIndex(self, Index: int) -> GbxListItem: ...
+    def GetDefaultItemClass(self) -> unreal.UClass: ...
 
 
 class GbxListItemBoolean(GbxListItem):
     ValueCheckBox: umg.CheckBox
+
     def SetChecked(self, bChecked: bool): ...
-    def IsChecked(self, ReturnValue: bool) -> bool: ...
+    def IsChecked(self) -> bool: ...
     def HandleFocusableWidgetPressed(self, InputInfo: GbxMenuInputEvent): ...
 
 
 class GbxListItemComboBox(GbxListItem):
     ValueComboBox: umg.ComboBoxString
+    OnComboBoxSelectionChanged: Any
+
     def SetSelectedOptionIndex(self, Index: int): ...
     def SelectPreviousOption(self): ...
     def SelectNextOption(self): ...
     def OnValueComboBoxChanged(self, SelectedItem: str, SelectionType: int): ...
-    def ListItemComboBoxSelectionChangedDelegate__DelegateSignature(self, NewSelectedIndex: int): ...
-    def InitializeComboBox(self, Items: unreal.WrappedArray[str], InitialValue: int): ...
-    def GetSelectedOptionIndex(self, ReturnValue: int) -> int: ...
+    def ListItemComboBoxSelectionChangedDelegate__DelegateSignature(
+        self, NewSelectedIndex: int
+    ): ...
+    def InitializeComboBox(
+        self, Items: unreal.WrappedArray[str], InitialValue: int
+    ): ...
+    def GetSelectedOptionIndex(self) -> int: ...
 
 
 class GbxListItemFactory(engine.DataAsset):
@@ -925,13 +1292,64 @@ class GbxListItemFactory(engine.DataAsset):
     NumberListItem: unreal.UClass
     ComboBoxListItem: unreal.UClass
 
+    def CreateTextItem(
+        self,
+        Owner: engine.PlayerController,
+        Parent: Any,
+        LabelText: str,
+        ClickedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemText: ...
+    def CreateNumberItem(
+        self,
+        Owner: engine.PlayerController,
+        Parent: Any,
+        LabelText: str,
+        InitialValue: float,
+        SliderMin: float,
+        SliderMax: float,
+        SliderStep: float,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemNumber: ...
+    def CreateItemWithDelegates(
+        self,
+        Owner: engine.PlayerController,
+        Parent: Any,
+        ItemClass: unreal.UClass,
+        ClickedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItem: ...
+    def CreateItem(
+        self, Owner: engine.PlayerController, Parent: Any, ItemClass: unreal.UClass
+    ) -> GbxListItem: ...
+    def CreateComboBoxItem(
+        self,
+        Owner: engine.PlayerController,
+        Parent: Any,
+        LabelText: str,
+        Items: unreal.WrappedArray[str],
+        InitialIndex: int,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemComboBox: ...
+    def CreateBooleanItem(
+        self,
+        Owner: engine.PlayerController,
+        Parent: Any,
+        LabelText: str,
+        InitialValue: bool,
+        ChangedDelegate: Any,
+        SelectedDelegate: Any,
+    ) -> GbxListItemBoolean: ...
 
 
 class GbxListItemNumber(GbxListItem):
     ValueSlider: umg.Slider
+
     def OnSliderValueChanged(self, NewPosition: float): ...
     def IncrementSlider(self): ...
-    def GetCurrentValue(self, ReturnValue: float) -> float: ...
+    def GetCurrentValue(self) -> float: ...
     def DecrementSlider(self): ...
 
 
@@ -946,10 +1364,11 @@ class GbxMenuInputSettings(unreal.UObject):
     AxisMappings: unreal.WrappedArray[GbxMenuInputAxisAction]
 
 
-
 class GbxMenuInput(unreal.UObject):
+    UnpairedInputHandlerDelegate: Any
     bShowDebugKeyStates: bool
     FramesToIgnoreMouseMoves: int
+    InputListeners: unreal.WrappedArray[Any]
     KeyRepeatConfig: GbxMenuKeyRepeatInfo
     AxisAsButtonThreshold: float
     AxisThreshold: float
@@ -958,13 +1377,12 @@ class GbxMenuInput(unreal.UObject):
     MousePoses: unreal.WrappedArray[GbxMenuInputRawMousePos]
 
 
-
 class GbxMenuInputListener(core_uobject.Interface): ...
 
 
 class GbxMenuStackMenuInfo(gbx_game_system_core.BaseMenuStackMenuInfo):
+    MenuObject: Any
     MenuData: GbxMenuData
-
 
 
 class GbxMenuStack(unreal.UObject):
@@ -991,23 +1409,31 @@ class GbxMenuStack(unreal.UObject):
     bIsProcessingInput: bool
     bProcessingInputCancelled: bool
     bStackHidden: bool
+    OnPrePushMenuDelegate: Any
+    OnMenuActivatedDelegate: Any
+    OnStackEmptied: Any
     PassiveMenuLoadQueue: unreal.WrappedArray[GbxMenuData]
     PassiveLoadingMenu: GbxMenuStackMenuInfo
     CachedGameInstance: gbx_game_system_core.GbxGameInstance
+
     def Tick(self, DeltaTime: float): ...
-    def SwitchTo(self, MenuData: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
+    def SwitchTo(self, MenuData: GbxMenuData) -> unreal.UObject: ...
     def SetBlockingMode(self, bShouldBlock: bool): ...
     def SetBlockAllRawInput(self, bShouldBlock: bool): ...
-    def Push(self, MenuData: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def PopToSwitchTo(self, Menu: unreal.UObject, MenuData: GbxMenuData, ReturnValue: unreal.UObject) -> unreal.UObject: ...
+    def Push(self, MenuData: GbxMenuData) -> unreal.UObject: ...
+    def PopToSwitchTo(
+        self, Menu: unreal.UObject, MenuData: GbxMenuData
+    ) -> unreal.UObject: ...
     def PopTo(self, Menu: unreal.UObject): ...
     def Pop(self): ...
-    def Num(self, ReturnValue: int) -> int: ...
-    def HandleRawInput(self, Key: input_core.Key, EVENTTYPE: int, ControllerId: int): ...
-    def GetTopMenu(self, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def GetMenuAtIndex(self, Index: int, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def GetIndexOfMenu(self, Menu: unreal.UObject, ReturnValue: int) -> int: ...
-    def GetCurrentInputDevice(self, ReturnValue: EGbxMenuInputDevice) -> EGbxMenuInputDevice: ...
+    def Num(self) -> int: ...
+    def HandleRawInput(
+        self, Key: input_core.Key, EVENTTYPE: int, ControllerId: int
+    ): ...
+    def GetTopMenu(self) -> unreal.UObject: ...
+    def GetMenuAtIndex(self, Index: int) -> unreal.UObject: ...
+    def GetIndexOfMenu(self, Menu: unreal.UObject) -> int: ...
+    def GetCurrentInputDevice(self) -> EGbxMenuInputDevice: ...
     def Draw(self): ...
     def Clear(self): ...
 
@@ -1017,11 +1443,9 @@ class GbxMeshWidget(umg.Widget):
     MaxNumUnits: int
 
 
-
 class GbxNoClipCanvasPanel(umg.CanvasPanel):
     ClipZoneAdjustmentMin: core_uobject.Vector2D
     ClipZoneAdjustmentMax: core_uobject.Vector2D
-
 
 
 class GbxProgressBar(GbxUserWidget):
@@ -1035,6 +1459,8 @@ class GbxProgressBar(GbxUserWidget):
     Shear: float
     DefaultInterpolator: GbxProgressBarInterpolator
     Ranges: unreal.WrappedArray[GbxProgressBarRange]
+    OnInterpolationComplete: Any
+    OnEnterRange: Any
     Fill: umg.Image
     DeltaEffect: umg.Image
     Background: umg.Image
@@ -1042,26 +1468,53 @@ class GbxProgressBar(GbxUserWidget):
     MaxValueText: umg.TextBlock
     PercentAnimationOwner: GbxUserWidget
     PercentAnimation: umg.WidgetAnimation
+
     def SetShear(self, InShear: float): ...
     def SetPercent(self, InPercent: float): ...
     def SetMaxValueText(self, Text: str): ...
     def SetFillColorAndOpacity(self, InColor: core_uobject.LinearColor): ...
     def SetCurrentValueText(self, Text: str): ...
-    def PassedPercentThreshold(self, Threshold: float, OldValue: float, CurrentValue: float, bIncreasing: bool, bDecreasing: bool, ReturnValue: bool) -> bool: ...
-    def IsInterpolating(self, ReturnValue: bool) -> bool: ...
-    def InterpolateToPercentWithInterpolator(self, InPercent: float, Interpolator: GbxProgressBarInterpolator): ...
+    def PassedPercentThreshold(
+        self,
+        Threshold: float,
+        OldValue: float,
+        CurrentValue: float,
+        bIncreasing: bool,
+        bDecreasing: bool,
+    ) -> bool: ...
+    def IsInterpolating(self) -> bool: ...
+    def InterpolateToPercentWithInterpolator(
+        self, InPercent: float, Interpolator: GbxProgressBarInterpolator
+    ): ...
     def InterpolateToPercent(self, InPercent: float): ...
-    def HandleShowDeltaEffect(self, Effect: umg.Widget, OldValue: float, CurrentValue: float): ...
-    def HandlePercentChanged(self, OldValue: float, CurrentValue: float, bIsInterpolating: bool, ActiveInterpolator: GbxProgressBarInterpolator): ...
+    def HandleShowDeltaEffect(
+        self, Effect: umg.Widget, OldValue: float, CurrentValue: float
+    ): ...
+    def HandlePercentChanged(
+        self,
+        OldValue: float,
+        CurrentValue: float,
+        bIsInterpolating: bool,
+        ActiveInterpolator: GbxProgressBarInterpolator,
+    ): ...
     def HandleEnterPercentRange(self, RangeName: str): ...
-    def GetShear(self, ReturnValue: float) -> float: ...
-    def GetPercent(self, ReturnValue: float) -> float: ...
+    def GetShear(self) -> float: ...
+    def GetPercent(self) -> float: ...
     def GbxProgressBarRangeEvent__DelegateSignature(self, RangeName: str): ...
     def GbxProgressBarEvent__DelegateSignature(self): ...
-    def EnteredPercentRange(self, RangeMin: float, RangeMax: float, OldValue: float, CurrentValue: float, bIncreasing: bool, bDecreasing: bool, ReturnValue: bool) -> bool: ...
+    def EnteredPercentRange(
+        self,
+        RangeMin: float,
+        RangeMax: float,
+        OldValue: float,
+        CurrentValue: float,
+        bIncreasing: bool,
+        bDecreasing: bool,
+    ) -> bool: ...
 
 
-class GbxRetainerBox(umg.RetainerBox): ...
+class GbxRetainerBox(umg.RetainerBox):
+    TransformDelegate: Any
 
 
 class GbxRichTextBlock(umg.RichTextBlock):
@@ -1070,11 +1523,12 @@ class GbxRichTextBlock(umg.RichTextBlock):
     ShadowColorAndOpacity: core_uobject.LinearColor
 
 
-
 class GbxScrollBoxList(umg.ScrollBox):
     SelectedIndex: int
     SelectedIndexWhenFocusWasLost: int
     MenuThatOwnsFocus: GbxUmgMenu
+    SelectionChangedDelegate: Any
+    ItemClickedDelegate: Any
     WrapMode: EGbxScrollBoxListWrapMode
     DefaultItemSelectionBehavior: EGbxFocusableWidgetMouseBehavior
     ListItemFactory: GbxListItemFactory
@@ -1088,11 +1542,11 @@ class GbxScrollBoxList(umg.ScrollBox):
     bFocusOnMenuCreation: bool
 
 
-
 class GbxSpinner(GbxGFxButton):
     LeftButton: GbxGFxButton
     RightButton: GbxGFxButton
     ChoiceText: GbxTextField
+
     def SpinRight(self, PressedButton: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
     def SpinnerValueUpdatedEvent__DelegateSignature(self): ...
     def SpinLeft(self, PressedButton: GbxGFxButton, InputInfo: GbxMenuInputEvent): ...
@@ -1100,6 +1554,7 @@ class GbxSpinner(GbxGFxButton):
 
 class GbxTextField(GbxGFxObject):
     ScrollBar: GbxGFxSlider
+
     def OnScrollBarPositionUpdated(self, SliderPercentage: float): ...
 
 
@@ -1108,17 +1563,68 @@ class UIAccessors(core_uobject.Interface): ...
 
 class GbxUILocalization(engine.BlueprintFunctionLibrary):
 
-    def PlatformToText(self, Platform: str, pc: gbx_game_system_core.GbxPlayerController, ReturnValue: str) -> str: ...
-    def PlatformToRichText(self, Platform: str, pc: gbx_game_system_core.GbxPlayerController, GlyphSize: core_uobject.Vector2D, ReturnValue: str) -> str: ...
-    def PlatformToGlyph(self, Platform: str, pc: gbx_game_system_core.GbxPlayerController, ReturnValue: slate_core.SlateBrush) -> slate_core.SlateBrush: ...
-    def PlatformToGFxHTMLText(self, Platform: str, pc: gbx_game_system_core.GbxPlayerController, GlyphHeight: float, VSpace: int, ReturnValue: str) -> str: ...
-    def IsPlatformGlyphAvailable(self, Platform: str, pc: gbx_game_system_core.GbxPlayerController, ReturnValue: bool) -> bool: ...
-    def IsInputActionGlyphAvailable(self, ActionName: str, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, ReturnValue: bool) -> bool: ...
-    def InputActionToText(self, ActionName: str, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, ReturnValue: str) -> str: ...
-    def InputActionToRichText(self, ActionName: str, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, GlyphSize: core_uobject.Vector2D, ReturnValue: str) -> str: ...
-    def InputActionToGlyph(self, ActionName: str, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, ReturnValue: slate_core.SlateBrush) -> slate_core.SlateBrush: ...
-    def InputActionToGFxHTMLText(self, ActionName: str, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, GlyphHeight: float, VSpace: int, ReturnValue: str) -> str: ...
-    def FKeyToGFxHTMLText(self, Key: input_core.Key, pc: gbx_game_system_core.GbxPlayerController, GlyphType: EGbxActionToTextType, GlyphHeight: float, ReturnValue: str) -> str: ...
+    def PlatformToText(
+        self, Platform: str, pc: gbx_game_system_core.GbxPlayerController
+    ) -> str: ...
+    def PlatformToRichText(
+        self,
+        Platform: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphSize: core_uobject.Vector2D,
+    ) -> str: ...
+    def PlatformToGlyph(
+        self, Platform: str, pc: gbx_game_system_core.GbxPlayerController
+    ) -> slate_core.SlateBrush: ...
+    def PlatformToGFxHTMLText(
+        self,
+        Platform: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphHeight: float,
+        VSpace: int,
+    ) -> str: ...
+    def IsPlatformGlyphAvailable(
+        self, Platform: str, pc: gbx_game_system_core.GbxPlayerController
+    ) -> bool: ...
+    def IsInputActionGlyphAvailable(
+        self,
+        ActionName: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+    ) -> bool: ...
+    def InputActionToText(
+        self,
+        ActionName: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+    ) -> str: ...
+    def InputActionToRichText(
+        self,
+        ActionName: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+        GlyphSize: core_uobject.Vector2D,
+    ) -> str: ...
+    def InputActionToGlyph(
+        self,
+        ActionName: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+    ) -> slate_core.SlateBrush: ...
+    def InputActionToGFxHTMLText(
+        self,
+        ActionName: str,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+        GlyphHeight: float,
+        VSpace: int,
+    ) -> str: ...
+    def FKeyToGFxHTMLText(
+        self,
+        Key: input_core.Key,
+        pc: gbx_game_system_core.GbxPlayerController,
+        GlyphType: EGbxActionToTextType,
+        GlyphHeight: float,
+    ) -> str: ...
 
 
 class GbxInputToGlyphMap(gbx_runtime.GbxDataAsset):
@@ -1126,8 +1632,8 @@ class GbxInputToGlyphMap(gbx_runtime.GbxDataAsset):
     SpecialInputActionMap: unreal.WrappedArray[GbxInputToGlyphSpecialActionItem]
 
 
-
-class GbxPlatformToGlyphMap(gbx_runtime.GbxDataAsset): ...
+class GbxPlatformToGlyphMap(gbx_runtime.GbxDataAsset):
+    PlatformMap: Any
 
 
 class GbxUISpinnerWidget(GbxUserWidget):
@@ -1140,7 +1646,10 @@ class GbxUISpinnerWidget(GbxUserWidget):
     CurrentAnimSpeed: float
     NewValueToGoTo: int
     AnimationType: EGbxSpinnerWidgetGoToMethod
-    def MoveToNumber(self, NewNumber: int, GoToMethod: EGbxSpinnerWidgetGoToMethod, ReturnValue: float) -> float: ...
+
+    def MoveToNumber(
+        self, NewNumber: int, GoToMethod: EGbxSpinnerWidgetGoToMethod
+    ) -> float: ...
 
 
 class GbxWidgetComponent(umg.WidgetComponent):
@@ -1149,7 +1658,16 @@ class GbxWidgetComponent(umg.WidgetComponent):
     DistanceAlphaBorder: umg.Border
     TrackedPlayerController: gbx_game_system_core.GbxPlayerController
     GbxWidget: GbxUserWidget
-    def Setup(self, NewWidgetClass: unreal.UClass, NewTrackedPlayer: gbx_game_system_core.GbxPlayerController, ParentComponent: engine.SceneComponent, WidgetSpace: umg.EWidgetSpace, NewLayerZOrder: int, CollisionProfile: str): ...
+
+    def Setup(
+        self,
+        NewWidgetClass: unreal.UClass,
+        NewTrackedPlayer: gbx_game_system_core.GbxPlayerController,
+        ParentComponent: engine.SceneComponent,
+        WidgetSpace: umg.EWidgetSpace,
+        NewLayerZOrder: int,
+        CollisionProfile: str,
+    ): ...
     def SetDistanceScaleCurve(self, NewDistanceScaleCurve: engine.CurveFloat): ...
     def SetDistanceAlphaCurve(self, NewDistanceAlphaCurve: engine.CurveFloat): ...
     def SetDistanceAlphaBorder(self, NewDistanceAlphaBorder: umg.Border): ...
@@ -1161,11 +1679,11 @@ class GbxWidgetFocusManager(unreal.UObject):
     RegisteredWidgets: unreal.WrappedArray[GbxFocusableWidgetInfo]
 
 
-
 class GbxWorldSpaceProxyWidget(GbxUserWidget):
     Depth: float
     Alignment: core_uobject.Vector2D
-    def GetWorldLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+
+    def GetWorldLocation(self) -> core_uobject.Vector: ...
 
 
 class InWorldDamageNumber(GbxUserWidget):
@@ -1174,6 +1692,7 @@ class InWorldDamageNumber(GbxUserWidget):
     DamageAnimationPairings: unreal.WrappedArray[DamageAnimationPairing]
     InstigatingPlayer: gbx_game_system_core.GbxPlayerController
     DamageNumberContainer: umg.WidgetComponent
+
     def OnWentOffscreen(self): ...
     def ImpulseAnimationCompleted(self, AssociatedWidget: umg.UserWidget): ...
 
@@ -1187,12 +1706,10 @@ class GbxCascadingListItemData:
     bHasChildren: bool
 
 
-
 class GbxGFxMaterialRenderer:
     Material: engine.MaterialInterface
     RenderTarget: engine.TextureRenderTarget2D
     OwningMovie: GbxGFxMovie
-
 
 
 class GbxGFxMediaPlayerConfig:
@@ -1201,7 +1718,6 @@ class GbxGFxMediaPlayerConfig:
     MediaMaterial: engine.MaterialInterface
     MediaDimensions: core_uobject.Vector2D
     ExternalTextureName: str
-
 
 
 class GbxGFxMouseCapturePanelMouseButtonInfo: ...
@@ -1215,13 +1731,11 @@ class GbxGFxListCellUpdateInfo:
     bIsNewInView: bool
 
 
-
 class GbxGFxSliderAcceleration:
     RepeatsNeededToAcclerate: int
     RepeatAdder: int
     MaxIncreases: int
     TimeToResetMouseWheelRepeat: float
-
 
 
 class GbxProgressBarInterpolator:
@@ -1235,7 +1749,6 @@ class GbxProgressBarInterpolator:
     DeltaEndOverride: float
 
 
-
 class GbxProgressBarRange:
     Name: str
     Min: float
@@ -1244,11 +1757,10 @@ class GbxProgressBarRange:
     bDecreasing: bool
 
 
-
 class GbxHUDStateManager:
+    OnStateChanged: Any
     StateStack: unreal.WrappedArray[GbxHUDStateData]
     Widgets: unreal.WrappedArray[GbxGFxHUDWidget]
-
 
 
 class GbxGFxAnchor:
@@ -1257,15 +1769,13 @@ class GbxGFxAnchor:
     Scale: core_uobject.Vector2D
 
 
-
 class GbxGFxMovieClipAppendix:
     DefaultRetVal: GbxGFxmovieClipAppendixItem
-
+    AppendixMap: Any
 
 
 class GbxGFxmovieClipAppendixItem:
     ClipPaths: unreal.WrappedArray[str]
-
 
 
 class GbxFocusableWidgetAdjacencyInfo:
@@ -1273,7 +1783,6 @@ class GbxFocusableWidgetAdjacencyInfo:
     WidgetDown: unreal.UObject
     WidgetLeft: unreal.UObject
     WidgetRight: unreal.UObject
-
 
 
 class GbxGFxListConfig:
@@ -1308,11 +1817,9 @@ class GbxGFxListConfig:
     bFocusListIfCellGetsFocused: bool
 
 
-
 class GbxGFxPooledGridListFullConfig:
     BaseListConfig: GbxGFxListConfig
     PoolListConfig: GbxGFxPooledGridListConfig
-
 
 
 class GbxGFxPooledGridListConfig:
@@ -1324,7 +1831,6 @@ class GbxGFxPooledGridListConfig:
     VisibleCols: int
 
 
-
 class GbxFocusableWidgetAdjacencyNames:
     WidgetUpName: str
     WidgetDownName: str
@@ -1332,17 +1838,14 @@ class GbxFocusableWidgetAdjacencyNames:
     WidgetRightName: str
 
 
-
 class GbxComboBoxItemInfo:
     DisplayName: str
     ReferenceIndex: int
 
 
-
 class GbxDialogBoxTemplateMapItem:
     NameId: str
     DialogClass: unreal.UClass
-
 
 
 class GbxDialogBoxInfo:
@@ -1351,15 +1854,14 @@ class GbxDialogBoxInfo:
     Choices: unreal.WrappedArray[GbxDialogBoxChoiceInfo]
     bCanCancel: bool
     bAnyUserCanInteract: bool
+    OnChoiceMadeDelegate: Any
     TemplateNameId: str
-
 
 
 class GbxDialogBoxChoiceInfo:
     LabelText: str
     ChoiceNameId: str
     bCloseDialogOnSelection: bool
-
 
 
 class GbxFocusableWidgetItemStyle:
@@ -1372,12 +1874,10 @@ class GbxFocusableWidgetItemStyle:
     IndicatorBrush: slate_core.SlateBrush
 
 
-
 class GbxGFxContextualMenuLocTableData:
     Type: EContextualMenuEntryType
     ItemText: str
     FrameString: str
-
 
 
 class ContextualMenuInfo: ...
@@ -1392,7 +1892,6 @@ class GbxScrollingListCellInfo:
     Cell: GbxGFxListCell
 
 
-
 class GbxGFxMenuSwitcherSubmenuInfo:
     MenuID: str
     MenuName: str
@@ -1403,7 +1902,6 @@ class GbxGFxMenuSwitcherSubmenuInfo:
     bAddToNav: bool
 
 
-
 class GbxGFxMenuSwitcherNavWidgetCustomItem:
     ItemId: str
     IconFrameName: str
@@ -1411,10 +1909,8 @@ class GbxGFxMenuSwitcherNavWidgetCustomItem:
     bDisabled: bool
 
 
-
 class UIEventAudioPairRow(engine.TableRowBase):
     WwiseSound: wwise_audio.WwiseEvent
-
 
 
 class GbxGFxPooledGridPoolInfo:
@@ -1424,12 +1920,11 @@ class GbxGFxPooledGridPoolInfo:
     VisibleIndexOffset: int
 
 
-
 class GbxHintWidgetMapItem:
     InputActions: unreal.WrappedArray[str]
     bIsEnabled: bool
     HintWidget: unreal.UObject
-
+    HintWidgetInterface: Any
 
 
 class GbxHintInfo:
@@ -1441,11 +1936,9 @@ class GbxHintInfo:
     bForceRefreshText: bool
 
 
-
 class GbxHUDLayoutData:
     Layout: engine.DataTable
     Scale: float
-
 
 
 class GbxHUDLayoutTableRow(engine.TableRowBase):
@@ -1455,12 +1948,10 @@ class GbxHUDLayoutTableRow(engine.TableRowBase):
     LibraryMovieString: str
 
 
-
 class GbxGFxHUDWidgetInfo:
     WidgetClass: unreal.UClass
     InstanceString: str
     Priority: int
-
 
 
 class GbxHUDFeedbackManager:
@@ -1471,13 +1962,11 @@ class GbxHUDFeedbackManager:
     OwningPlayerCameraManager: engine.PlayerCameraManager
 
 
-
 class GbxMenuInputRawMousePos:
     PrevMousePos: core_uobject.Vector2D
     NewMousePos: core_uobject.Vector2D
     ControllerId: int
     IgnoreMouseMoveFrames: int
-
 
 
 class GbxMenuInputAxisAction:
@@ -1489,11 +1978,9 @@ class GbxMenuInputAxisAction:
     bWantsRepeat: bool
 
 
-
 class GbxMenuInputAxisBind:
     Key: input_core.Key
     Scale: float
-
 
 
 class GbxMenuInputAction:
@@ -1503,13 +1990,11 @@ class GbxMenuInputAction:
     bWantsRepeat: bool
 
 
-
 class GbxMenuInputActionInfo:
     bIsHeld: bool
     bIsPressToHold: bool
     PressToHoldDuration: float
     PressToHoldProgress: float
-
 
 
 class GbxMenuKeyRepeatInfo:
@@ -1521,19 +2006,20 @@ class GbxMenuKeyRepeatInfo:
     HoldToPressDurationLong: float
 
 
-
 class GbxMenuAxisInputEvent: ...
 
 
 class GbxDLCMenuSplitscreenLayouts:
+    VerticalLayout: Any
+    QuarterLayout: Any
     SoftVerticalLayout: core_uobject.SoftObjectPath
     SoftQuarterLayout: core_uobject.SoftObjectPath
 
 
-
 class GbxMenuSplitscreenLayouts:
+    VerticalLayout: Any
+    QuarterLayout: Any
     QuarterLayoutPath: core_uobject.SoftObjectPath
-
 
 
 class GbxMenuSwitcherSubmenuInfo:
@@ -1543,11 +2029,9 @@ class GbxMenuSwitcherSubmenuInfo:
     MenuClass: unreal.UClass
 
 
-
 class TextMarkupDictionaryEntry:
     OutputText: str
     bRequiresEndSection: bool
-
 
 
 class TextDebugData:
@@ -1555,7 +2039,6 @@ class TextDebugData:
     DisplayTime: float
     DisplaySize: int
     DisplayColor: core_uobject.LinearColor
-
 
 
 class GbxInputToGlyphSpecialActionItem:
@@ -1578,7 +2061,6 @@ class GbxInputToGlyphSpecialActionItem:
     StadiaGlyphBrush: slate_core.SlateBrush
 
 
-
 class GbxInputToGlyphMapItem:
     Key: input_core.Key
     KeyboardMouseGlyph: str
@@ -1599,7 +2081,6 @@ class GbxInputToGlyphMapItem:
     StadiaGlyphBrush: slate_core.SlateBrush
 
 
-
 class GbxUIScroller:
     Acceleration: float
     ItemSize: float
@@ -1618,18 +2099,15 @@ class GbxUIScroller:
     bHasSlowedDown: bool
 
 
-
 class GbxFocusableWidgetInfo:
     Widget: unreal.UObject
     AdjacencyInfo: GbxFocusableWidgetAdjacencyInfo
-
 
 
 class DamageAnimationPairing:
     DamageTypeFlag: gbx_game_system_core.ERecentDamageFlags
     LeftAnimations: unreal.WrappedArray[umg.WidgetAnimation]
     RightAnimations: unreal.WrappedArray[umg.WidgetAnimation]
-
 
 
 class EGbxFocusableWidgetState(enum.Enum):

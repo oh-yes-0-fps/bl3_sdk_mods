@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import engine
-
 
 
 class CoherentRenderingSettings(unreal.UObject):
@@ -14,10 +13,8 @@ class CoherentRenderingSettings(unreal.UObject):
     DeveloperOptions: str
 
 
-
 class CohTextureUserWrapData(unreal.UObject):
     Texture: engine.Texture
-
 
 
 class ECoherentRenderingSettingsSeverity(enum.Enum):

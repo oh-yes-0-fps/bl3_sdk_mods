@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import engine
-
 
 
 class GbxRumbleRemapping(unreal.UObject):
@@ -16,11 +15,9 @@ class GbxRumbleRemapping(unreal.UObject):
     PS5Mapping: RemapByConsole
 
 
-
 class RemapByConsole:
     ConsoleName: str
     RemapValues: RumbleRemap
-
 
 
 class RumbleRemap:
@@ -30,11 +27,9 @@ class RumbleRemap:
     RightLargeScalar: RumbleSlotMapping
 
 
-
 class RumbleSlotMapping:
     MapSlotTo: ERumbleSlot
     MappingScalar: engine.RuntimeFloatCurve
-
 
 
 class EPlatform(enum.Enum):

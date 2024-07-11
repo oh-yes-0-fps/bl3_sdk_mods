@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import wwise_audio
-
 
 
 class MaterialExpressionTimeOfDay(engine.MaterialExpression): ...
@@ -26,34 +25,50 @@ class TimeOfDayActor(engine.Actor):
     StartTime: float
     StartLayer: str
     EventListeners: unreal.WrappedArray[unreal.UObject]
-    def GetDirectionalLightComponent(self, ReturnValue: engine.DirectionalLightComponent) -> engine.DirectionalLightComponent: ...
+
+    def GetDirectionalLightComponent(self) -> engine.DirectionalLightComponent: ...
     def EnumerateLayerNames(self, OutLayerNames: unreal.WrappedArray[str]): ...
     def AddEventListener(self, InListener: unreal.UObject): ...
 
 
 class TimeOfDayBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def TransitionUpOneLayer(self, WorldContextObject: unreal.UObject, TransitionDuration: float): ...
-    def TransitionToLayer(self, WorldContextObject: unreal.UObject, ToLayer: str, TransitionDuration: float): ...
-    def TransitionDownOneLayer(self, WorldContextObject: unreal.UObject, TransitionDuration: float): ...
+    def TransitionUpOneLayer(
+        self, WorldContextObject: unreal.UObject, TransitionDuration: float
+    ): ...
+    def TransitionToLayer(
+        self,
+        WorldContextObject: unreal.UObject,
+        ToLayer: str,
+        TransitionDuration: float,
+    ): ...
+    def TransitionDownOneLayer(
+        self, WorldContextObject: unreal.UObject, TransitionDuration: float
+    ): ...
     def StartTimeOfDay(self, WorldContextObject: unreal.UObject): ...
     def SetTimeOfDay(self, WorldContextObject: unreal.UObject, NewTimeOfDay: float): ...
     def PauseTimeOfDay(self, WorldContextObject: unreal.UObject): ...
-    def GetTimeOfDayState(self, WorldContextObject: unreal.UObject, ReturnValue: ETimeOfDayState) -> ETimeOfDayState: ...
-    def GetTimeOfDay(self, WorldContextObject: unreal.UObject, ReturnValue: float) -> float: ...
-    def AddTimeOfDayListener(self, WorldContextObject: unreal.UObject, InListener: unreal.UObject): ...
+    def GetTimeOfDayState(
+        self, WorldContextObject: unreal.UObject
+    ) -> ETimeOfDayState: ...
+    def GetTimeOfDay(self, WorldContextObject: unreal.UObject) -> float: ...
+    def AddTimeOfDayListener(
+        self, WorldContextObject: unreal.UObject, InListener: unreal.UObject
+    ): ...
 
 
 class TimeOfDayComponent(engine.SceneComponent):
     TimeOfDayCycleInstanceData: TimeOfDayCycleInstanceData
     TimeOfDayCycleInstance: TimeOfDayCycleInstance
     TimeOfDay: float
+    CycleCount: int
     CurrentLayerName: str
     TransitionTimeLeft: float
     LastEvaluatedTime: float
     CinematicTimeOfDay: float
     bUseCinematicTimeOfDay: bool
     bShouldTick: bool
+
     def SetUseCinematicTimeOfDay(self, InUseCinematicTimeOfDay: bool): ...
     def SetCinematicTimeOfDay(self, InCinematicTimeOfDay: float): ...
 
@@ -64,14 +79,12 @@ class TimeOfDayCycle(unreal.UObject):
     CycleLength: float
 
 
-
 class TimeOfDayCycleInstance(unreal.UObject):
     ParentCycle: TimeOfDayCycle
     bOverrideCycleLength: bool
     OverrideCycleLength: float
     ParameterLayerCurves: unreal.WrappedArray[LayerParameterCurves]
     PropertyLayerCurves: unreal.WrappedArray[LayerPropertyCurves]
-
 
 
 class TimeOfDayKeyBase(unreal.UObject):
@@ -81,11 +94,9 @@ class TimeOfDayKeyBase(unreal.UObject):
     KeyType: ETimeOfDayKeyType
 
 
-
 class TimeOfDayEventKey(TimeOfDayKeyBase):
     EventName: str
     State: ETimeOfDayState
-
 
 
 class TimeOfDayLayer(unreal.UObject):
@@ -99,7 +110,6 @@ class TimeOfDayLayer(unreal.UObject):
     OverrideVector4Properties: unreal.WrappedArray[TODCollectionVector4Parameter]
 
 
-
 class TimeOfDayPropertyKey(TimeOfDayKeyBase):
     OverrideScalarParameters: unreal.WrappedArray[engine.CollectionScalarParameter]
     OverrideVectorParameters: unreal.WrappedArray[engine.CollectionVectorParameter]
@@ -108,11 +118,9 @@ class TimeOfDayPropertyKey(TimeOfDayKeyBase):
     OverrideVector4Properties: unreal.WrappedArray[TODCollectionVector4Parameter]
 
 
-
 class ControlledLight:
     IntensityMultiplier: float
     LightActor: engine.Light
-
 
 
 class TimeOfDayCycleInstanceData:
@@ -122,7 +130,6 @@ class TimeOfDayCycleInstanceData:
     LayerCurveData: unreal.WrappedArray[LayerCurveData]
 
 
-
 class LayerCurveData:
     LayerName: str
     ParameterLayerCurves: LayerParameterCurves
@@ -130,12 +137,10 @@ class LayerCurveData:
     LayerEvents: unreal.WrappedArray[TimeOfDayEvent]
 
 
-
 class TimeOfDayEvent:
     EventTime: float
     EventName: str
     State: ETimeOfDayState
-
 
 
 class LayerPropertyCurves:
@@ -145,31 +150,25 @@ class LayerPropertyCurves:
     Vector4Props: unreal.WrappedArray[Vector4PropertyLayerCurve]
 
 
-
 class PropertyLayerCurveBase:
     ClassName: str
     PropertyName: str
-
 
 
 class Vector4PropertyLayerCurve(PropertyLayerCurveBase):
     ValueCurve: engine.RichCurve
 
 
-
 class ColorPropertyLayerCurve(PropertyLayerCurveBase):
     ValueCurve: engine.RichCurve
-
 
 
 class VectorPropertyLayerCurve(PropertyLayerCurveBase):
     ValueCurve: engine.RichCurve
 
 
-
 class FloatPropertyLayerCurve(PropertyLayerCurveBase):
     ValueCurve: engine.RichCurve
-
 
 
 class LayerParameterCurves:
@@ -177,11 +176,9 @@ class LayerParameterCurves:
     VectorParams: unreal.WrappedArray[VectorParamLayerCurve]
 
 
-
 class VectorParamLayerCurve:
     ParamName: str
     ValueCurve: engine.RichCurve
-
 
 
 class FloatParamLayerCurve:
@@ -189,11 +186,9 @@ class FloatParamLayerCurve:
     ValueCurve: engine.RichCurve
 
 
-
 class TODCollectionParam:
     ParameterName: str
     ID: core_uobject.Guid
-
 
 
 class TODVectorCollectionParam(TODCollectionParam): ...
@@ -206,18 +201,15 @@ class TODCollectionVector4Parameter(engine.CollectionParameterBase):
     DefaultValue: core_uobject.Vector4
 
 
-
 class TimeOfDaySaveGameData:
     PlanetCycleInfo: unreal.WrappedArray[PlanetCycleInfo]
     PlanetCycle: str
-
 
 
 class PlanetCycleInfo:
     PlanetName: str
     CycleLength: float
     LastCachedTime: float
-
 
 
 class ETimeOfDayState(enum.Enum):

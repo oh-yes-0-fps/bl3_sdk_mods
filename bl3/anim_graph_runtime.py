@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import animation_core
-
 
 
 class AnimCustomInstance(engine.AnimInstance): ...
@@ -17,10 +16,8 @@ class AnimNotify_PlayMontageNotify(engine.AnimNotify):
     NotifyName: str
 
 
-
 class AnimNotify_PlayMontageNotifyWindow(engine.AnimNotifyState):
     NotifyName: str
-
 
 
 class AnimSequencerInstance(AnimCustomInstance): ...
@@ -28,17 +25,57 @@ class AnimSequencerInstance(AnimCustomInstance): ...
 
 class KismetAnimationLibrary(engine.BlueprintFunctionLibrary):
 
-    def K2_TwoBoneIK(self, RootPos: core_uobject.Vector, JointPos: core_uobject.Vector, EndPos: core_uobject.Vector, JointTarget: core_uobject.Vector, Effector: core_uobject.Vector, OutJointPos: core_uobject.Vector, OutEndPos: core_uobject.Vector, bAllowStretching: bool, StartStretchRatio: float, MaxStretchScale: float): ...
-    def K2_LookAt(self, CurrentTransform: core_uobject.Transform, TargetPosition: core_uobject.Vector, LookAtVector: core_uobject.Vector, bUseUpVector: bool, UpVector: core_uobject.Vector, ClampConeInDegree: float, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
+    def K2_TwoBoneIK(
+        self,
+        RootPos: core_uobject.Vector,
+        JointPos: core_uobject.Vector,
+        EndPos: core_uobject.Vector,
+        JointTarget: core_uobject.Vector,
+        Effector: core_uobject.Vector,
+        OutJointPos: core_uobject.Vector,
+        OutEndPos: core_uobject.Vector,
+        bAllowStretching: bool,
+        StartStretchRatio: float,
+        MaxStretchScale: float,
+    ): ...
+    def K2_LookAt(
+        self,
+        CurrentTransform: core_uobject.Transform,
+        TargetPosition: core_uobject.Vector,
+        LookAtVector: core_uobject.Vector,
+        bUseUpVector: bool,
+        UpVector: core_uobject.Vector,
+        ClampConeInDegree: float,
+    ) -> core_uobject.Transform: ...
 
 
 class PlayMontageCallbackProxy(unreal.UObject):
+    OnCompleted: Any
+    OnBlendOut: Any
+    OnInterrupted: Any
+    OnNotifyBegin: Any
+    OnNotifyEnd: Any
 
-    def OnNotifyEndReceived(self, NotifyName: str, BranchingPointNotifyPayload: engine.BranchingPointNotifyPayload): ...
-    def OnNotifyBeginReceived(self, NotifyName: str, BranchingPointNotifyPayload: engine.BranchingPointNotifyPayload): ...
+    def OnNotifyEndReceived(
+        self,
+        NotifyName: str,
+        BranchingPointNotifyPayload: engine.BranchingPointNotifyPayload,
+    ): ...
+    def OnNotifyBeginReceived(
+        self,
+        NotifyName: str,
+        BranchingPointNotifyPayload: engine.BranchingPointNotifyPayload,
+    ): ...
     def OnMontageEnded(self, Montage: engine.AnimMontage, bInterrupted: bool): ...
     def OnMontageBlendingOut(self, Montage: engine.AnimMontage, bInterrupted: bool): ...
-    def CreateProxyObjectForPlayMontage(self, InSkeletalMeshComponent: engine.SkeletalMeshComponent, MontageToPlay: engine.AnimMontage, PlayRate: float, StartingPosition: float, StartingSection: str, ReturnValue: PlayMontageCallbackProxy) -> PlayMontageCallbackProxy: ...
+    def CreateProxyObjectForPlayMontage(
+        self,
+        InSkeletalMeshComponent: engine.SkeletalMeshComponent,
+        MontageToPlay: engine.AnimMontage,
+        PlayRate: float,
+        StartingPosition: float,
+        StartingSection: str,
+    ) -> PlayMontageCallbackProxy: ...
 
 
 class AnimNode_SkeletalControlBase(engine.AnimNode_Base):
@@ -59,12 +96,10 @@ class AnimNode_SkeletalControlBase(engine.AnimNode_Base):
     bUseScreenSizeThreshold: bool
 
 
-
 class ScreenSizeSelection:
     Selection: EScreenSizeSelection
     Preset: str
     ScreenSize: float
-
 
 
 class AnimNode_BlendSpacePlayer(engine.AnimNode_AssetPlayerBase):
@@ -86,7 +121,6 @@ class AnimNode_BlendSpacePlayer(engine.AnimNode_AssetPlayerBase):
     bCalcStartPositionFromCurrentPose: bool
 
 
-
 class AnimNode_AimOffsetLookAt(AnimNode_BlendSpacePlayer):
     BasePose: engine.PoseLink
     LODThreshold: int
@@ -101,7 +135,6 @@ class AnimNode_AimOffsetLookAt(AnimNode_BlendSpacePlayer):
     PivotSocketBoneReference: engine.BoneReference
     PivotSocketLocalTransform: core_uobject.Transform
     bUseBlendSpaceWeightInterpolation: bool
-
 
 
 class AnimNode_AnimDynamics(AnimNode_SkeletalControlBase):
@@ -141,7 +174,6 @@ class AnimNode_AnimDynamics(AnimNode_SkeletalControlBase):
     bForceNoStretch: bool
 
 
-
 class AnimPhysSphericalLimit:
     DrivingBone: engine.BoneReference
     SphereLocalOffset: core_uobject.Vector
@@ -149,11 +181,9 @@ class AnimPhysSphericalLimit:
     LimitType: ESphericalLimitType
 
 
-
 class AnimPhysPlanarLimit:
     DrivingBone: engine.BoneReference
     PlaneTransform: core_uobject.Transform
-
 
 
 class AnimPhysConstraintSetup:
@@ -175,7 +205,6 @@ class AnimPhysConstraintSetup:
     bLinearFullyLocked: bool
 
 
-
 class AnimNode_ApplyAdditive(engine.AnimNode_Base):
     Base: engine.PoseLink
     Additive: engine.PoseLink
@@ -192,18 +221,15 @@ class AnimNode_ApplyAdditive(engine.AnimNode_Base):
     bInvertAlpha: bool
 
 
-
 class AnimNode_ApplyLimits(AnimNode_SkeletalControlBase):
     AngularRangeLimits: unreal.WrappedArray[AngularRangeLimit]
     AngularOffsets: unreal.WrappedArray[core_uobject.Vector]
-
 
 
 class AngularRangeLimit:
     LimitMin: core_uobject.Vector
     LimitMax: core_uobject.Vector
     Bone: engine.BoneReference
-
 
 
 class AnimNode_BlendBoneByChannel(engine.AnimNode_Base):
@@ -219,14 +245,12 @@ class AnimNode_BlendBoneByChannel(engine.AnimNode_Base):
     bInvertAlpha: bool
 
 
-
 class BlendBoneByChannelEntry:
     SourceBone: engine.BoneReference
     TargetBone: engine.BoneReference
     bBlendTranslation: bool
     bBlendRotation: bool
     bBlendScale: bool
-
 
 
 class AnimNode_BlendListBase(engine.AnimNode_Base):
@@ -243,10 +267,8 @@ class AnimNode_BlendListBase(engine.AnimNode_Base):
     bResetChildOnActivation: bool
 
 
-
 class AnimNode_BlendListByBool(AnimNode_BlendListBase):
     bActiveValue: bool
-
 
 
 class AnimNode_BlendListByEnum(AnimNode_BlendListBase):
@@ -254,15 +276,12 @@ class AnimNode_BlendListByEnum(AnimNode_BlendListBase):
     ActiveEnumValue: int
 
 
-
 class AnimNode_BlendListByInt(AnimNode_BlendListBase):
     ActiveChildIndex: int
 
 
-
 class AnimNode_BlendSpaceEvaluator(AnimNode_BlendSpacePlayer):
     NormalizedTime: float
-
 
 
 class AnimNode_BoneDrivenController(AnimNode_SkeletalControlBase):
@@ -291,12 +310,10 @@ class AnimNode_BoneDrivenController(AnimNode_SkeletalControlBase):
     ModificationMode: EDrivenBoneModificationMode
 
 
-
 class AnimNode_Constraint(AnimNode_SkeletalControlBase):
     BoneToModify: engine.BoneReference
     ConstraintSetup: unreal.WrappedArray[Constraint]
     ConstraintWeights: unreal.WrappedArray[float]
-
 
 
 class Constraint:
@@ -306,7 +323,6 @@ class Constraint:
     PerAxis: animation_core.FilterOptionPerAxis
 
 
-
 class AnimNode_CopyBone(AnimNode_SkeletalControlBase):
     SourceBone: engine.BoneReference
     TargetBone: engine.BoneReference
@@ -314,7 +330,6 @@ class AnimNode_CopyBone(AnimNode_SkeletalControlBase):
     bCopyRotation: bool
     bCopyScale: bool
     ControlSpace: int
-
 
 
 class AnimNode_CopyBoneDelta(AnimNode_SkeletalControlBase):
@@ -329,19 +344,17 @@ class AnimNode_CopyBoneDelta(AnimNode_SkeletalControlBase):
     ScaleMultiplier: float
 
 
-
 class AnimNode_CopyPoseFromMesh(engine.AnimNode_Base):
     SourceMeshComponent: engine.SkeletalMeshComponent
     bUseAttachedParent: bool
     bCopyCurves: bool
 
 
-
 class AnimNode_CurveSource(engine.AnimNode_Base):
     SourcePose: engine.PoseLink
     SourceBinding: str
     Alpha: float
-
+    CurveSource: Any
 
 
 class AnimNode_Fabrik(AnimNode_SkeletalControlBase):
@@ -357,17 +370,14 @@ class AnimNode_Fabrik(AnimNode_SkeletalControlBase):
     bEnableDebugDraw: bool
 
 
-
 class BoneSocketTarget:
     bUseSocket: bool
     BoneReference: engine.BoneReference
     SocketReference: SocketReference
 
 
-
 class SocketReference:
     SocketName: str
-
 
 
 class AnimNode_HandIKRetargeting(AnimNode_SkeletalControlBase):
@@ -377,7 +387,6 @@ class AnimNode_HandIKRetargeting(AnimNode_SkeletalControlBase):
     LeftHandIK: engine.BoneReference
     IKBonesToMove: unreal.WrappedArray[engine.BoneReference]
     HandFKWeight: float
-
 
 
 class AnimNode_LayeredBoneBlend(engine.AnimNode_Base):
@@ -398,7 +407,6 @@ class AnimNode_LayeredBoneBlend(engine.AnimNode_Base):
     bInvertWeight: unreal.WrappedArray[bool]
 
 
-
 class AnimNode_LayeredBoneSetBlend(engine.AnimNode_Base):
     BasePose: engine.PoseLink
     BlendPoses: unreal.WrappedArray[engine.PoseLink]
@@ -416,13 +424,11 @@ class AnimNode_LayeredBoneSetBlend(engine.AnimNode_Base):
     bInvertWeight: unreal.WrappedArray[bool]
 
 
-
 class AnimNode_LegIK(AnimNode_SkeletalControlBase):
     ReachPrecision: float
     MaxIterations: int
     LegsDefinition: unreal.WrappedArray[AnimLegIKDefinition]
     LegsData: unreal.WrappedArray[AnimLegIKData]
-
 
 
 class AnimLegIKData: ...
@@ -438,7 +444,6 @@ class AnimLegIKDefinition:
     MinRotationAngle: float
     MaxRotationAngle: float
     bEnableKneeTwistCorrection: bool
-
 
 
 class IKChain: ...
@@ -468,13 +473,11 @@ class AnimNode_LookAt(AnimNode_SkeletalControlBase):
     RollCorrectionLookUpAxis: animation_core.AXIS
 
 
-
 class AnimNode_MakeDynamicAdditive(engine.AnimNode_Base):
     Base: engine.PoseLink
     Additive: engine.PoseLink
     bMeshSpaceAdditive: bool
     bIgnoreCurves: bool
-
 
 
 class AnimNode_ModifyBone(AnimNode_SkeletalControlBase):
@@ -492,7 +495,6 @@ class AnimNode_ModifyBone(AnimNode_SkeletalControlBase):
     bOverrideBoneToModify: bool
 
 
-
 class AnimNode_ModifyCurve(engine.AnimNode_Base):
     SourcePose: engine.PoseLink
     ApplyMode: EModifyCurveApplyMode
@@ -500,7 +502,6 @@ class AnimNode_ModifyCurve(engine.AnimNode_Base):
     LastCurveValues: unreal.WrappedArray[float]
     CurveNames: unreal.WrappedArray[str]
     Alpha: float
-
 
 
 class AnimNode_MultiWayBlend(engine.AnimNode_Base):
@@ -512,7 +513,6 @@ class AnimNode_MultiWayBlend(engine.AnimNode_Base):
     bInvertAlpha: unreal.WrappedArray[bool]
 
 
-
 class AnimNode_ObserveBone(AnimNode_SkeletalControlBase):
     BoneToObserve: engine.BoneReference
     DisplaySpace: int
@@ -522,10 +522,8 @@ class AnimNode_ObserveBone(AnimNode_SkeletalControlBase):
     Scale: core_uobject.Vector
 
 
-
 class AnimNode_PoseHandler(engine.AnimNode_AssetPlayerBase):
     PoseAsset: engine.PoseAsset
-
 
 
 class AnimNode_PoseBlendNode(AnimNode_PoseHandler):
@@ -534,11 +532,9 @@ class AnimNode_PoseBlendNode(AnimNode_PoseHandler):
     CustomCurve: engine.CurveFloat
 
 
-
 class AnimNode_PoseByName(AnimNode_PoseHandler):
     PoseName: str
     PoseWeight: float
-
 
 
 class AnimNode_PoseDriver(AnimNode_PoseHandler):
@@ -557,7 +553,6 @@ class AnimNode_PoseDriver(AnimNode_PoseHandler):
     RadialScaling: float
 
 
-
 class PoseDriverTarget:
     BoneTransforms: unreal.WrappedArray[PoseDriverTransform]
     TargetRotation: core_uobject.Rotator
@@ -567,11 +562,9 @@ class PoseDriverTarget:
     DrivenName: str
 
 
-
 class PoseDriverTransform:
     TargetTranslation: core_uobject.Vector
     TargetRotation: core_uobject.Rotator
-
 
 
 class RBFParams:
@@ -583,12 +576,10 @@ class RBFParams:
     WeightThreshold: float
 
 
-
 class AnimNode_PoseSnapshot(engine.AnimNode_Base):
     Mode: ESnapshotSourceMode
     SnapshotName: str
     Snapshot: engine.PoseSnapshot
-
 
 
 class AnimNode_RandomPlayer(engine.AnimNode_Base):
@@ -598,12 +589,10 @@ class AnimNode_RandomPlayer(engine.AnimNode_Base):
     EntryPoseData: RandomPlayerInputEntryData
 
 
-
 class RandomPlayerInputEntryData:
     BlendIn: engine.AlphaBlend
     MinPlayTime: float
     MaxPlayTime: float
-
 
 
 class RandomPlayerSequenceEntry:
@@ -621,7 +610,6 @@ class RandomPlayerSequenceEntry:
     Duration: float
 
 
-
 class AnimNode_MeshSpaceRefPose(engine.AnimNode_Base): ...
 
 
@@ -629,10 +617,8 @@ class AnimNode_RefPose(engine.AnimNode_Base):
     RefPoseType: int
 
 
-
 class AnimNode_Root(engine.AnimNode_Base):
     Result: engine.PoseLink
-
 
 
 class AnimNode_RotateRootBone(engine.AnimNode_Base):
@@ -646,14 +632,12 @@ class AnimNode_RotateRootBone(engine.AnimNode_Base):
     ActualYaw: float
 
 
-
 class AnimNode_RotationMultiplier(AnimNode_SkeletalControlBase):
     TargetBone: engine.BoneReference
     SourceBone: engine.BoneReference
     Multiplier: float
     RotationAxisToRefer: int
     bIsAdditive: bool
-
 
 
 class AnimNode_RotationOffsetBlendSpace(AnimNode_BlendSpacePlayer):
@@ -670,7 +654,6 @@ class AnimNode_RotationOffsetBlendSpace(AnimNode_BlendSpacePlayer):
     AlphaScaleBiasClamp: engine.InputScaleBiasClamp
 
 
-
 class AnimNode_ScaleChainLength(engine.AnimNode_Base):
     InputPose: engine.PoseLink
     DefaultChainLength: float
@@ -684,7 +667,6 @@ class AnimNode_ScaleChainLength(engine.AnimNode_Base):
     bBoneIndicesCached: bool
 
 
-
 class AnimNode_SequenceEvaluator(engine.AnimNode_AssetPlayerBase):
     Sequence: engine.AnimSequenceBase
     ExplicitTime: float
@@ -695,14 +677,12 @@ class AnimNode_SequenceEvaluator(engine.AnimNode_AssetPlayerBase):
     bReinitialized: bool
 
 
-
 class AnimNode_Slot(engine.AnimNode_Base):
     Source: engine.PoseLink
     SlotName: str
     bAlwaysUpdateSourcePose: bool
     bAlwaysEvaluateSource: bool
     CameraRefPose: engine.AnimSequence
-
 
 
 class AnimNode_SplineIK(AnimNode_SkeletalControlBase):
@@ -725,11 +705,9 @@ class AnimNode_SplineIK(AnimNode_SkeletalControlBase):
     CachedOffsetRotations: unreal.WrappedArray[core_uobject.Quat]
 
 
-
 class SplineIKCachedBoneData:
     Bone: engine.BoneReference
     RefSkeletonIndex: int
-
 
 
 class AnimNode_SpringBone(AnimNode_SkeletalControlBase):
@@ -748,7 +726,6 @@ class AnimNode_SpringBone(AnimNode_SkeletalControlBase):
     bRotateZ: bool
 
 
-
 class AnimNode_Trail(AnimNode_SkeletalControlBase):
     TrailBone: engine.BoneReference
     ChainLength: int
@@ -765,7 +742,6 @@ class AnimNode_Trail(AnimNode_SkeletalControlBase):
     BaseJoint: engine.BoneReference
 
 
-
 class AnimNode_TwistCorrectiveNode(AnimNode_SkeletalControlBase):
     BaseFrame: ReferenceBoneFrame
     TwistFrame: ReferenceBoneFrame
@@ -776,11 +752,9 @@ class AnimNode_TwistCorrectiveNode(AnimNode_SkeletalControlBase):
     Curve: engine.AnimCurveParam
 
 
-
 class ReferenceBoneFrame:
     Bone: engine.BoneReference
     AXIS: animation_core.AXIS
-
 
 
 class AnimNode_TwoBoneIK(AnimNode_SkeletalControlBase):
@@ -804,7 +778,6 @@ class AnimNode_TwoBoneIK(AnimNode_SkeletalControlBase):
     bNoTwist: bool
 
 
-
 class AnimNode_TwoWayBlend(engine.AnimNode_Base):
     A: engine.PoseLink
     B: engine.PoseLink
@@ -822,7 +795,6 @@ class AnimNode_TwoWayBlend(engine.AnimNode_Base):
     bInvertAlpha: bool
 
 
-
 class AnimSequencerInstanceProxy(engine.AnimInstanceProxy): ...
 
 
@@ -830,12 +802,10 @@ class RBFEntry:
     Values: unreal.WrappedArray[float]
 
 
-
 class RBFTarget(RBFEntry):
     ScaleFactor: float
     bApplyCustomCurve: bool
     CustomCurve: engine.RichCurve
-
 
 
 class ESphericalLimitType(enum.Enum):

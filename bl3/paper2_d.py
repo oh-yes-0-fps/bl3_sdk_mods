@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -9,17 +9,16 @@ from . import engine
 from . import slate_core
 
 
-
-class MaterialExpressionSpriteTextureSampler(engine.MaterialExpressionTextureSampleParameter2D):
+class MaterialExpressionSpriteTextureSampler(
+    engine.MaterialExpressionTextureSampleParameter2D
+):
     bSampleAdditionalTextures: bool
     AdditionalSlotIndex: int
     SlotDisplayName: str
 
 
-
 class PaperCharacter(engine.Character):
     Sprite: PaperFlipbookComponent
-
 
 
 class PaperFlipbook(unreal.UObject):
@@ -27,18 +26,18 @@ class PaperFlipbook(unreal.UObject):
     KeyFrames: unreal.WrappedArray[PaperFlipbookKeyFrame]
     DefaultMaterial: engine.MaterialInterface
     CollisionSource: int
-    def IsValidKeyFrameIndex(self, Index: int, ReturnValue: bool) -> bool: ...
-    def GetTotalDuration(self, ReturnValue: float) -> float: ...
-    def GetSpriteAtTime(self, Time: float, bClampToEnds: bool, ReturnValue: PaperSprite) -> PaperSprite: ...
-    def GetSpriteAtFrame(self, FrameIndex: int, ReturnValue: PaperSprite) -> PaperSprite: ...
-    def GetNumKeyFrames(self, ReturnValue: int) -> int: ...
-    def GetNumFrames(self, ReturnValue: int) -> int: ...
-    def GetKeyFrameIndexAtTime(self, Time: float, bClampToEnds: bool, ReturnValue: int) -> int: ...
+
+    def IsValidKeyFrameIndex(self, Index: int) -> bool: ...
+    def GetTotalDuration(self) -> float: ...
+    def GetSpriteAtTime(self, Time: float, bClampToEnds: bool) -> PaperSprite: ...
+    def GetSpriteAtFrame(self, FrameIndex: int) -> PaperSprite: ...
+    def GetNumKeyFrames(self) -> int: ...
+    def GetNumFrames(self) -> int: ...
+    def GetKeyFrameIndexAtTime(self, Time: float, bClampToEnds: bool) -> int: ...
 
 
 class PaperFlipbookActor(engine.Actor):
     RenderComponent: PaperFlipbookComponent
-
 
 
 class PaperFlipbookComponent(engine.MeshComponent):
@@ -52,6 +51,8 @@ class PaperFlipbookComponent(engine.MeshComponent):
     CachedFrameIndex: int
     SpriteColor: core_uobject.LinearColor
     CachedBodySetup: engine.BodySetup
+    OnFinishedPlaying: Any
+
     def Stop(self): ...
     def SetSpriteColor(self, NewColor: core_uobject.LinearColor): ...
     def SetPlayRate(self, NewRate: float): ...
@@ -59,47 +60,69 @@ class PaperFlipbookComponent(engine.MeshComponent):
     def SetPlaybackPosition(self, NewPosition: float, bFireEvents: bool): ...
     def SetNewTime(self, NewTime: float): ...
     def SetLooping(self, bNewLooping: bool): ...
-    def SetFlipbook(self, NewFlipbook: PaperFlipbook, ReturnValue: bool) -> bool: ...
+    def SetFlipbook(self, NewFlipbook: PaperFlipbook) -> bool: ...
     def ReverseFromEnd(self): ...
     def Reverse(self): ...
     def PlayFromStart(self): ...
     def Play(self): ...
     def OnRep_SourceFlipbook(self, OldFlipbook: PaperFlipbook): ...
-    def IsReversing(self, ReturnValue: bool) -> bool: ...
-    def IsPlaying(self, ReturnValue: bool) -> bool: ...
-    def IsLooping(self, ReturnValue: bool) -> bool: ...
-    def GetPlayRate(self, ReturnValue: float) -> float: ...
-    def GetPlaybackPositionInFrames(self, ReturnValue: int) -> int: ...
-    def GetPlaybackPosition(self, ReturnValue: float) -> float: ...
-    def GetFlipbookLengthInFrames(self, ReturnValue: int) -> int: ...
-    def GetFlipbookLength(self, ReturnValue: float) -> float: ...
-    def GetFlipbookFramerate(self, ReturnValue: float) -> float: ...
-    def GetFlipbook(self, ReturnValue: PaperFlipbook) -> PaperFlipbook: ...
+    def IsReversing(self) -> bool: ...
+    def IsPlaying(self) -> bool: ...
+    def IsLooping(self) -> bool: ...
+    def GetPlayRate(self) -> float: ...
+    def GetPlaybackPositionInFrames(self) -> int: ...
+    def GetPlaybackPosition(self) -> float: ...
+    def GetFlipbookLengthInFrames(self) -> int: ...
+    def GetFlipbookLength(self) -> float: ...
+    def GetFlipbookFramerate(self) -> float: ...
+    def GetFlipbook(self) -> PaperFlipbook: ...
 
 
 class PaperGroupedSpriteActor(engine.Actor):
     RenderComponent: PaperGroupedSpriteComponent
 
 
-
 class PaperGroupedSpriteComponent(engine.MeshComponent):
     InstanceMaterials: unreal.WrappedArray[engine.MaterialInterface]
     PerInstanceSpriteData: unreal.WrappedArray[SpriteInstanceData]
-    def UpdateInstanceTransform(self, InstanceIndex: int, NewInstanceTransform: core_uobject.Transform, bWorldSpace: bool, bMarkRenderStateDirty: bool, bTeleport: bool, ReturnValue: bool) -> bool: ...
-    def UpdateInstanceColor(self, InstanceIndex: int, NewInstanceColor: core_uobject.LinearColor, bMarkRenderStateDirty: bool, ReturnValue: bool) -> bool: ...
+
+    def UpdateInstanceTransform(
+        self,
+        InstanceIndex: int,
+        NewInstanceTransform: core_uobject.Transform,
+        bWorldSpace: bool,
+        bMarkRenderStateDirty: bool,
+        bTeleport: bool,
+    ) -> bool: ...
+    def UpdateInstanceColor(
+        self,
+        InstanceIndex: int,
+        NewInstanceColor: core_uobject.LinearColor,
+        bMarkRenderStateDirty: bool,
+    ) -> bool: ...
     def SortInstancesAlongAxis(self, WorldSpaceSortAxis: core_uobject.Vector): ...
-    def RemoveInstance(self, InstanceIndex: int, ReturnValue: bool) -> bool: ...
-    def GetInstanceTransform(self, InstanceIndex: int, OutInstanceTransform: core_uobject.Transform, bWorldSpace: bool, ReturnValue: bool) -> bool: ...
-    def GetInstanceCount(self, ReturnValue: int) -> int: ...
+    def RemoveInstance(self, InstanceIndex: int) -> bool: ...
+    def GetInstanceTransform(
+        self,
+        InstanceIndex: int,
+        OutInstanceTransform: core_uobject.Transform,
+        bWorldSpace: bool,
+    ) -> bool: ...
+    def GetInstanceCount(self) -> int: ...
     def ClearInstances(self): ...
-    def AddInstance(self, Transform: core_uobject.Transform, Sprite: PaperSprite, bWorldSpace: bool, Color: core_uobject.LinearColor, ReturnValue: int) -> int: ...
+    def AddInstance(
+        self,
+        Transform: core_uobject.Transform,
+        Sprite: PaperSprite,
+        bWorldSpace: bool,
+        Color: core_uobject.LinearColor,
+    ) -> int: ...
 
 
 class PaperRuntimeSettings(unreal.UObject):
     bEnableSpriteAtlasGroups: bool
     bEnableTerrainSplineEditing: bool
     bResizeSpriteDataToMatchTextures: bool
-
 
 
 class PaperSprite(unreal.UObject):
@@ -120,10 +143,8 @@ class PaperSprite(unreal.UObject):
     BakedRenderData: unreal.WrappedArray[core_uobject.Vector4]
 
 
-
 class PaperSpriteActor(engine.Actor):
     RenderComponent: PaperSpriteComponent
-
 
 
 class PaperSpriteAtlas(unreal.UObject): ...
@@ -131,23 +152,25 @@ class PaperSpriteAtlas(unreal.UObject): ...
 
 class PaperSpriteBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def MakeBrushFromSprite(self, Sprite: PaperSprite, Width: int, Height: int, ReturnValue: slate_core.SlateBrush) -> slate_core.SlateBrush: ...
+    def MakeBrushFromSprite(
+        self, Sprite: PaperSprite, Width: int, Height: int
+    ) -> slate_core.SlateBrush: ...
 
 
 class PaperSpriteComponent(engine.MeshComponent):
     SourceSprite: PaperSprite
     MaterialOverride: engine.MaterialInterface
     SpriteColor: core_uobject.LinearColor
+
     def SetSpriteColor(self, NewColor: core_uobject.LinearColor): ...
-    def SetSprite(self, NewSprite: PaperSprite, ReturnValue: bool) -> bool: ...
-    def GetSprite(self, ReturnValue: PaperSprite) -> PaperSprite: ...
+    def SetSprite(self, NewSprite: PaperSprite) -> bool: ...
+    def GetSprite(self) -> PaperSprite: ...
 
 
 class PaperTerrainActor(engine.Actor):
     DummyRoot: engine.SceneComponent
     SplineComponent: PaperTerrainSplineComponent
     RenderComponent: PaperTerrainComponent
-
 
 
 class PaperTerrainComponent(engine.PrimitiveComponent):
@@ -162,13 +185,13 @@ class PaperTerrainComponent(engine.PrimitiveComponent):
     SpriteCollisionDomain: int
     CollisionThickness: float
     CachedBodySetup: engine.BodySetup
+
     def SetTerrainColor(self, NewColor: core_uobject.LinearColor): ...
 
 
 class PaperTerrainMaterial(engine.DataAsset):
     Rules: unreal.WrappedArray[PaperTerrainMaterialRule]
     InteriorFill: PaperSprite
-
 
 
 class PaperTerrainSplineComponent(engine.SplineComponent): ...
@@ -192,7 +215,6 @@ class PaperTileLayer(unreal.UObject):
     AllocatedGrid: unreal.WrappedArray[int]
 
 
-
 class PaperTileMap(unreal.UObject):
     MapWidth: int
     MapHeight: int
@@ -202,6 +224,7 @@ class PaperTileMap(unreal.UObject):
     SeparationPerTileX: float
     SeparationPerTileY: float
     SeparationPerLayer: float
+    SelectedTileSet: Any
     Material: engine.MaterialInterface
     TileLayers: unreal.WrappedArray[PaperTileLayer]
     CollisionThickness: float
@@ -212,10 +235,8 @@ class PaperTileMap(unreal.UObject):
     LayerNameIndex: int
 
 
-
 class PaperTileMapActor(engine.Actor):
     RenderComponent: PaperTileMapComponent
-
 
 
 class PaperTileMapComponent(engine.MeshComponent):
@@ -230,25 +251,56 @@ class PaperTileMapComponent(engine.MeshComponent):
     UseSingleLayerIndex: int
     bUseSingleLayer: bool
     TileMap: PaperTileMap
+
     def SetTileMapColor(self, NewColor: core_uobject.LinearColor): ...
-    def SetTileMap(self, NewTileMap: PaperTileMap, ReturnValue: bool) -> bool: ...
+    def SetTileMap(self, NewTileMap: PaperTileMap) -> bool: ...
     def SetTile(self, X: int, Y: int, Layer: int, NewValue: PaperTileInfo): ...
     def SetLayerColor(self, NewColor: core_uobject.LinearColor, Layer: int): ...
-    def SetLayerCollision(self, Layer: int, bHasCollision: bool, bOverrideThickness: bool, CustomThickness: float, bOverrideOffset: bool, CustomOffset: float, bRebuildCollision: bool): ...
-    def SetDefaultCollisionThickness(self, Thickness: float, bRebuildCollision: bool): ...
+    def SetLayerCollision(
+        self,
+        Layer: int,
+        bHasCollision: bool,
+        bOverrideThickness: bool,
+        CustomThickness: float,
+        bOverrideOffset: bool,
+        CustomOffset: float,
+        bRebuildCollision: bool,
+    ): ...
+    def SetDefaultCollisionThickness(
+        self, Thickness: float, bRebuildCollision: bool
+    ): ...
     def ResizeMap(self, NewWidthInTiles: int, NewHeightInTiles: int): ...
     def RebuildCollision(self): ...
-    def OwnsTileMap(self, ReturnValue: bool) -> bool: ...
+    def OwnsTileMap(self) -> bool: ...
     def MakeTileMapEditable(self): ...
-    def GetTilePolygon(self, TileX: int, TileY: int, Points: unreal.WrappedArray[core_uobject.Vector], LayerIndex: int, bWorldSpace: bool): ...
-    def GetTileMapColor(self, ReturnValue: core_uobject.LinearColor) -> core_uobject.LinearColor: ...
-    def GetTileCornerPosition(self, TileX: int, TileY: int, LayerIndex: int, bWorldSpace: bool, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetTileCenterPosition(self, TileX: int, TileY: int, LayerIndex: int, bWorldSpace: bool, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetTile(self, X: int, Y: int, Layer: int, ReturnValue: PaperTileInfo) -> PaperTileInfo: ...
+    def GetTilePolygon(
+        self,
+        TileX: int,
+        TileY: int,
+        Points: unreal.WrappedArray[core_uobject.Vector],
+        LayerIndex: int,
+        bWorldSpace: bool,
+    ): ...
+    def GetTileMapColor(self) -> core_uobject.LinearColor: ...
+    def GetTileCornerPosition(
+        self, TileX: int, TileY: int, LayerIndex: int, bWorldSpace: bool
+    ) -> core_uobject.Vector: ...
+    def GetTileCenterPosition(
+        self, TileX: int, TileY: int, LayerIndex: int, bWorldSpace: bool
+    ) -> core_uobject.Vector: ...
+    def GetTile(self, X: int, Y: int, Layer: int) -> PaperTileInfo: ...
     def GetMapSize(self, MapWidth: int, MapHeight: int, NumLayers: int): ...
-    def GetLayerColor(self, Layer: int, ReturnValue: core_uobject.LinearColor) -> core_uobject.LinearColor: ...
-    def CreateNewTileMap(self, MapWidth: int, MapHeight: int, TileWidth: int, TileHeight: int, PixelsPerUnrealUnit: float, bCreateLayer: bool): ...
-    def AddNewLayer(self, ReturnValue: PaperTileLayer) -> PaperTileLayer: ...
+    def GetLayerColor(self, Layer: int) -> core_uobject.LinearColor: ...
+    def CreateNewTileMap(
+        self,
+        MapWidth: int,
+        MapHeight: int,
+        TileWidth: int,
+        TileHeight: int,
+        PixelsPerUnrealUnit: float,
+        bCreateLayer: bool,
+    ): ...
+    def AddNewLayer(self) -> PaperTileLayer: ...
 
 
 class PaperTileSet(unreal.UObject):
@@ -270,13 +322,27 @@ class PaperTileSet(unreal.UObject):
     Spacing: int
 
 
-
 class TileMapBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def MakeTile(self, TileIndex: int, TileSet: PaperTileSet, bFlipH: bool, bFlipV: bool, bFlipD: bool, ReturnValue: PaperTileInfo) -> PaperTileInfo: ...
-    def GetTileUserData(self, Tile: PaperTileInfo, ReturnValue: str) -> str: ...
-    def GetTileTransform(self, Tile: PaperTileInfo, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def BreakTile(self, Tile: PaperTileInfo, TileIndex: int, TileSet: PaperTileSet, bFlipH: bool, bFlipV: bool, bFlipD: bool): ...
+    def MakeTile(
+        self,
+        TileIndex: int,
+        TileSet: PaperTileSet,
+        bFlipH: bool,
+        bFlipV: bool,
+        bFlipD: bool,
+    ) -> PaperTileInfo: ...
+    def GetTileUserData(self, Tile: PaperTileInfo) -> str: ...
+    def GetTileTransform(self, Tile: PaperTileInfo) -> core_uobject.Transform: ...
+    def BreakTile(
+        self,
+        Tile: PaperTileInfo,
+        TileIndex: int,
+        TileSet: PaperTileSet,
+        bFlipH: bool,
+        bFlipV: bool,
+        bFlipD: bool,
+    ): ...
 
 
 class IntMargin:
@@ -286,11 +352,9 @@ class IntMargin:
     Bottom: int
 
 
-
 class PaperFlipbookKeyFrame:
     Sprite: PaperSprite
     FrameRun: int
-
 
 
 class SpriteInstanceData:
@@ -300,20 +364,18 @@ class SpriteInstanceData:
     MaterialIndex: int
 
 
-
 class PaperSpriteSocket:
     LocalTransform: core_uobject.Transform
     SocketName: str
 
 
-
 class PaperSpriteAtlasSlot:
+    SpriteRef: Any
     AtlasIndex: int
     X: int
     Y: int
     Width: int
     Height: int
-
 
 
 class PaperTerrainMaterialRule:
@@ -327,11 +389,9 @@ class PaperTerrainMaterialRule:
     DrawOrder: int
 
 
-
 class PaperTileInfo:
     TileSet: PaperTileSet
     PackedTileIndex: int
-
 
 
 class PaperTileSetTerrain:
@@ -339,12 +399,10 @@ class PaperTileSetTerrain:
     CenterTileIndex: int
 
 
-
 class PaperTileMetadata:
     UserDataName: str
     CollisionData: SpriteGeometryCollection
     TerrainMembership: int
-
 
 
 class SpriteGeometryCollection:
@@ -358,7 +416,6 @@ class SpriteGeometryCollection:
     SimplifyEpsilon: float
 
 
-
 class SpriteGeometryShape:
     ShapeType: ESpriteShapeType
     Vertices: unreal.WrappedArray[core_uobject.Vector2D]
@@ -368,12 +425,10 @@ class SpriteGeometryShape:
     bNegativeWinding: bool
 
 
-
 class SpriteDrawCallRecord:
     Destination: core_uobject.Vector
     BaseTexture: engine.Texture
     Color: core_uobject.Color
-
 
 
 class SpriteAssetInitParameters: ...

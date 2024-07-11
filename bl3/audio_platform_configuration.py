@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class PlatformRuntimeAudioCompressionOverrides:
@@ -12,7 +9,6 @@ class PlatformRuntimeAudioCompressionOverrides:
     DurationThreshold: float
     MaxNumRandomBranches: int
     SoundCueQualityIndex: int
-
 
 
 class ESoundwaveSampleRateSettings(enum.Enum):

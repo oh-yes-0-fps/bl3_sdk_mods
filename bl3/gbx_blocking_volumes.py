@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import engine
-
 
 
 class GbxBlockingVolume(engine.Volume):
@@ -26,10 +25,8 @@ class GbxBlockingVolume(engine.Volume):
     bPlayerVehiclesPropEnabled: bool
 
 
-
 class GbxBlockingVolumeUserSettings(unreal.UObject):
     bAlwaysRenderVolumes: bool
     bNeverRenderVolumes: bool
     BlockingVolumeOpacity: float
     bInvertColors: bool
-

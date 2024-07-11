@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class StructSerializerTestStruct:
@@ -17,8 +16,10 @@ class StructSerializerTestStruct:
     Maps: StructSerializerMapTestStruct
 
 
-
-class StructSerializerMapTestStruct: ...
+class StructSerializerMapTestStruct:
+    IntToStr: Any
+    StrToStr: Any
+    StrToVec: Any
 
 
 class StructSerializerArrayTestStruct:
@@ -27,7 +28,6 @@ class StructSerializerArrayTestStruct:
     StaticInt32Array: int
     StaticFloatArray: float
     VectorArray: unreal.WrappedArray[core_uobject.Vector]
-
 
 
 class StructSerializerBuiltinTestStruct:
@@ -39,17 +39,15 @@ class StructSerializerBuiltinTestStruct:
     Vector: core_uobject.Vector
 
 
-
 class StructSerializerObjectTestStruct:
     Class: unreal.UClass
     ObjectPtr: unreal.UObject
 
 
-
 class StructSerializerBooleanTestStruct:
     BoolFalse: bool
     BoolTrue: bool
-
+    Bitfield: int
 
 
 class StructSerializerNumericTestStruct:
@@ -58,6 +56,8 @@ class StructSerializerNumericTestStruct:
     Int32: int
     Int64: int
     Uint8: int
+    UInt16: int
+    UInt32: int
+    UInt64: int
     Float: float
     Double: float
-

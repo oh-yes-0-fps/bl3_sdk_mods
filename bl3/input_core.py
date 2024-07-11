@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class InputCoreTypes(unreal.UObject): ...
@@ -12,7 +9,6 @@ class InputCoreTypes(unreal.UObject): ...
 
 class Key:
     KeyName: str
-
 
 
 class ETouchIndex(enum.Enum):

@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,14 +8,28 @@ from . import core_uobject
 from . import engine
 
 
-
-class FoliageInstancedStaticMeshComponent(engine.HierarchicalInstancedStaticMeshComponent): ...
+class FoliageInstancedStaticMeshComponent(
+    engine.HierarchicalInstancedStaticMeshComponent
+):
+    OnInstanceTakePointDamage: Any
+    OnInstanceTakeRadialDamage: Any
 
 
 class FoliageStatistics(engine.BlueprintFunctionLibrary):
 
-    def FoliageOverlappingSphereCount(self, WorldContextObject: unreal.UObject, StaticMesh: engine.StaticMesh, CenterPosition: core_uobject.Vector, Radius: float, ReturnValue: int) -> int: ...
-    def FoliageOverlappingBoxCount(self, WorldContextObject: unreal.UObject, StaticMesh: engine.StaticMesh, Box: core_uobject.Box, ReturnValue: int) -> int: ...
+    def FoliageOverlappingSphereCount(
+        self,
+        WorldContextObject: unreal.UObject,
+        StaticMesh: engine.StaticMesh,
+        CenterPosition: core_uobject.Vector,
+        Radius: float,
+    ) -> int: ...
+    def FoliageOverlappingBoxCount(
+        self,
+        WorldContextObject: unreal.UObject,
+        StaticMesh: engine.StaticMesh,
+        Box: core_uobject.Box,
+    ) -> int: ...
 
 
 class FoliageType(unreal.UObject):
@@ -101,12 +115,10 @@ class FoliageType(unreal.UObject):
     bEnableDensityScaling: bool
 
 
-
 class FoliageType_InstancedStaticMesh(FoliageType):
     Mesh: engine.StaticMesh
     OverrideMaterials: unreal.WrappedArray[engine.MaterialInterface]
     ComponentClass: unreal.UClass
-
 
 
 class InstancedFoliageActor(engine.Actor): ...
@@ -127,7 +139,16 @@ class InteractiveFoliageActor(engine.StaticMeshActor):
     MaxTouchImpulse: float
     MaxForce: float
     Mass: float
-    def CapsuleTouched(self, OverlappedComp: engine.PrimitiveComponent, Other: engine.Actor, OtherComp: engine.PrimitiveComponent, OtherBodyIndex: int, bFromSweep: bool, OverlapInfo: engine.HitResult): ...
+
+    def CapsuleTouched(
+        self,
+        OverlappedComp: engine.PrimitiveComponent,
+        Other: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        OtherBodyIndex: int,
+        bFromSweep: bool,
+        OverlapInfo: engine.HitResult,
+    ): ...
 
 
 class InteractiveFoliageComponent(engine.StaticMeshComponent): ...
@@ -137,13 +158,11 @@ class ProceduralFoliageBlockingVolume(engine.Volume):
     ProceduralFoliageVolume: ProceduralFoliageVolume
 
 
-
 class ProceduralFoliageComponent(engine.ActorComponent):
     FoliageSpawner: ProceduralFoliageSpawner
     TileOverlap: float
     SpawningVolume: engine.Volume
     ProceduralGuid: core_uobject.Guid
-
 
 
 class ProceduralFoliageSpawner(unreal.UObject):
@@ -153,6 +172,7 @@ class ProceduralFoliageSpawner(unreal.UObject):
     MinimumQuadTreeSize: float
     FoliageTypes: unreal.WrappedArray[FoliageTypeObject]
     bNeedsSimulation: bool
+
     def Simulate(self, NumSteps: int): ...
 
 
@@ -161,17 +181,14 @@ class ProceduralFoliageTile(unreal.UObject):
     InstancesArray: unreal.WrappedArray[ProceduralFoliageInstance]
 
 
-
 class ProceduralFoliageVolume(engine.Volume):
     ProceduralComponent: ProceduralFoliageComponent
-
 
 
 class FoliageVertexColorChannelMask:
     UseMask: bool
     MaskThreshold: float
     InvertMask: bool
-
 
 
 class FoliageTypeObject:
@@ -181,7 +198,6 @@ class FoliageTypeObject:
     Type: unreal.UClass
 
 
-
 class ProceduralFoliageInstance:
     Location: core_uobject.Vector
     Rotation: core_uobject.Quat
@@ -189,7 +205,6 @@ class ProceduralFoliageInstance:
     Age: float
     Scale: float
     Type: FoliageType_InstancedStaticMesh
-
 
 
 class EFoliageScaling(enum.Enum):

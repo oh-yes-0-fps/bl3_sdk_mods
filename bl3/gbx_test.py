@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -13,10 +13,8 @@ from . import input_core
 from . import gbx_probes_core
 
 
-
 class AssetTrait(engine.DataAsset):
     TraitToWhitelist: AssetTrait
-
 
 
 class AssetTraitMaterial(AssetTrait):
@@ -33,7 +31,6 @@ class AssetTraitMaterial(AssetTrait):
     HasPhysMatSet: OptionalBool
 
 
-
 class AssetTraitMesh(AssetTrait):
     LODMinCount: OptionalInt32
     LODMaxCount: OptionalInt32
@@ -46,7 +43,6 @@ class AssetTraitMesh(AssetTrait):
     MinSocketCount: OptionalInt32
     MaxSocketCount: OptionalInt32
     HasSockets: OptionalBool
-
 
 
 class AssetTraitParticleSystem(AssetTrait):
@@ -82,7 +78,6 @@ class AssetTraitParticleSystem(AssetTrait):
     MaxLifetime: OptionalFloat
 
 
-
 class AssetTraitSkeletalMesh(AssetTraitMesh): ...
 
 
@@ -98,7 +93,6 @@ class AssetTraitStaticMesh(AssetTraitMesh):
     EnableCollision: OptionalBool
 
 
-
 class AssetTraitTexture(AssetTrait):
     CompressionMethod: OptionalTextureCompressionMethod
     LODGroup: OptionalTextureLODGroup
@@ -108,20 +102,23 @@ class AssetTraitTexture(AssetTrait):
     HassRGB: OptionalBool
 
 
-
 class AutomationMenuHelper(unreal.UObject):
 
     def PrevPage(self): ...
-    def PageName(self, ReturnValue: str) -> str: ...
-    def NumPages(self, ReturnValue: int) -> int: ...
+    def PageName(self) -> str: ...
+    def NumPages(self) -> int: ...
     def NextPage(self): ...
     def NextFocus(self, Direction: EAutomationUIDirection): ...
-    def MenuName(self, ReturnValue: str) -> str: ...
-    def HasOpenMenu(self, ReturnValue: bool) -> bool: ...
-    def FocusName(self, ReturnValue: str) -> str: ...
-    def FocusInfo(self, ReturnValue: AutomationMenuFocusInfo) -> AutomationMenuFocusInfo: ...
-    def CurrentDepth(self, ReturnValue: int) -> int: ...
-    def CreateAutomationMenuHelper(self, PlayerController: gbx_game_system_core.GbxPlayerController, SimulateAllInputs: bool, ReturnValue: AutomationMenuHelper) -> AutomationMenuHelper: ...
+    def MenuName(self) -> str: ...
+    def HasOpenMenu(self) -> bool: ...
+    def FocusName(self) -> str: ...
+    def FocusInfo(self) -> AutomationMenuFocusInfo: ...
+    def CurrentDepth(self) -> int: ...
+    def CreateAutomationMenuHelper(
+        self,
+        PlayerController: gbx_game_system_core.GbxPlayerController,
+        SimulateAllInputs: bool,
+    ) -> AutomationMenuHelper: ...
     def BackOut(self): ...
     def ActuateFocus(self, Action: EAutomationUIAction): ...
 
@@ -141,7 +138,6 @@ class GbxTestContentAuditSettings(unreal.UObject):
     WhitelistDirectories: unreal.WrappedArray[str]
 
 
-
 class GbxTestParticleMaterialAuditCommandlet(engine.Commandlet): ...
 
 
@@ -149,41 +145,80 @@ class GbxTestSettings(unreal.UObject):
     TestContentPaths: unreal.WrappedArray[str]
 
 
-
 class PerfMapCapture(unreal.UObject):
 
-    def SavePerfMapCapturesFromConfiguration(self, World: engine.World, Path: str, Configuration: MapParameters, LatentInfo: engine.LatentActionInfo): ...
-    def SavePerfMapCaptures(self, World: unreal.UObject, Path: str, Density: float, bLighting: bool, bSpecular: bool, Gamma: float, Width: int, Height: int, VolumeX: float, VolumeY: float, VolumeZ: float, OutputPattern: str, ReturnValue: bool) -> bool: ...
+    def SavePerfMapCapturesFromConfiguration(
+        self,
+        World: engine.World,
+        Path: str,
+        Configuration: MapParameters,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def SavePerfMapCaptures(
+        self,
+        World: unreal.UObject,
+        Path: str,
+        Density: float,
+        bLighting: bool,
+        bSpecular: bool,
+        Gamma: float,
+        Width: int,
+        Height: int,
+        VolumeX: float,
+        VolumeY: float,
+        VolumeZ: float,
+        OutputPattern: str,
+    ) -> bool: ...
 
 
 class PerformanceSnapshotCollector(engine.BlueprintFunctionLibrary):
 
     def ResetSnapshotProviders(self): ...
-    def CreatePerformanceSnapshotCollector(self, StatSection: str, ExecOut: ESnapshotExecOutput, ReturnValue: PerformanceSnapshotCollector) -> PerformanceSnapshotCollector: ...
-    def CollectSnapshot(self, WorldContextObject: unreal.UObject, ReportContext: str, LatentInfo: engine.LatentActionInfo): ...
-    def CollectProbeSnapshot(self, WorldContextObject: unreal.UObject, ReportContext: str, ProbeId: gbx_probes_core.GbxProbeId, Test: str, ExtraDataArray: unreal.WrappedArray[gbx_probes.GbxProbeExtraData], LatentInfo: engine.LatentActionInfo): ...
+    def CreatePerformanceSnapshotCollector(
+        self, StatSection: str, ExecOut: ESnapshotExecOutput
+    ) -> PerformanceSnapshotCollector: ...
+    def CollectSnapshot(
+        self,
+        WorldContextObject: unreal.UObject,
+        ReportContext: str,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def CollectProbeSnapshot(
+        self,
+        WorldContextObject: unreal.UObject,
+        ReportContext: str,
+        ProbeId: gbx_probes_core.GbxProbeId,
+        Test: str,
+        ExtraDataArray: unreal.WrappedArray[gbx_probes.GbxProbeExtraData],
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
 
 
 class MatcherFunctionality(unreal.UObject):
 
-    def Size(self, ReturnValue: int) -> int: ...
-    def Ready(self, ReturnValue: bool) -> bool: ...
-    def GetSuffix(self, ReturnValue: str) -> str: ...
-    def GetPrefix(self, ReturnValue: str) -> str: ...
-    def GetPosition(self, Start: int, ReturnValue: int) -> int: ...
-    def GetMatch(self, Index: int, ReturnValue: str) -> str: ...
-    def GetLength(self, ReturnValue: int) -> int: ...
-    def GetAtIndex(self, Index: int, ReturnValue: str) -> str: ...
-    def Empty(self, ReturnValue: bool) -> bool: ...
+    def Size(self) -> int: ...
+    def Ready(self) -> bool: ...
+    def GetSuffix(self) -> str: ...
+    def GetPrefix(self) -> str: ...
+    def GetPosition(self, Start: int) -> int: ...
+    def GetMatch(self, Index: int) -> str: ...
+    def GetLength(self) -> int: ...
+    def GetAtIndex(self, Index: int) -> str: ...
+    def Empty(self) -> bool: ...
 
 
 class RegexFunctionality(unreal.UObject):
     Regex: Regex
-    def RegexSearch(self, Regex: Regex, Matcher: MatcherFunctionality, Input: str, ReturnValue: bool) -> bool: ...
-    def RegexRepleace(self, Regex: Regex, Input: str, Repleacement: str, ReturnValue: str) -> str: ...
-    def RegexMatch2(self, Regex: Regex, Matcher: MatcherFunctionality, Input: str, ReturnValue: bool) -> bool: ...
-    def RegexMatch(self, Regex: Regex, Input: str, ReturnValue: bool) -> bool: ...
-    def FindAll(self, Regex: Regex, String: str, Return: unreal.WrappedArray[str]): ...
+
+    def RegexSearch(
+        self, Regex: Regex, Matcher: MatcherFunctionality, Input: str
+    ) -> bool: ...
+    def RegexRepleace(self, Regex: Regex, Input: str, Repleacement: str) -> str: ...
+    def RegexMatch2(
+        self, Regex: Regex, Matcher: MatcherFunctionality, Input: str
+    ) -> bool: ...
+    def RegexMatch(self, Regex: Regex, Input: str) -> bool: ...
+    def FindAll(self, Regex: Regex, String: str): ...
     def Assign2(self, Regex: Regex, Pattern: str, Flags: ESyntaxOption): ...
     def Assign(self, Regex: Regex, Pattern: str): ...
 
@@ -192,94 +227,283 @@ class GbxTestHierarchicalCommands(engine.DataAsset):
     Commands: unreal.WrappedArray[GbxTestHierarchicalCommandL1]
 
 
-
 class TestLibrary(engine.BlueprintFunctionLibrary):
 
-    def TakeScreenshot(self, CustomFilename: str, OverrideResolution: core_uobject.Vector2D, ShowUI: bool, AddUniqueSuffix: bool): ...
-    def SortStrings(self, Values: unreal.WrappedArray[str], Descending: bool, ReturnValue: unreal.WrappedArray[str]) -> unreal.WrappedArray[str]: ...
-    def SortObjectsByName(self, Values: unreal.WrappedArray[unreal.UObject], Descending: bool, ReturnValue: unreal.WrappedArray[unreal.UObject]) -> unreal.WrappedArray[unreal.UObject]: ...
-    def SortIntegers(self, Values: unreal.WrappedArray[int], Descending: bool, ReturnValue: unreal.WrappedArray[int]) -> unreal.WrappedArray[int]: ...
-    def SortFloats(self, Values: unreal.WrappedArray[float], Descending: bool, ReturnValue: unreal.WrappedArray[float]) -> unreal.WrappedArray[float]: ...
-    def SimulateInputKey(self, PlayerController: engine.PlayerController, Key: input_core.Key, EVENTTYPE: int, AmountDepressed: float): ...
-    def SimulateInputAxis(self, PlayerController: engine.PlayerController, Key: input_core.Key, Delta: float, InterpTime: float, LatentInfo: engine.LatentActionInfo): ...
+    def TakeScreenshot(
+        self,
+        CustomFilename: str,
+        OverrideResolution: core_uobject.Vector2D,
+        ShowUI: bool,
+        AddUniqueSuffix: bool,
+    ): ...
+    def SortStrings(
+        self, Values: unreal.WrappedArray[str], Descending: bool
+    ) -> unreal.WrappedArray[str]: ...
+    def SortObjectsByName(
+        self, Values: unreal.WrappedArray[unreal.UObject], Descending: bool
+    ) -> unreal.WrappedArray[unreal.UObject]: ...
+    def SortIntegers(
+        self, Values: unreal.WrappedArray[int], Descending: bool
+    ) -> unreal.WrappedArray[int]: ...
+    def SortFloats(
+        self, Values: unreal.WrappedArray[float], Descending: bool
+    ) -> unreal.WrappedArray[float]: ...
+    def SimulateInputKey(
+        self,
+        PlayerController: engine.PlayerController,
+        Key: input_core.Key,
+        EVENTTYPE: int,
+        AmountDepressed: float,
+    ): ...
+    def SimulateInputAxis(
+        self,
+        PlayerController: engine.PlayerController,
+        Key: input_core.Key,
+        Delta: float,
+        InterpTime: float,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
     def RemoveItemFromCollection(self, CollectionName: str, ObjectName: str): ...
-    def RemoveArrayFromCollection(self, CollectionName: str, objectNames: unreal.WrappedArray[str]): ...
-    def ReadFromIni(self, Section: str, Key: str, Values: unreal.WrappedArray[str], ReturnValue: bool) -> bool: ...
-    def MoveItemCollection(self, fromCollection: str, toCollection: str, ObjectName: str): ...
-    def MoveArrayCollection(self, fromCollection: str, toCollection: str, objectNames: unreal.WrappedArray[str]): ...
+    def RemoveArrayFromCollection(
+        self, CollectionName: str, objectNames: unreal.WrappedArray[str]
+    ): ...
+    def ReadFromIni(
+        self, Section: str, Key: str, Values: unreal.WrappedArray[str]
+    ) -> bool: ...
+    def MoveItemCollection(
+        self, fromCollection: str, toCollection: str, ObjectName: str
+    ): ...
+    def MoveArrayCollection(
+        self,
+        fromCollection: str,
+        toCollection: str,
+        objectNames: unreal.WrappedArray[str],
+    ): ...
     def LoadBlueprintAsset(self, Path: str, Object: unreal.UObject): ...
     def LoadAsset(self, Path: str, Object: unreal.UObject): ...
-    def IsEditorSession(self, ReturnValue: bool) -> bool: ...
-    def IsAssetInCollectionEx(self, CollectionName: str, CollectionType: int, ObjectName: str, ReturnValue: bool) -> bool: ...
-    def IsAssetInCollection(self, CollectionName: str, ObjectName: str, ReturnValue: bool) -> bool: ...
-    def GetWorldForActor(self, Actor: engine.Actor, ReturnValue: engine.World) -> engine.World: ...
-    def GetTestDriversFromStrings(self, Strings: unreal.WrappedArray[str], TestDrivers: unreal.WrappedArray[unreal.UClass], UndiscoveredItems: str): ...
-    def GetReferencedBlueprintClasses(self, Object: unreal.UObject, Class: unreal.UClass, Classes: unreal.WrappedArray[unreal.UClass]): ...
-    def GetObjectTags(self, ObjectTags: unreal.WrappedArray[engine.ObjectTag], Asset: unreal.UObject): ...
+    def IsEditorSession(self) -> bool: ...
+    def IsAssetInCollectionEx(
+        self, CollectionName: str, CollectionType: int, ObjectName: str
+    ) -> bool: ...
+    def IsAssetInCollection(self, CollectionName: str, ObjectName: str) -> bool: ...
+    def GetWorldForActor(self, Actor: engine.Actor) -> engine.World: ...
+    def GetTestDriversFromStrings(
+        self,
+        Strings: unreal.WrappedArray[str],
+        TestDrivers: unreal.WrappedArray[unreal.UClass],
+        UndiscoveredItems: str,
+    ): ...
+    def GetReferencedBlueprintClasses(
+        self,
+        Object: unreal.UObject,
+        Class: unreal.UClass,
+        Classes: unreal.WrappedArray[unreal.UClass],
+    ): ...
+    def GetObjectTags(
+        self, ObjectTags: unreal.WrappedArray[engine.ObjectTag], Asset: unreal.UObject
+    ): ...
     def GetAssetPath(self, Asset: unreal.UObject, AssetPath: str): ...
     def GetAssetName(self, AssetPath: str, AssetName: str): ...
-    def FilterDiscoveredAssets(self, InPathNames: unreal.WrappedArray[str], InPrettyNames: unreal.WrappedArray[str], OutPathNames: unreal.WrappedArray[str], OutPrettyNames: unreal.WrappedArray[str], AssetNamePrefix: str, AssetNamePostfix: str, AssetNameContains: str, AssetPathContains: str): ...
-    def DiscoverAssets(self, PathNames: unreal.WrappedArray[str], PrettyNames: unreal.WrappedArray[str], Directories: unreal.WrappedArray[str], Classes: unreal.WrappedArray[unreal.UClass], ExcludeRecursiveClasses: unreal.WrappedArray[unreal.UClass], bRecursiveDirectories: bool, bRecursiveClasses: bool): ...
-    def CreateLocalCollection(self, CollectionName: str, ParentName: str, ReturnValue: str) -> str: ...
-    def ContainsSubPath(self, Path: str, SubPath: str, ReturnValue: bool) -> bool: ...
-    def ContainsObjectTag(self, ObjectTags: unreal.WrappedArray[engine.ObjectTag], Category: str, Name: str, bExactCategory: bool, bCaseSensitiveCategory: bool, bExactName: bool, bCaseSensitiveName: bool, ReturnValue: bool) -> bool: ...
-    def CollectionExistsEx(self, CollectionName: str, CollectionType: int, ReturnValue: bool) -> bool: ...
-    def CollectionExists(self, CollectionName: str, ReturnValue: bool) -> bool: ...
+    def FilterDiscoveredAssets(
+        self,
+        InPathNames: unreal.WrappedArray[str],
+        InPrettyNames: unreal.WrappedArray[str],
+        OutPathNames: unreal.WrappedArray[str],
+        OutPrettyNames: unreal.WrappedArray[str],
+        AssetNamePrefix: str,
+        AssetNamePostfix: str,
+        AssetNameContains: str,
+        AssetPathContains: str,
+    ): ...
+    def DiscoverAssets(
+        self,
+        PathNames: unreal.WrappedArray[str],
+        PrettyNames: unreal.WrappedArray[str],
+        Directories: unreal.WrappedArray[str],
+        Classes: unreal.WrappedArray[unreal.UClass],
+        ExcludeRecursiveClasses: unreal.WrappedArray[unreal.UClass],
+        bRecursiveDirectories: bool,
+        bRecursiveClasses: bool,
+    ): ...
+    def CreateLocalCollection(self, CollectionName: str, ParentName: str) -> str: ...
+    def ContainsSubPath(self, Path: str, SubPath: str) -> bool: ...
+    def ContainsObjectTag(
+        self,
+        ObjectTags: unreal.WrappedArray[engine.ObjectTag],
+        Category: str,
+        Name: str,
+        bExactCategory: bool,
+        bCaseSensitiveCategory: bool,
+        bExactName: bool,
+        bCaseSensitiveName: bool,
+    ) -> bool: ...
+    def CollectionExistsEx(self, CollectionName: str, CollectionType: int) -> bool: ...
+    def CollectionExists(self, CollectionName: str) -> bool: ...
     def AddItemToCollection(self, CollectionName: str, ObjectName: str): ...
-    def AddArrayToCollection(self, CollectionName: str, objectNames: unreal.WrappedArray[str]): ...
+    def AddArrayToCollection(
+        self, CollectionName: str, objectNames: unreal.WrappedArray[str]
+    ): ...
 
 
 class TestLibraryContent(engine.BlueprintFunctionLibrary):
 
-    def LoadAssetTexture(self, ObjectPath: str, ReturnValue: engine.Texture) -> engine.Texture: ...
-    def LoadAssetStaticMesh(self, ObjectPath: str, ReturnValue: engine.StaticMesh) -> engine.StaticMesh: ...
-    def LoadAssetSkeletalMesh(self, ObjectPath: str, ReturnValue: engine.SkeletalMesh) -> engine.SkeletalMesh: ...
-    def LoadAssetParticleSystem(self, ObjectPath: str, ReturnValue: engine.ParticleSystem) -> engine.ParticleSystem: ...
-    def LoadAssetMaterial(self, ObjectPath: str, ReturnValue: engine.Material) -> engine.Material: ...
+    def LoadAssetTexture(self, ObjectPath: str) -> engine.Texture: ...
+    def LoadAssetStaticMesh(self, ObjectPath: str) -> engine.StaticMesh: ...
+    def LoadAssetSkeletalMesh(self, ObjectPath: str) -> engine.SkeletalMesh: ...
+    def LoadAssetParticleSystem(self, ObjectPath: str) -> engine.ParticleSystem: ...
+    def LoadAssetMaterial(self, ObjectPath: str) -> engine.Material: ...
     def GetTestInfoTexture(self, Asset: engine.Texture, Info: TestInfoTexture): ...
-    def GetTestInfoStaticMeshLOD(self, Asset: engine.StaticMesh, LODIndex: int, Info: TestInfoMeshLOD): ...
-    def GetTestInfoStaticMesh(self, Asset: engine.StaticMesh, LODSummary: TestInfoMeshLODSummary, Mesh: TestInfoMesh, StaticMesh: TestInfoStaticMesh): ...
-    def GetTestInfoSkeletalMeshLOD(self, Asset: engine.SkeletalMesh, LODIndex: int, Info: TestInfoMeshLOD): ...
-    def GetTestInfoSkeletalMesh(self, Asset: engine.SkeletalMesh, LODSummary: TestInfoMeshLODSummary, Mesh: TestInfoMesh, SkeletalMesh: TestInfoSkeletalMesh): ...
-    def GetTestInfoParticleSystem(self, Asset: engine.ParticleSystem, Info: TestInfoParticleSystem): ...
-    def GetTestInfoParticleEmitter(self, Asset: engine.ParticleSystem, EmitterIndex: int, Info: TestInfoParticleEmitter): ...
+    def GetTestInfoStaticMeshLOD(
+        self, Asset: engine.StaticMesh, LODIndex: int, Info: TestInfoMeshLOD
+    ): ...
+    def GetTestInfoStaticMesh(
+        self,
+        Asset: engine.StaticMesh,
+        LODSummary: TestInfoMeshLODSummary,
+        Mesh: TestInfoMesh,
+        StaticMesh: TestInfoStaticMesh,
+    ): ...
+    def GetTestInfoSkeletalMeshLOD(
+        self, Asset: engine.SkeletalMesh, LODIndex: int, Info: TestInfoMeshLOD
+    ): ...
+    def GetTestInfoSkeletalMesh(
+        self,
+        Asset: engine.SkeletalMesh,
+        LODSummary: TestInfoMeshLODSummary,
+        Mesh: TestInfoMesh,
+        SkeletalMesh: TestInfoSkeletalMesh,
+    ): ...
+    def GetTestInfoParticleSystem(
+        self, Asset: engine.ParticleSystem, Info: TestInfoParticleSystem
+    ): ...
+    def GetTestInfoParticleEmitter(
+        self,
+        Asset: engine.ParticleSystem,
+        EmitterIndex: int,
+        Info: TestInfoParticleEmitter,
+    ): ...
     def GetTestInfoMaterial(self, Asset: engine.Material, Info: TestInfoMaterial): ...
-    def GetAllPersistentGameMaps(self, OutMapNames: unreal.WrappedArray[str], ShortNamesOnly: bool): ...
-    def ContentAuditSingleObject(self, Asset: unreal.UObject, ReturnValue: unreal.WrappedArray[str]) -> unreal.WrappedArray[str]: ...
+    def GetAllPersistentGameMaps(
+        self, OutMapNames: unreal.WrappedArray[str], ShortNamesOnly: bool
+    ): ...
+    def ContentAuditSingleObject(
+        self, Asset: unreal.UObject
+    ) -> unreal.WrappedArray[str]: ...
 
 
 class TestLibraryPerformance(engine.BlueprintFunctionLibrary):
 
-    def WaitForFrames(self, WorldContextObject: unreal.UObject, NumFrames: int, LatentInfo: engine.LatentActionInfo): ...
-    def GenerateLevelGrid(self, GridLocations: unreal.WrappedArray[core_uobject.Vector], Pawn: engine.Pawn, GridSize: float, bWalkableOnly: bool): ...
+    def WaitForFrames(
+        self,
+        WorldContextObject: unreal.UObject,
+        NumFrames: int,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def GenerateLevelGrid(
+        self,
+        GridLocations: unreal.WrappedArray[core_uobject.Vector],
+        Pawn: engine.Pawn,
+        GridSize: float,
+        bWalkableOnly: bool,
+    ): ...
 
 
 class TestLibrarySimulation(engine.BlueprintFunctionLibrary):
 
-    def TestIntInRangeFromPlayMap(self, Value: int, Min: int, Max: int, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestIntCompareFromPlayMap(self, Value: int, Other: int, Comparison: ECompare, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestFloatInRangeFromPlayMap(self, Value: float, Min: float, Max: float, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestFloatCompareFromPlayMap(self, Value: float, Other: float, Comparison: ECompare, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str, Tolerance: float): ...
-    def TestBoolIsTrueFromPlayMap(self, Value: bool, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestBoolIsFalseFromPlayMap(self, Value: bool, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
+    def TestIntInRangeFromPlayMap(
+        self,
+        Value: int,
+        Min: int,
+        Max: int,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestIntCompareFromPlayMap(
+        self,
+        Value: int,
+        Other: int,
+        Comparison: ECompare,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestFloatInRangeFromPlayMap(
+        self,
+        Value: float,
+        Min: float,
+        Max: float,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestFloatCompareFromPlayMap(
+        self,
+        Value: float,
+        Other: float,
+        Comparison: ECompare,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+        Tolerance: float,
+    ): ...
+    def TestBoolIsTrueFromPlayMap(
+        self,
+        Value: bool,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestBoolIsFalseFromPlayMap(
+        self,
+        Value: bool,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
     def StopPlayTest(self): ...
-    def SimulatePlayerInput(self, WorldContextObject: unreal.UObject, PlayerController: engine.PlayerController, InputDescription: unreal.WrappedArray[GbxTestInputAction], PreDelay: float, PostDelay: float, LatentInfo: engine.LatentActionInfo): ...
-    def SetReportContext(self, WorldContextObject: unreal.UObject, AssetContexts: unreal.WrappedArray[gbx_probes_core.GbxProbeId]): ...
-    def SetReceiveBackgroundInput(self, PlayerController: engine.PlayerController, AllowBackgroundInput: bool, ReturnValue: bool) -> bool: ...
+    def SimulatePlayerInput(
+        self,
+        WorldContextObject: unreal.UObject,
+        PlayerController: engine.PlayerController,
+        InputDescription: unreal.WrappedArray[GbxTestInputAction],
+        PreDelay: float,
+        PostDelay: float,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def SetReportContext(
+        self,
+        WorldContextObject: unreal.UObject,
+        AssetContexts: unreal.WrappedArray[gbx_probes_core.GbxProbeId],
+    ): ...
+    def SetReceiveBackgroundInput(
+        self, PlayerController: engine.PlayerController, AllowBackgroundInput: bool
+    ) -> bool: ...
     def ResetTestTimeout(self): ...
-    def ReportResultFromPlayMap(self, bSucceeded: bool, IssueCategory: str, IssueMessage: str, AssetContext: gbx_probes_core.GbxProbeId, FailedIssueType: ETestIssueType): ...
-    def ReportIssueFromPlayMap(self, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
+    def ReportResultFromPlayMap(
+        self,
+        bSucceeded: bool,
+        IssueCategory: str,
+        IssueMessage: str,
+        AssetContext: gbx_probes_core.GbxProbeId,
+        FailedIssueType: ETestIssueType,
+    ): ...
+    def ReportIssueFromPlayMap(
+        self, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str
+    ): ...
     def PushWorldContext(self, WorldContextObject: unreal.UObject): ...
     def PushAssetContext(self, ID: gbx_probes_core.GbxProbeId): ...
     def PopWorldContext(self): ...
     def PopAssetContext(self, ID: gbx_probes_core.GbxProbeId): ...
-    def IsPlayMapRunning(self, ReturnValue: bool) -> bool: ...
-    def IsHLQNoClipEnabled(self, PlayerController: engine.PlayerController, ReturnValue: bool) -> bool: ...
-    def IsGodEnabled(self, PlayerController: engine.PlayerController, ReturnValue: bool) -> bool: ...
-    def IsGhostEnabled(self, PlayerController: engine.PlayerController, ReturnValue: bool) -> bool: ...
-    def IsDemiGodEnabled(self, PlayerController: engine.PlayerController, ReturnValue: bool) -> bool: ...
-    def GetPolicyForPlayMap(self, ReturnValue: TestPolicySimulation) -> TestPolicySimulation: ...
-    def CanReceiveBackgroundInput(self, PlayerController: engine.PlayerController, ReturnValue: bool) -> bool: ...
+    def IsPlayMapRunning(self) -> bool: ...
+    def IsHLQNoClipEnabled(self, PlayerController: engine.PlayerController) -> bool: ...
+    def IsGodEnabled(self, PlayerController: engine.PlayerController) -> bool: ...
+    def IsGhostEnabled(self, PlayerController: engine.PlayerController) -> bool: ...
+    def IsDemiGodEnabled(self, PlayerController: engine.PlayerController) -> bool: ...
+    def GetPolicyForPlayMap(self) -> TestPolicySimulation: ...
+    def CanReceiveBackgroundInput(
+        self, PlayerController: engine.PlayerController
+    ) -> bool: ...
 
 
 class GbxTestPlanCommandlet(engine.Commandlet): ...
@@ -287,23 +511,87 @@ class GbxTestPlanCommandlet(engine.Commandlet): ...
 
 class TestPolicy(unreal.UObject):
     DiscoveryMethod: EDiscovery
+    HierarchicalCommands: Any
     Contact: str
     TestPlan: EGbxTestPlan
-    def TestIntInRange(self, Value: int, Min: int, Max: int, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestIntCompare(self, Value: int, Other: int, Comparison: ECompare, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestFloatInRange(self, Value: float, Min: float, Max: float, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestFloatCompare(self, Value: float, Other: float, Comparison: ECompare, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str, Tolerance: float): ...
-    def TestBoolIsTrue(self, Value: bool, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
-    def TestBoolIsFalse(self, Value: bool, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
+
+    def TestIntInRange(
+        self,
+        Value: int,
+        Min: int,
+        Max: int,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestIntCompare(
+        self,
+        Value: int,
+        Other: int,
+        Comparison: ECompare,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestFloatInRange(
+        self,
+        Value: float,
+        Min: float,
+        Max: float,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestFloatCompare(
+        self,
+        Value: float,
+        Other: float,
+        Comparison: ECompare,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+        Tolerance: float,
+    ): ...
+    def TestBoolIsTrue(
+        self,
+        Value: bool,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
+    def TestBoolIsFalse(
+        self,
+        Value: bool,
+        IssueType: ETestIssueType,
+        IssueCategory: str,
+        IssueMessage: str,
+    ): ...
     def TestAssetTraits(self, Asset: unreal.UObject): ...
     def TestAssetAudit(self, Asset: unreal.UObject): ...
-    def SetReportContext(self, WorldContextObject: unreal.UObject, AssetContexts: unreal.WrappedArray[gbx_probes_core.GbxProbeId]): ...
-    def ReportResult(self, bSucceeded: bool, IssueCategory: str, IssueMessage: str, AssetContext: gbx_probes_core.GbxProbeId, FailedIssueType: ETestIssueType): ...
-    def ReportIssue(self, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str): ...
+    def SetReportContext(
+        self,
+        WorldContextObject: unreal.UObject,
+        AssetContexts: unreal.WrappedArray[gbx_probes_core.GbxProbeId],
+    ): ...
+    def ReportResult(
+        self,
+        bSucceeded: bool,
+        IssueCategory: str,
+        IssueMessage: str,
+        AssetContext: gbx_probes_core.GbxProbeId,
+        FailedIssueType: ETestIssueType,
+    ): ...
+    def ReportIssue(
+        self, IssueType: ETestIssueType, IssueCategory: str, IssueMessage: str
+    ): ...
     def PushAssetContext(self, ID: gbx_probes_core.GbxProbeId): ...
     def PopAssetContext(self, ID: gbx_probes_core.GbxProbeId): ...
     def OnRunTestCommand(self, TestCommand: str): ...
-    def OnGetTestCommands(self, TestCommands: unreal.WrappedArray[str], PrettyNames: unreal.WrappedArray[str]): ...
+    def OnGetTestCommands(
+        self,
+        TestCommands: unreal.WrappedArray[str],
+        PrettyNames: unreal.WrappedArray[str],
+    ): ...
     def ClearSavedTestCommand(self): ...
 
 
@@ -315,9 +603,28 @@ class TestPolicyContent(TestPolicy):
 class TestPolicySimulation(TestPolicy):
 
     def StopPlay(self): ...
-    def RunTestDrivers(self, TestDrivers: unreal.WrappedArray[unreal.UClass], Timeout: float, TimeLimit: float): ...
-    def PlayTestMap(self, MapName: str, TestDrivers: unreal.WrappedArray[unreal.UClass], Timeout: float, TimeLimit: float, bLoadMapOnce: bool, bLoadMapIfNotLoaded: bool): ...
-    def PlayMap(self, MapName: str, TestDrivers: unreal.WrappedArray[unreal.UClass], Timeout: float, TimeLimit: float): ...
+    def RunTestDrivers(
+        self,
+        TestDrivers: unreal.WrappedArray[unreal.UClass],
+        Timeout: float,
+        TimeLimit: float,
+    ): ...
+    def PlayTestMap(
+        self,
+        MapName: str,
+        TestDrivers: unreal.WrappedArray[unreal.UClass],
+        Timeout: float,
+        TimeLimit: float,
+        bLoadMapOnce: bool,
+        bLoadMapIfNotLoaded: bool,
+    ): ...
+    def PlayMap(
+        self,
+        MapName: str,
+        TestDrivers: unreal.WrappedArray[unreal.UClass],
+        Timeout: float,
+        TimeLimit: float,
+    ): ...
     def OnMapTraveled(self, NewWorld: engine.World): ...
     def IntendToMapTravel(self, WillMapTravel: bool): ...
     def AddTestDriver(self, TestDriver: unreal.UClass): ...
@@ -336,15 +643,12 @@ class AutomationMenuFocusInfo:
     IsGridList: bool
 
 
-
 class OptionalValue:
     bEnabled: bool
 
 
-
 class OptionalName(OptionalValue):
     Value: str
-
 
 
 class OptionalTextureLODGroup(OptionalName): ...
@@ -360,15 +664,12 @@ class OptionalFloat(OptionalValue):
     Value: float
 
 
-
 class OptionalInt32(OptionalValue):
     Value: int
 
 
-
 class OptionalBool(OptionalValue):
     Value: bool
-
 
 
 class MapParameters:
@@ -386,7 +687,6 @@ class MapParameters:
     OutputPattern: str
 
 
-
 class Regex: ...
 
 
@@ -396,18 +696,15 @@ class GbxTestHierarchicalCommandL1:
     SubCommands: unreal.WrappedArray[GbxTestHierarchicalCommandL2]
 
 
-
 class GbxTestHierarchicalCommandL2:
     DisplayName: str
     TestCommand: str
     SubCommands: unreal.WrappedArray[GbxTestHierarchicalCommandL3]
 
 
-
 class GbxTestHierarchicalCommandL3:
     DisplayName: str
     TestCommand: str
-
 
 
 class TestInfoMaterial:
@@ -424,7 +721,6 @@ class TestInfoMaterial:
     bHasPhysMatSet: bool
 
 
-
 class TestInfoMeshLOD:
     LODIndex: int
     TriangleCount: int
@@ -435,12 +731,10 @@ class TestInfoMeshLOD:
     bHasDegenerateSections: bool
 
 
-
 class TestInfoMesh:
     Bounds: core_uobject.BoxSphereBounds
     SocketCount: int
     HasSockets: bool
-
 
 
 class TestInfoMeshLODSummary:
@@ -453,7 +747,6 @@ class TestInfoMeshLODSummary:
     LODMaxSectionCount: int
     LODMinScreenSize: float
     LODMaxScreenSize: float
-
 
 
 class TestInfoParticleSystem:
@@ -479,7 +772,6 @@ class TestInfoParticleSystem:
     bKillFlagsNotSet: bool
 
 
-
 class TestInfoParticleEmitter:
     EmitterIndex: int
     EmitterName: str
@@ -501,11 +793,9 @@ class TestInfoParticleEmitter:
     bUseInverseSquaredFalloffSet: bool
 
 
-
 class TestInfoSkeletalMesh:
     AssetTraits: unreal.WrappedArray[AssetTraitSkeletalMesh]
     Placeholder: bool
-
 
 
 class TestInfoStaticMesh:
@@ -518,7 +808,6 @@ class TestInfoStaticMesh:
     EnableCollision: bool
 
 
-
 class TestInfoTexture:
     AssetTraits: unreal.WrappedArray[AssetTraitTexture]
     CompressionMethod: str
@@ -528,7 +817,6 @@ class TestInfoTexture:
     HassRGB: bool
 
 
-
 class GbxTestInputAction:
     InputEvent: int
     InputKey: input_core.Key
@@ -536,7 +824,6 @@ class GbxTestInputAction:
     LifeTime: float
     AmountDepressed: float
     AmountDelta: float
-
 
 
 class EAutomationUIAction(enum.Enum):

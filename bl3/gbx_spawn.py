@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -11,14 +11,31 @@ from . import gbx_game_system_core
 from . import gameplay_tags
 
 
-
 class Spawner(engine.Actor):
+    OnActorSpawned: Any
+    OnActorDied: Any
+    OnActorFellOutOfWorld: Any
+    OnActorSuspend: Any
+    OnActorUnsuspend: Any
+    OnAllSpawned: Any
+    OnAllDied: Any
+    OnWaveWarmup: Any
+    OnWaveStart: Any
+    OnWaveComplete: Any
+    OnReset: Any
+    OnActorSpawnedData: Any
+    OnExternalActorSpawnedData: Any
+    OnActorDiedData: Any
+    OnExternalActorDiedData: Any
+    OnScriptedWarmup: Any
+    OnActorSuspendData: Any
     SpawnerComponent: SpawnerComponent
     SpawnerLinkComponent: SpawnerLinkComponent
     SpawnPointComponent: SpawnPointComponent
     SpawnerTeamComponent: SpawnerTeamComponent
     bAutoGroundSpawnPointComponents: bool
     ExcludeAutoGroundPointComponents: unreal.WrappedArray[str]
+
     def SuspendAllActors(self): ...
     def SetTeamOverride(self, OverrideTeam: gbx_game_system_core.Team): ...
     def SetTeam(self, NewTeam: gbx_game_system_core.Team): ...
@@ -26,21 +43,35 @@ class Spawner(engine.Actor):
     def ResetSpawning(self): ...
     def OverrideSpawnerStyle(self, NewSpawnerStyle: SpawnerStyle): ...
     def OnSpawningComplete(self, Spawner: Spawner): ...
-    def IsSpawnerEnabled(self, ReturnValue: bool) -> bool: ...
-    def IsFinishedSpawning(self, ReturnValue: bool) -> bool: ...
-    def GetSpawnPointComponent(self, ReturnValue: SpawnPointComponent) -> SpawnPointComponent: ...
-    def GetSpawnerTeamComponent(self, ReturnValue: SpawnerTeamComponent) -> SpawnerTeamComponent: ...
-    def GetSpawnerLinkComponent(self, ReturnValue: SpawnerLinkComponent) -> SpawnerLinkComponent: ...
-    def GetSpawnerComponent(self, ReturnValue: SpawnerComponent) -> SpawnerComponent: ...
-    def GetNumAliveActors(self, bIncludeExternal: bool, ReturnValue: int) -> int: ...
+    def IsSpawnerEnabled(self) -> bool: ...
+    def IsFinishedSpawning(self) -> bool: ...
+    def GetSpawnPointComponent(self) -> SpawnPointComponent: ...
+    def GetSpawnerTeamComponent(self) -> SpawnerTeamComponent: ...
+    def GetSpawnerLinkComponent(self) -> SpawnerLinkComponent: ...
+    def GetSpawnerComponent(self) -> SpawnerComponent: ...
+    def GetNumAliveActors(self, bIncludeExternal: bool) -> int: ...
     def EnableSpawner(self): ...
     def DisableSpawner(self): ...
     def DestroyAllActors(self): ...
     def CompleteScriptedWarmup(self): ...
-    def AreAllDead(self, bIncludeExternal: bool, ReturnValue: bool) -> bool: ...
+    def AreAllDead(self, bIncludeExternal: bool) -> bool: ...
 
 
 class SpawnerComponent(engine.PrimitiveComponent):
+    OnActorSpawned: Any
+    OnActorDied: Any
+    OnActorSuspend: Any
+    OnActorUnsuspend: Any
+    OnAllSpawned: Any
+    OnAllDied: Any
+    OnWaveWarmup: Any
+    OnWaveStart: Any
+    OnWaveComplete: Any
+    OnScriptedWarmup: Any
+    OnReset: Any
+    OnActorSpawnedData: Any
+    OnActorDiedData: Any
+    OnActorSuspendData: Any
     bEnabled: bool
     ChanceToEnableOnInit: gbx_game_system_core.AttributeInitializationData
     bAlwaysActive: bool
@@ -67,36 +98,40 @@ class SpawnerComponent(engine.PrimitiveComponent):
     bIncludeExternalActorsForAllDiedEvent: bool
     DrawStyle: ESpawnerDrawStyle
     bUseScriptedWarmup: bool
+
     def SuspendAllActors(self): ...
     def SetTeam(self, NewTeam: gbx_game_system_core.Team): ...
     def SetSpawnOptions(self, NewSpawnOptions: SpawnOptionData): ...
     def ResetSpawning(self): ...
     def OverrideSpawnerStyle(self, NewSpawnerStyle: SpawnerStyle): ...
-    def IsSpawnerStyleClassAllowed(self, SpawnerStyleClass: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def IsFinishedSpawning(self, ReturnValue: bool) -> bool: ...
+    def IsSpawnerStyleClassAllowed(self, SpawnerStyleClass: unreal.UClass) -> bool: ...
+    def IsFinishedSpawning(self) -> bool: ...
     def IncludeExternalActorsForAllDiedEvent(self): ...
-    def GetSpawnOptions(self, ReturnValue: SpawnOptionData) -> SpawnOptionData: ...
-    def GetParentSpawner(self, ReturnValue: SpawnerComponent) -> SpawnerComponent: ...
-    def GetNumSuspendedActors(self, ReturnValue: int) -> int: ...
-    def GetNumSpawnedActors(self, bIncludeExternal: bool, bInGroup: bool, ReturnValue: int) -> int: ...
-    def GetNumDeadActors(self, bIncludeExternal: bool, bInGroup: bool, ReturnValue: int) -> int: ...
-    def GetNumAliveActors(self, bIncludeExternal: bool, bInGroup: bool, ReturnValue: int) -> int: ...
-    def GetAliveActors(self, ReturnValue: unreal.WrappedArray[engine.Actor]) -> unreal.WrappedArray[engine.Actor]: ...
+    def GetSpawnOptions(self) -> SpawnOptionData: ...
+    def GetParentSpawner(self) -> SpawnerComponent: ...
+    def GetNumSuspendedActors(self) -> int: ...
+    def GetNumSpawnedActors(self, bIncludeExternal: bool, bInGroup: bool) -> int: ...
+    def GetNumDeadActors(self, bIncludeExternal: bool, bInGroup: bool) -> int: ...
+    def GetNumAliveActors(self, bIncludeExternal: bool, bInGroup: bool) -> int: ...
+    def GetAliveActors(self) -> unreal.WrappedArray[engine.Actor]: ...
     def EnableSpawner(self): ...
     def DisableSpawner(self): ...
     def DestroyAllActors(self): ...
     def CompleteScriptedWarmup(self): ...
-    def AreAllDead(self, bIncludeExternal: bool, bInGroup: bool, ReturnValue: bool) -> bool: ...
+    def AreAllDead(self, bIncludeExternal: bool, bInGroup: bool) -> bool: ...
 
 
 class SpawnPoint(engine.Actor):
+    OnActorSpawned: Any
+    OnActorDied: Any
     SpawnRootComponent: engine.SceneComponent
     SpawnPointComponent: SpawnPointComponent
     ConnectedSpawners: unreal.WrappedArray[SpawnerComponent]
     TempRootFix: engine.SceneComponent
+
     def SetSpawnStyleTag(self, NewTag: gameplay_tags.GameplayTag): ...
     def ResetStretchPoint(self): ...
-    def GetSpawnStyleTag(self, ReturnValue: gameplay_tags.GameplayTag) -> gameplay_tags.GameplayTag: ...
+    def GetSpawnStyleTag(self) -> gameplay_tags.GameplayTag: ...
     def EnableSpawnPoint(self): ...
     def DisableSpawnPoint(self): ...
 
@@ -105,35 +140,36 @@ class AnimNotify_SpawnAnim(engine.AnimNotify):
     Action: ESpawnAnimNotifyAction
 
 
-
 class GbxAction_SpawnAnim(gbx_game_system_core.GbxAction_Anim):
     SpawnPointAction: unreal.UClass
     SpawnPointActionStop: unreal.UClass
     OverrideMovementMode: int
     bOverrideMovementMode: bool
     bDisableCollisionOnSpawn: bool
-    def K2_GetSpawnPoint(self, ReturnValue: engine.Actor) -> engine.Actor: ...
+
+    def K2_GetSpawnPoint(self) -> engine.Actor: ...
 
 
 class GbxCondition_SpawnCostAvailable(gbx_runtime.GbxCondition):
     SpawnOptions: SpawnOptionData
 
 
-
 class MultiSpawnPoint(SpawnPoint):
     SpawnPointComponents: unreal.WrappedArray[SpawnPointComponent]
-
 
 
 class SpawnDLCScript(unreal.UObject):
 
     def OnAllSpawned(self, SpawnerComponent: SpawnerComponent): ...
     def OnAllDied(self, SpawnerComponent: SpawnerComponent): ...
-    def OnActorSpawned(self, SpawnerComponent: SpawnerComponent, Actor: engine.Actor): ...
+    def OnActorSpawned(
+        self, SpawnerComponent: SpawnerComponent, Actor: engine.Actor
+    ): ...
     def OnActorDied(self, SpawnerComponent: SpawnerComponent, Actor: engine.Actor): ...
 
 
 class SpawnDLCData(gbx_runtime.GbxDataAsset):
+    GlobalReplacement: Any
     bGlobalReplacementAlwaysEnabledDuringEvent: bool
     SpawnerReplacements: unreal.WrappedArray[SpawnDLCGroup]
     Script: unreal.UClass
@@ -146,15 +182,12 @@ class SpawnDLCData(gbx_runtime.GbxDataAsset):
     ExpansionScriptedSpawners: unreal.WrappedArray[DLCScriptedSpawerExpansionList]
 
 
-
 class GlobalSpawnDLCData(gbx_runtime.GbxDataAsset):
     DLCs: unreal.WrappedArray[SpawnDLCItem]
 
 
-
 class DLCScriptedSpawerExpansionList(gbx_runtime.GbxDataAsset):
     ScriptedSpawners: unreal.WrappedArray[SpawnDLCScriptGroup]
-
 
 
 class SpawnedActorInterface(core_uobject.Interface): ...
@@ -163,14 +196,37 @@ class SpawnedActorInterface(core_uobject.Interface): ...
 class SpawnerBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
     def SuspendSpawnedActors(self, WorldContextObject: unreal.UObject): ...
-    def SpawnActorWithSpawnOptionsTransform(self, Context: engine.Actor, SpawnOptions: SpawnOptionData, SpawnTransform: core_uobject.Transform, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def SpawnActorWithSpawnOptionsAsync(self, WorldContext: unreal.UObject, Request: SpawnManagerAsyncRequest, ReturnValue: int) -> int: ...
-    def SpawnActorWithSpawnOptions(self, Context: engine.Actor, SpawnOptions: SpawnOptionData, SpawnPointComponent: SpawnPointComponent, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def SpawnActorWithSpawner(self, Context: engine.Actor, Factory: SpawnFactory, SpawnPointComponent: SpawnPointComponent, SpawnerComponent: SpawnerComponent, Owner: engine.Actor, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def SetMaxSpawnCost(self, WorldContextObject: unreal.UObject, NewMaxSpawnCost: int): ...
+    def SpawnActorWithSpawnOptionsTransform(
+        self,
+        Context: engine.Actor,
+        SpawnOptions: SpawnOptionData,
+        SpawnTransform: core_uobject.Transform,
+    ) -> engine.Actor: ...
+    def SpawnActorWithSpawnOptionsAsync(
+        self, WorldContext: unreal.UObject, Request: SpawnManagerAsyncRequest
+    ) -> int: ...
+    def SpawnActorWithSpawnOptions(
+        self,
+        Context: engine.Actor,
+        SpawnOptions: SpawnOptionData,
+        SpawnPointComponent: SpawnPointComponent,
+    ) -> engine.Actor: ...
+    def SpawnActorWithSpawner(
+        self,
+        Context: engine.Actor,
+        Factory: SpawnFactory,
+        SpawnPointComponent: SpawnPointComponent,
+        SpawnerComponent: SpawnerComponent,
+        Owner: engine.Actor,
+    ) -> engine.Actor: ...
+    def SetMaxSpawnCost(
+        self, WorldContextObject: unreal.UObject, NewMaxSpawnCost: int
+    ): ...
     def RestoreSuspendedActors(self, WorldContextObject: unreal.UObject): ...
     def RemoveActorFromSpawnSystem(self, Actor: engine.Actor): ...
-    def CancelSpawnActorWithOptionsAsyncRequest(self, WorldContext: unreal.UObject, RequestID: int): ...
+    def CancelSpawnActorWithOptionsAsyncRequest(
+        self, WorldContext: unreal.UObject, RequestID: int
+    ): ...
 
 
 class SpawnerLinkComponent(engine.PrimitiveComponent):
@@ -181,7 +237,6 @@ class SpawnerLinkComponent(engine.PrimitiveComponent):
     bBeingDestroyed: bool
     SharedStates: unreal.WrappedArray[unreal.UObject]
     AllLinkedSpawners: unreal.WrappedArray[Spawner]
-
 
 
 class SpawnerStateInterface(core_uobject.Interface): ...
@@ -196,11 +251,9 @@ class SpawnerStyle_Bunch(SpawnerStyle):
     SpawnDelay: float
 
 
-
 class SpawnerStyle_BunchList(SpawnerStyle):
     Bunches: unreal.WrappedArray[SpawnBunchListItem]
     SpawnDelay: float
-
 
 
 class SpawnerStyle_Den(SpawnerStyle):
@@ -215,36 +268,36 @@ class SpawnerStyle_Den(SpawnerStyle):
     NumAliveActorsParam: gbx_game_system_core.GbxParam
 
 
-
 class SpawnerStyle_Encounter(SpawnerStyle):
     Waves: unreal.WrappedArray[EncounterWave]
-
 
 
 class SpawnerStyle_Single(SpawnerStyle):
     SpawnOptions: SpawnOptionData
 
 
-
 class SpawnerStyleFactory_Bunch(SpawnerStyle_Bunch):
     SpawnFactory: SpawnFactory
     AliveLimitType: ESpawnLimitType
     InternalSpawnOptions: SpawnOptionData
-    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+
+    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass) -> bool: ...
 
 
 class SpawnerStyleFactory_Den(SpawnerStyle_Den):
     SpawnFactory: SpawnFactory
     AliveLimitType: ESpawnLimitType
     InternalSpawnOptions: SpawnOptionData
-    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+
+    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass) -> bool: ...
 
 
 class SpawnerStyleFactory_Single(SpawnerStyle_Single):
     SpawnFactory: SpawnFactory
     AliveLimitType: ESpawnLimitType
     InternalSpawnOptions: SpawnOptionData
-    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+
+    def IsFactoryClassAllowed(self, FactoryClass: unreal.UClass) -> bool: ...
 
 
 class SpawnerTeamComponent(gbx_game_system_core.TeamComponent):
@@ -252,7 +305,6 @@ class SpawnerTeamComponent(gbx_game_system_core.TeamComponent):
     bOverrideTeam: bool
     ResolvedTeamType: str
     EvaluatedTeam: gbx_game_system_core.Team
-
 
 
 class SpawnFactory(unreal.UObject):
@@ -264,28 +316,27 @@ class SpawnFactory(unreal.UObject):
     CachedTeam: gbx_game_system_core.Team
 
 
-
 class SpawnFactory_Container(SpawnFactory):
     Options: SpawnOptionData
-
 
 
 class SpawnFactory_ContainerSoftRef(SpawnFactory):
     OptionsPath: SpawnOptionDataSoftPath
 
 
-
 class SpawnFactory_Generic(SpawnFactory):
     ActorProperties: engine.Actor
     bUseActorProperties: bool
     bIncludeSkeletalMeshForSpawnExtent: bool
+    ActorClass: Any
     SpawnOrigin: core_uobject.Vector
     SpawnExtent: core_uobject.Vector
     bOverrideSpawnSize: bool
     CollisionHandling: engine.ESpawnActorCollisionHandlingMethod
     bOverrideCollisionHandling: bool
     ActorPropertyAssetRefCache: unreal.WrappedArray[core_uobject.SoftObjectPath]
-    def ShouldSkipActorProperty(self, ActorProperty: core_uobject.Property, ReturnValue: bool) -> bool: ...
+
+    def ShouldSkipActorProperty(self, ActorProperty: core_uobject.Property) -> bool: ...
 
 
 class SpawnManager(unreal.UObject):
@@ -301,6 +352,7 @@ class SpawnManager(unreal.UObject):
     IrrelevantPeriod: int
     AlwaysRelevantDistance: int
     AlwaysIrrelevantDistance: int
+    GlobalDLCData: Any
     bUseMultiframeSpawning: bool
     PrivateWorld: engine.World
     DLCs: unreal.WrappedArray[SpawnDLCData]
@@ -308,6 +360,7 @@ class SpawnManager(unreal.UObject):
     CachedPlayerLocations: unreal.WrappedArray[core_uobject.Vector]
     CachedPlayers: unreal.WrappedArray[engine.Controller]
     SpawnedActor: engine.Actor
+
     def ActorDestroyed(self, Actor: engine.Actor): ...
 
 
@@ -315,14 +368,15 @@ class SpawnSystemEditorSettings(engine.DeveloperSettings):
     StreamStyle: ESpawnSystemStreamStyle
 
 
-
 class SpawnOptionData(gbx_runtime.GbxDataAsset):
     Options: unreal.WrappedArray[SpawnFactoryData]
     SpawnDetails: SpawnDetails
 
 
-
 class SpawnPointComponent(engine.PrimitiveComponent):
+    OnActorSpawned: Any
+    OnActorDied: Any
+    OnSpawnAnimComplete: Any
     bEnabled: bool
     SpawnPoint: SpawnPoint
     SpawnAITreeTag: gameplay_tags.GameplayTag
@@ -338,12 +392,13 @@ class SpawnPointComponent(engine.PrimitiveComponent):
     ResetStretch: gbx_runtime.GbxTriggerProperty
     bAttachSpawnedActors: bool
     AttachSlotName: str
+
     def SetSpawnStyleTag(self, NewTag: gameplay_tags.GameplayTag): ...
     def ResetStretchPoint(self): ...
-    def HasSpawnAITreeTag(self, ReturnValue: bool) -> bool: ...
-    def GetStretchyPoint(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetSpawnStyleTag(self, ReturnValue: gameplay_tags.GameplayTag) -> gameplay_tags.GameplayTag: ...
-    def GetSpawnAITreeTag(self, ReturnValue: gameplay_tags.GameplayTag) -> gameplay_tags.GameplayTag: ...
+    def HasSpawnAITreeTag(self) -> bool: ...
+    def GetStretchyPoint(self) -> core_uobject.Transform: ...
+    def GetSpawnStyleTag(self) -> gameplay_tags.GameplayTag: ...
+    def GetSpawnAITreeTag(self) -> gameplay_tags.GameplayTag: ...
     def EnableSpawnPoint(self): ...
     def DisableSpawnPoint(self): ...
 
@@ -362,6 +417,7 @@ class SpawnPreviewComponent(gbx_game_system_core.PreviewComponent):
     ReplayAction: gbx_runtime.GbxTriggerProperty
     ActionComponent: gbx_game_system_core.GbxActionComponent
     SpawnerList: unreal.WrappedArray[SpawnerComponent]
+
     def OnReplayAction(self): ...
     def OnCycleActor(self, Direction: gbx_game_system_core.ECycleDirection): ...
 
@@ -372,13 +428,12 @@ class SpawnerActorData:
     Owner: engine.Actor
 
 
-
 class ActionState_SpawnAnim(gbx_game_system_core.ActionState_Anim): ...
 
 
 class SpawnDLCItem:
+    Data: Any
     IsEnabled: gbx_game_system_core.AttributeInitializationData
-
 
 
 class SpawnDLCScriptGroup:
@@ -388,11 +443,9 @@ class SpawnDLCScriptGroup:
     bAlwaysEnabledDuringEvent: bool
 
 
-
 class SpawnerSoftPath:
     SpawnerPathName: str
     SpawnerSubPathString: str
-
 
 
 class SpawnDLCGroup:
@@ -400,12 +453,10 @@ class SpawnDLCGroup:
     Replacements: unreal.WrappedArray[SpawnDLCGroupItem]
 
 
-
 class SpawnDLCGroupItem:
     SpawnerSoftPaths: unreal.WrappedArray[SpawnerSoftPath]
     SpawnOptions: SpawnOptionData
     bAlwaysEnabledDuringEvent: bool
-
 
 
 class SpawnerData:
@@ -419,7 +470,6 @@ class SpawnerData:
     DLCScripts: unreal.WrappedArray[SpawnDLCScript]
 
 
-
 class SpawnerLinkData:
     Owner: engine.Actor
     Spawner: Spawner
@@ -428,12 +478,10 @@ class SpawnerLinkData:
     LinkComp: SpawnerLinkComponent
 
 
-
 class SpawnBunchListItem:
     SpawnOptions: SpawnOptionData
     NumActorsParam: gbx_game_system_core.GbxParam
     SpawnPointGroupName: str
-
 
 
 class EncounterWave:
@@ -442,7 +490,6 @@ class EncounterWave:
     WarmupTimer: float
     Limits: unreal.WrappedArray[SpawnLimitData]
     SpawnPointGroupName: str
-
 
 
 class SpawnLimitData:
@@ -456,7 +503,6 @@ class SpawnLimitData:
     TagMatchType: gameplay_tags.EGameplayContainerMatchType
 
 
-
 class EncounterAdvanceData:
     Type: EEncounterAdvanceType
     bUseTimer: bool
@@ -465,11 +511,9 @@ class EncounterAdvanceData:
     Percent: float
 
 
-
 class SpawnOptionDataSoftPath:
     SpawnOptionDataPathName: str
     SpawnOptionDataSubPathString: str
-
 
 
 class SpawnManagerAsyncRequest:
@@ -478,9 +522,10 @@ class SpawnManagerAsyncRequest:
     SpawnOptions: SpawnOptionData
     SpawnPointComponent: SpawnPointComponent
     SpawnerComponent: SpawnerComponent
+    Spawned: Any
+    Failed: Any
     Owner: engine.Actor
     SpawnDetails: SpawnDetails
-
 
 
 class SpawnDetails:
@@ -493,7 +538,6 @@ class SpawnDetails:
     bCritical: bool
 
 
-
 class SpawnManagerAsyncRequestEntry(SpawnManagerAsyncRequest): ...
 
 
@@ -502,14 +546,12 @@ class SpawnPreviewState(gbx_game_system_core.PreviewState):
     PreviewFactories: unreal.WrappedArray[SpawnFactory]
 
 
-
 class SpawnPointGroup:
     Name: str
     Color: core_uobject.Color
     TerritoryActorForThisGroup: engine.Actor
     SpawnPoints: unreal.WrappedArray[SpawnPoint]
     bRandomize: bool
-
 
 
 class SpawnFactoryData:
@@ -521,10 +563,8 @@ class SpawnFactoryData:
     AliveLimit: int
 
 
-
 class PointWidget:
     Point: core_uobject.Transform
-
 
 
 class ESpawnAnimNotifyAction(enum.Enum):

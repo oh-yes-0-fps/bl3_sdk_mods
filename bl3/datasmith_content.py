@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,13 +8,11 @@ from . import core_uobject
 from . import engine
 
 
-
 class DatasmithAreaLightActor(engine.Actor):
     LightShape: EDatasmithAreaLightActorShape
     Dimensions: core_uobject.Vector2D
     Color: core_uobject.LinearColor
     Intensity: float
-
 
 
 class DatasmithObjectTemplate(unreal.UObject): ...
@@ -26,7 +24,6 @@ class DatasmithAreaLightActorTemplate(DatasmithObjectTemplate):
     Color: core_uobject.LinearColor
     Intensity: float
     bHidden: bool
-
 
 
 class DatasmithAssetImportData(engine.AssetImportData): ...
@@ -44,7 +41,8 @@ class DatasmithSceneImportData(engine.AssetImportData): ...
 class DatasmithCADImportSceneData(DatasmithSceneImportData): ...
 
 
-class DatasmithAssetUserData(engine.AssetUserData): ...
+class DatasmithAssetUserData(engine.AssetUserData):
+    MetaData: Any
 
 
 class DatasmithCineCameraComponentTemplate(DatasmithObjectTemplate):
@@ -56,12 +54,21 @@ class DatasmithCineCameraComponentTemplate(DatasmithObjectTemplate):
     PostProcessSettings: DatasmithPostProcessSettingsTemplate
 
 
-
 class DatasmithContentBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def GetDatasmithUserDataValueForKey(self, Object: unreal.UObject, Key: str, ReturnValue: str) -> str: ...
-    def GetDatasmithUserDataKeysAndValuesForValue(self, Object: unreal.UObject, StringToMatch: str, OutKeys: unreal.WrappedArray[str], OutValues: unreal.WrappedArray[str]): ...
-    def GetDatasmithUserData(self, Object: unreal.UObject, ReturnValue: DatasmithAssetUserData) -> DatasmithAssetUserData: ...
+    def GetDatasmithUserDataValueForKey(
+        self, Object: unreal.UObject, Key: str
+    ) -> str: ...
+    def GetDatasmithUserDataKeysAndValuesForValue(
+        self,
+        Object: unreal.UObject,
+        StringToMatch: str,
+        OutKeys: unreal.WrappedArray[str],
+        OutValues: unreal.WrappedArray[str],
+    ): ...
+    def GetDatasmithUserData(
+        self, Object: unreal.UObject
+    ) -> DatasmithAssetUserData: ...
 
 
 class DatasmithImportOptions(unreal.UObject):
@@ -78,7 +85,6 @@ class DatasmithImportOptions(unreal.UObject):
     ReimportOptions: DatasmithReimportOptions
 
 
-
 class DatasmithLightComponentTemplate(DatasmithObjectTemplate):
     bVisible: bool
     CastShadows: bool
@@ -92,7 +98,6 @@ class DatasmithLightComponentTemplate(DatasmithObjectTemplate):
     IESTexture: engine.TextureLightProfile
 
 
-
 class DatasmithPointLightComponentTemplate(DatasmithObjectTemplate):
     IntensityUnits: engine.ELightUnits
     SourceRadius: float
@@ -100,13 +105,12 @@ class DatasmithPointLightComponentTemplate(DatasmithObjectTemplate):
     AttenuationRadius: float
 
 
-
 class DatasmithScene(unreal.UObject): ...
 
 
 class DatasmithSceneActor(engine.Actor):
     Scene: DatasmithScene
-
+    RelatedActors: Any
 
 
 class DatasmithSceneComponentTemplate(DatasmithObjectTemplate):
@@ -115,12 +119,10 @@ class DatasmithSceneComponentTemplate(DatasmithObjectTemplate):
     AttachParent: engine.SceneComponent
 
 
-
 class DatasmithSkyLightComponentTemplate(DatasmithObjectTemplate):
     SourceType: int
     CubemapResolution: int
     Cubemap: engine.TextureCube
-
 
 
 class DatasmithSpotLightComponentTemplate(DatasmithObjectTemplate):
@@ -128,11 +130,9 @@ class DatasmithSpotLightComponentTemplate(DatasmithObjectTemplate):
     OuterConeAngle: float
 
 
-
 class DatasmithStaticMeshComponentTemplate(DatasmithSceneComponentTemplate):
     StaticMesh: engine.StaticMesh
     OverrideMaterials: unreal.WrappedArray[engine.MaterialInterface]
-
 
 
 class DatasmithStaticMeshTemplate(DatasmithObjectTemplate):
@@ -141,7 +141,6 @@ class DatasmithStaticMeshTemplate(DatasmithObjectTemplate):
     LightMapResolution: int
     BuildSettings: unreal.WrappedArray[DatasmithMeshBuildSettingsTemplate]
     StaticMaterials: unreal.WrappedArray[DatasmithStaticMaterialTemplate]
-
 
 
 class DatasmithPostProcessSettingsTemplate:
@@ -159,15 +158,12 @@ class DatasmithPostProcessSettingsTemplate:
     CameraISO: float
 
 
-
 class DatasmithCameraFocusSettingsTemplate:
     ManualFocusDistance: float
 
 
-
 class DatasmithCameraLensSettingsTemplate:
     MaxFStop: float
-
 
 
 class DatasmithCameraFilmbackSettingsTemplate:
@@ -175,12 +171,10 @@ class DatasmithCameraFilmbackSettingsTemplate:
     SensorHeight: float
 
 
-
 class DatasmithTessellationOptions:
     ChordTolerance: float
     MaxEdgeLength: float
     NormalTolerance: float
-
 
 
 class DatasmithImportBaseOptions:
@@ -193,7 +187,6 @@ class DatasmithImportBaseOptions:
     StaticMeshOptions: DatasmithStaticMeshImportOptions
 
 
-
 class DatasmithStaticMeshImportOptions:
     MinLightmapResolution: EDatasmithImportLightmapMin
     MaxLightmapResolution: EDatasmithImportLightmapMax
@@ -201,10 +194,8 @@ class DatasmithStaticMeshImportOptions:
     bRemoveDegenerates: bool
 
 
-
 class DatasmithAssetImportOptions:
     PackagePath: str
-
 
 
 class DatasmithReimportOptions:
@@ -212,19 +203,17 @@ class DatasmithReimportOptions:
     bRespawnDeletedActors: bool
 
 
-
-class DatasmithMeshSectionInfoMapTemplate: ...
+class DatasmithMeshSectionInfoMapTemplate:
+    Map: Any
 
 
 class DatasmithMeshSectionInfoTemplate:
     MaterialIndex: int
 
 
-
 class DatasmithStaticMaterialTemplate:
     MaterialSlotName: str
     MaterialInterface: engine.MaterialInterface
-
 
 
 class DatasmithMeshBuildSettingsTemplate:
@@ -239,7 +228,6 @@ class DatasmithMeshBuildSettingsTemplate:
     MinLightmapResolution: int
     SrcLightmapIndex: int
     DstLightmapIndex: int
-
 
 
 class EDatasmithAreaLightActorShape(enum.Enum):

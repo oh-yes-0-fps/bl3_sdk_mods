@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class FontBulkData(unreal.UObject): ...
@@ -22,7 +21,6 @@ class SlateTypes(unreal.UObject): ...
 
 class SlateWidgetStyleAsset(unreal.UObject):
     CustomStyle: SlateWidgetStyleContainerBase
-
 
 
 class SlateWidgetStyleContainerBase(unreal.UObject): ...
@@ -49,11 +47,9 @@ class SlateBrush:
     bHasUObject: bool
 
 
-
 class SlateColor:
     SpecifiedColor: core_uobject.LinearColor
     ColorUseRule: int
-
 
 
 class Margin:
@@ -61,7 +57,6 @@ class Margin:
     Top: float
     Right: float
     Bottom: float
-
 
 
 class InputEvent: ...
@@ -90,13 +85,11 @@ class SlateFontInfo:
     Size: int
 
 
-
 class FontOutlineSettings:
     OutlineSize: int
     bSeparateFillAlpha: bool
     OutlineMaterial: unreal.UObject
     OutlineColor: core_uobject.LinearColor
-
 
 
 class SlateWidgetStyle: ...
@@ -119,17 +112,14 @@ class TableRowStyle(SlateWidgetStyle):
     DropIndicator_Below: SlateBrush
 
 
-
 class ComboBoxStyle(SlateWidgetStyle):
     ComboButtonStyle: ComboButtonStyle
     PressedSlateSound: SlateSound
     SelectionChangeSlateSound: SlateSound
 
 
-
 class SlateSound:
     ResourceObject: unreal.UObject
-
 
 
 class ComboButtonStyle(SlateWidgetStyle):
@@ -137,7 +127,6 @@ class ComboButtonStyle(SlateWidgetStyle):
     DownArrowImage: SlateBrush
     MenuBorderBrush: SlateBrush
     MenuBorderPadding: Margin
-
 
 
 class ButtonStyle(SlateWidgetStyle):
@@ -151,14 +140,12 @@ class ButtonStyle(SlateWidgetStyle):
     HoveredSlateSound: SlateSound
 
 
-
 class EditableTextStyle(SlateWidgetStyle):
     Font: SlateFontInfo
     ColorAndOpacity: SlateColor
     BackgroundImageSelected: SlateBrush
     BackgroundImageComposing: SlateBrush
     CaretImage: SlateBrush
-
 
 
 class EditableTextBoxStyle(SlateWidgetStyle):
@@ -176,7 +163,6 @@ class EditableTextBoxStyle(SlateWidgetStyle):
     ScrollBarStyle: ScrollBarStyle
 
 
-
 class ScrollBarStyle(SlateWidgetStyle):
     HorizontalBackgroundImage: SlateBrush
     VerticalBackgroundImage: SlateBrush
@@ -187,7 +173,6 @@ class ScrollBarStyle(SlateWidgetStyle):
     NormalThumbImage: SlateBrush
     HoveredThumbImage: SlateBrush
     DraggedThumbImage: SlateBrush
-
 
 
 class TextBlockStyle(SlateWidgetStyle):
@@ -201,7 +186,6 @@ class TextBlockStyle(SlateWidgetStyle):
     UnderlineBrush: SlateBrush
 
 
-
 class SpinBoxStyle(SlateWidgetStyle):
     BackgroundBrush: SlateBrush
     HoveredBackgroundBrush: SlateBrush
@@ -210,7 +194,6 @@ class SpinBoxStyle(SlateWidgetStyle):
     ArrowsImage: SlateBrush
     ForegroundColor: SlateColor
     TextPadding: Margin
-
 
 
 class FocusEvent: ...
@@ -225,22 +208,18 @@ class CompositeFont:
     SubTypefaces: unreal.WrappedArray[CompositeSubFont]
 
 
-
 class CompositeFallbackFont:
     Typeface: Typeface
     ScalingFactor: float
-
 
 
 class Typeface:
     Fonts: unreal.WrappedArray[TypefaceEntry]
 
 
-
 class TypefaceEntry:
     Name: str
     Font: FontData
-
 
 
 class FontData:
@@ -251,11 +230,9 @@ class FontData:
     FontFaceAsset: unreal.UObject
 
 
-
 class CompositeSubFont(CompositeFallbackFont):
     CharacterRanges: unreal.WrappedArray[core_uobject.Int32Range]
     Cultures: str
-
 
 
 class CaptureLostEvent: ...
@@ -278,11 +255,9 @@ class WindowStyle(SlateWidgetStyle):
     ChildBackgroundBrush: SlateBrush
 
 
-
 class ScrollBorderStyle(SlateWidgetStyle):
     TopShadowBrush: SlateBrush
     BottomShadowBrush: SlateBrush
-
 
 
 class ScrollBoxStyle(SlateWidgetStyle):
@@ -290,7 +265,6 @@ class ScrollBoxStyle(SlateWidgetStyle):
     BottomShadowBrush: SlateBrush
     LeftShadowBrush: SlateBrush
     RightShadowBrush: SlateBrush
-
 
 
 class DockTabStyle(SlateWidgetStyle):
@@ -308,7 +282,6 @@ class DockTabStyle(SlateWidgetStyle):
     FlashColor: SlateColor
 
 
-
 class HeaderRowStyle(SlateWidgetStyle):
     ColumnStyle: TableColumnHeaderStyle
     LastColumnStyle: TableColumnHeaderStyle
@@ -317,11 +290,9 @@ class HeaderRowStyle(SlateWidgetStyle):
     ForegroundColor: SlateColor
 
 
-
 class SplitterStyle(SlateWidgetStyle):
     HandleNormalBrush: SlateBrush
     HandleHighlightBrush: SlateBrush
-
 
 
 class TableColumnHeaderStyle(SlateWidgetStyle):
@@ -336,11 +307,9 @@ class TableColumnHeaderStyle(SlateWidgetStyle):
     MenuDropdownHoveredBorderBrush: SlateBrush
 
 
-
 class InlineTextImageStyle(SlateWidgetStyle):
     Image: SlateBrush
     Baseline: int
-
 
 
 class VolumeControlStyle(SlateWidgetStyle):
@@ -352,14 +321,12 @@ class VolumeControlStyle(SlateWidgetStyle):
     MutedImage: SlateBrush
 
 
-
 class SliderStyle(SlateWidgetStyle):
     NormalBarImage: SlateBrush
     DisabledBarImage: SlateBrush
     NormalThumbImage: SlateBrush
     DisabledThumbImage: SlateBrush
     BarThickness: float
-
 
 
 class SearchBoxStyle(SlateWidgetStyle):
@@ -373,12 +340,10 @@ class SearchBoxStyle(SlateWidgetStyle):
     bLeftAlignButtons: bool
 
 
-
 class ExpandableAreaStyle(SlateWidgetStyle):
     CollapsedImage: SlateBrush
     ExpandedImage: SlateBrush
     RolloutAnimationSeconds: float
-
 
 
 class ProgressBarStyle(SlateWidgetStyle):
@@ -387,18 +352,15 @@ class ProgressBarStyle(SlateWidgetStyle):
     MarqueeImage: SlateBrush
 
 
-
 class InlineEditableTextBlockStyle(SlateWidgetStyle):
     EditableTextBoxStyle: EditableTextBoxStyle
     TextStyle: TextBlockStyle
-
 
 
 class HyperlinkStyle(SlateWidgetStyle):
     UnderlineStyle: ButtonStyle
     TextStyle: TextBlockStyle
     Padding: Margin
-
 
 
 class CheckBoxStyle(SlateWidgetStyle):
@@ -418,7 +380,6 @@ class CheckBoxStyle(SlateWidgetStyle):
     CheckedSlateSound: SlateSound
     UncheckedSlateSound: SlateSound
     HoveredSlateSound: SlateSound
-
 
 
 class ECheckBoxState(enum.Enum):

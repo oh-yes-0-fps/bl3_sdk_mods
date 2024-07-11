@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -9,70 +9,56 @@ from . import input_core
 from . import slate_core
 
 
-
 class ButtonWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ButtonStyle: slate_core.ButtonStyle
-
 
 
 class CheckBoxWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     CheckBoxStyle: slate_core.CheckBoxStyle
 
 
-
 class ComboBoxWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ComboBoxStyle: slate_core.ComboBoxStyle
-
 
 
 class ComboButtonWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ComboButtonStyle: slate_core.ComboButtonStyle
 
 
-
 class EditableTextBoxWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     EditableTextBoxStyle: slate_core.EditableTextBoxStyle
-
 
 
 class EditableTextWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     EditableTextStyle: slate_core.EditableTextStyle
 
 
-
 class ProgressWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ProgressBarStyle: slate_core.ProgressBarStyle
-
 
 
 class ScrollBarWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ScrollBarStyle: slate_core.ScrollBarStyle
 
 
-
 class ScrollBoxWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     ScrollBoxStyle: slate_core.ScrollBoxStyle
-
 
 
 class SlateSettings(unreal.UObject):
     bExplicitCanvasChildZOrder: bool
 
 
-
 class SpinBoxWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     SpinBoxStyle: slate_core.SpinBoxStyle
-
 
 
 class TextBlockWidgetStyle(slate_core.SlateWidgetStyleContainerBase):
     TextBlockStyle: slate_core.TextBlockStyle
 
 
-
 class VirtualKeyboardOptions:
     bEnableAutocorrect: bool
-
 
 
 class InputChord:
@@ -83,11 +69,9 @@ class InputChord:
     bCmd: bool
 
 
-
 class Anchors:
     Minimum: core_uobject.Vector2D
     Maximum: core_uobject.Vector2D
-
 
 
 class ETextFlowDirection(enum.Enum):

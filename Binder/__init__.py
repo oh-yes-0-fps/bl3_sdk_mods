@@ -346,7 +346,7 @@ class TyProperty:
             if cls:
                 prop_type = TyPath.from_unreal(cls)
             else:
-                prop_type = TyPath("typing.Any", "python")
+                prop_type = TyPath("Any", "python")
         elif isinstance(unreal_property, unreal.UEnumProperty):
             prop_type = TyPath.from_unreal(
                 cast(unreal.UEnumProperty, unreal_property).Enum
@@ -368,6 +368,12 @@ class TyProperty:
             prop_type = TyPath("int", "python")
         elif isinstance(unreal_property, unreal.UIntProperty):
             prop_type = TyPath("int", "python")
+        elif isinstance(unreal_property, unreal.UUInt64Property):
+            prop_type = TyPath("int", "python")
+        elif isinstance(unreal_property, unreal.UUInt32Property):
+            prop_type = TyPath("int", "python")
+        elif isinstance(unreal_property, unreal.UUInt16Property):
+            prop_type = TyPath("int", "python")
         elif isinstance(unreal_property, unreal.UInt64Property):
             prop_type = TyPath("int", "python")
         elif isinstance(unreal_property, unreal.UInt16Property):
@@ -386,7 +392,7 @@ class TyProperty:
         elif isinstance(unreal_property, unreal.UStrProperty):
             prop_type = TyPath("str", "python")
         else:
-            prop_type = TyPath("typing.Any", "python")
+            prop_type = TyPath("Any", "python")
         return TyProperty(name, prop_type)
 
     def __eq__(self, other: object) -> bool:
@@ -433,7 +439,7 @@ class TyFunction:
 
     @staticmethod
     def create(unreal_function: unreal.UFunction) -> TyFunction:
-        PARAM_PREFIX_BLACKLIST = ["Temp_struct", "CallFunc", "K2Node"]
+        PARAM_PREFIX_BLACKLIST = ["Temp_struct", "CallFunc", "K2Node", "ReturnValue", "Return"]
         name = unreal_function.Name
         return_type = None
         if unreal_function._find_return_param():
@@ -514,20 +520,10 @@ class TyPackageOrganizer:
         alpha = \
 """from __future__ import annotations # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
-"""
-        omega = \
-"""
-
-import mods_base
-mods_base.build_mod(
-    mod_type=mods_base.ModType.Library,
-    cls=mods_base.Library,
-    auto_enable=True,
-)
 """
         for package, content in self.packages.items():
             with open(get_ouput_path(f"{package}.{suffix}"), "w") as f:
@@ -538,7 +534,6 @@ mods_base.build_mod(
                 beta += "\n"
                 f.write(beta)
                 f.write(content.replace(f"{package}.", ""))
-                f.write(omega)
         with open(get_ouput_path(f"__init__.{suffix}"), "w") as f:
             f.write("\n".join([f"from . import {package}" for package in self.packages.keys()]))
             f.write("\n")
@@ -546,6 +541,34 @@ mods_base.build_mod(
             for package in self.packages.keys():
                 f.write(f"    \"{package}\",\n")
             f.write(")")
+            f.write(
+"""
+
+import mods_base
+import unrealsdk
+import typing
+
+def get_pc() -> oak_game.OakPlayerController:
+    return typing.cast(oak_game.OakPlayerController, mods_base.get_pc())
+
+T = typing.TypeVar("T")
+
+def ty_find_class(cls: type[T]) -> T:
+    return typing.cast(T, unrealsdk.find_class(cls.__qualname__.split(".")[0]))
+
+def ty_find_object(cls: type[T], name: str) -> T:
+    return typing.cast(T, unrealsdk.find_object(cls.__qualname__.split(".")[0], name))
+
+def ty_find_all(cls: type[T]) -> typing.Iterator[T]:
+    return typing.cast(typing.Iterator[T], unrealsdk.find_all(cls.__qualname__.split(".")[0]))
+
+mods_base.build_mod(
+    mod_type=mods_base.ModType.Library,
+    cls=mods_base.Library,
+    auto_enable=True,
+)
+"""
+            )
 
 
 DATA_BASE: TypingDatabase = TypingDatabase({})

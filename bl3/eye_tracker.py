@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,14 +8,13 @@ from . import core_uobject
 from . import engine
 
 
-
 class EyeTrackerFunctionLibrary(engine.BlueprintFunctionLibrary):
 
     def SetEyeTrackedPlayer(self, PlayerController: engine.PlayerController): ...
-    def IsStereoGazeDataAvailable(self, ReturnValue: bool) -> bool: ...
-    def IsEyeTrackerConnected(self, ReturnValue: bool) -> bool: ...
-    def GetStereoGazeData(self, OutGazeData: EyeTrackerStereoGazeData, ReturnValue: bool) -> bool: ...
-    def GetGazeData(self, OutGazeData: EyeTrackerGazeData, ReturnValue: bool) -> bool: ...
+    def IsStereoGazeDataAvailable(self) -> bool: ...
+    def IsEyeTrackerConnected(self) -> bool: ...
+    def GetStereoGazeData(self, OutGazeData: EyeTrackerStereoGazeData) -> bool: ...
+    def GetGazeData(self, OutGazeData: EyeTrackerGazeData) -> bool: ...
 
 
 class EyeTrackerStereoGazeData:
@@ -27,13 +26,11 @@ class EyeTrackerStereoGazeData:
     ConfidenceValue: float
 
 
-
 class EyeTrackerGazeData:
     GazeOrigin: core_uobject.Vector
     GazeDirection: core_uobject.Vector
     FixationPoint: core_uobject.Vector
     ConfidenceValue: float
-
 
 
 class EEyeTrackerStatus(enum.Enum):

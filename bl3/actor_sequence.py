@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -9,11 +9,9 @@ from . import engine
 from . import movie_scene
 
 
-
 class ActorSequence(movie_scene.MovieSceneSequence):
     MovieScene: movie_scene.MovieScene
     ObjectReferences: ActorSequenceObjectReferenceMap
-
 
 
 class ActorSequenceComponent(engine.ActorComponent):
@@ -21,7 +19,6 @@ class ActorSequenceComponent(engine.ActorComponent):
     PlaybackSettings: movie_scene.MovieSceneSequencePlaybackSettings
     Sequence: ActorSequence
     SequencePlayer: ActorSequencePlayer
-
 
 
 class ActorSequencePlayer(movie_scene.MovieSceneSequencePlayer): ...
@@ -32,17 +29,14 @@ class ActorSequenceObjectReferenceMap:
     References: unreal.WrappedArray[ActorSequenceObjectReferences]
 
 
-
 class ActorSequenceObjectReferences:
     Array: unreal.WrappedArray[ActorSequenceObjectReference]
-
 
 
 class ActorSequenceObjectReference:
     Type: EActorSequenceObjectReferenceType
     ActorId: core_uobject.Guid
     PathToComponent: str
-
 
 
 class EActorSequenceObjectReferenceType(enum.Enum):

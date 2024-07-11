@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class Object:
@@ -175,7 +172,6 @@ class JoinabilitySettings:
     MaxPartySize: int
 
 
-
 class UniqueNetIdWrapper: ...
 
 
@@ -186,12 +182,10 @@ class Guid:
     D: int
 
 
-
 class Vector:
     X: float
     Y: float
     Z: float
-
 
 
 class Vector4:
@@ -201,11 +195,9 @@ class Vector4:
     W: float
 
 
-
 class Vector2D:
     X: float
     Y: float
-
 
 
 class TwoVectors:
@@ -213,17 +205,14 @@ class TwoVectors:
     v2: Vector
 
 
-
 class Plane(Vector):
     W: float
-
 
 
 class Rotator:
     Pitch: float
     Yaw: float
     Roll: float
-
 
 
 class Quat:
@@ -233,7 +222,6 @@ class Quat:
     W: float
 
 
-
 class PackedNormal:
     X: int
     Y: int
@@ -241,10 +229,8 @@ class PackedNormal:
     W: int
 
 
-
 class PackedRGB1_A2N:
     Packed: int
-
 
 
 class PackedRGBA16N:
@@ -252,18 +238,15 @@ class PackedRGBA16N:
     ZW: int
 
 
-
 class IntPoint:
     X: int
     Y: int
-
 
 
 class IntVector:
     X: int
     Y: int
     Z: int
-
 
 
 class IntVector4:
@@ -273,13 +256,11 @@ class IntVector4:
     W: int
 
 
-
 class Color:
     B: int
     G: int
     R: int
     A: int
-
 
 
 class LinearColor:
@@ -289,12 +270,10 @@ class LinearColor:
     A: float
 
 
-
 class Box:
     Min: Vector
     Max: Vector
     IsValid: int
-
 
 
 class Box2D:
@@ -303,12 +282,10 @@ class Box2D:
     bIsValid: int
 
 
-
 class BoxSphereBounds:
     Origin: Vector
     BoxExtent: Vector
     SphereRadius: float
-
 
 
 class OrientedBox:
@@ -321,13 +298,11 @@ class OrientedBox:
     ExtentZ: float
 
 
-
 class Matrix:
     XPlane: Plane
     YPlane: Plane
     ZPlane: Plane
     WPlane: Plane
-
 
 
 class InterpCurvePointFloat:
@@ -338,12 +313,10 @@ class InterpCurvePointFloat:
     InterpMode: int
 
 
-
 class InterpCurveFloat:
     Points: unreal.WrappedArray[InterpCurvePointFloat]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class InterpCurvePointVector2D:
@@ -354,12 +327,10 @@ class InterpCurvePointVector2D:
     InterpMode: int
 
 
-
 class InterpCurveVector2D:
     Points: unreal.WrappedArray[InterpCurvePointVector2D]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class InterpCurvePointVector:
@@ -370,12 +341,10 @@ class InterpCurvePointVector:
     InterpMode: int
 
 
-
 class InterpCurveVector:
     Points: unreal.WrappedArray[InterpCurvePointVector]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class InterpCurvePointQuat:
@@ -386,12 +355,10 @@ class InterpCurvePointQuat:
     InterpMode: int
 
 
-
 class InterpCurveQuat:
     Points: unreal.WrappedArray[InterpCurvePointQuat]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class InterpCurvePointTwoVectors:
@@ -402,12 +369,10 @@ class InterpCurvePointTwoVectors:
     InterpMode: int
 
 
-
 class InterpCurveTwoVectors:
     Points: unreal.WrappedArray[InterpCurvePointTwoVectors]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class InterpCurvePointLinearColor:
@@ -418,12 +383,10 @@ class InterpCurvePointLinearColor:
     InterpMode: int
 
 
-
 class InterpCurveLinearColor:
     Points: unreal.WrappedArray[InterpCurvePointLinearColor]
     bIsLooped: bool
     LoopKeyOffset: float
-
 
 
 class Transform:
@@ -432,11 +395,9 @@ class Transform:
     Scale3D: Vector
 
 
-
 class RandomStream:
     InitialSeed: int
     Seed: int
-
 
 
 class DateTime: ...
@@ -446,11 +407,9 @@ class FrameNumber:
     Value: int
 
 
-
 class FrameRate:
     Numerator: int
     Denominator: int
-
 
 
 class FrameTime:
@@ -458,11 +417,9 @@ class FrameTime:
     SubFrame: float
 
 
-
 class QualifiedFrameTime:
     Time: FrameTime
     Rate: FrameRate
-
 
 
 class Timecode:
@@ -473,14 +430,12 @@ class Timecode:
     bDropFrameFormat: bool
 
 
-
 class Timespan: ...
 
 
 class SoftObjectPath:
     AssetPathName: str
     SubPathString: str
-
 
 
 class SoftClassPath(SoftObjectPath): ...
@@ -490,11 +445,9 @@ class PrimaryAssetType:
     Name: str
 
 
-
 class PrimaryAssetId:
     PrimaryAssetType: PrimaryAssetType
     PrimaryAssetName: str
-
 
 
 class FallbackStruct: ...
@@ -505,11 +458,9 @@ class FloatRangeBound:
     Value: float
 
 
-
 class FloatRange:
     LowerBound: FloatRangeBound
     UpperBound: FloatRangeBound
-
 
 
 class Int32RangeBound:
@@ -517,11 +468,9 @@ class Int32RangeBound:
     Value: int
 
 
-
 class Int32Range:
     LowerBound: Int32RangeBound
     UpperBound: Int32RangeBound
-
 
 
 class FloatInterval:
@@ -529,11 +478,9 @@ class FloatInterval:
     Max: float
 
 
-
 class Int32Interval:
     Min: int
     Max: int
-
 
 
 class PolyglotTextData:
@@ -542,8 +489,8 @@ class PolyglotTextData:
     Namespace: str
     Key: str
     NativeString: str
+    LocalizedStrings: Any
     CachedText: str
-
 
 
 class AutomationEvent:
@@ -553,13 +500,11 @@ class AutomationEvent:
     Artifact: Guid
 
 
-
 class AutomationExecutionEntry:
     Event: AutomationEvent
     Filename: str
     LineNumber: int
     Timestamp: DateTime
-
 
 
 class Default__Class: ...

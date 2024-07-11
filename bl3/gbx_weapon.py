@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -13,7 +13,6 @@ from . import gbx_game_system_core
 from . import gbx_ui
 
 
-
 class Weapon(engine.Actor):
     CurrentFireComponent: WeaponFireComponent
     WeaponDisplayData: WeaponTypeAsset
@@ -21,10 +20,26 @@ class Weapon(engine.Actor):
     SwitchModeTimeScale: engine.GbxAttributeFloat
     SwitchModeTime: float
     SwitchModeCompletePercent: float
+    WeaponUser: Any
+    BegunPlay: Any
+    NotifyGivenTo: Any
+    NotifyAttached: Any
+    NotifyDetached: Any
+    NotifyEquipped: Any
+    NotifyPutDown: Any
+    NotifySwitchedMode: Any
+    NotifyFirstPersonCreated: Any
+    NotifyUseInput: Any
+    NotifyReloadStarted: Any
+    NotifyReloadEnded: Any
+    NotifyTargetLockChanged: Any
+    NotifyHidden: Any
     PostSprintDelayUseTime: float
     ViewModelFOV: float
     DepthOfFieldZoomedForegroundNearRegion: float
-    DamageScaleConditionals: unreal.WrappedArray[gbx_game_system_core.DamageScaleConditionalData]
+    DamageScaleConditionals: unreal.WrappedArray[
+        gbx_game_system_core.DamageScaleConditionalData
+    ]
     ReplicationProxy: gbx_game_system_core.GbxObjectReplicatorProxy
     PendingAttachState: WeaponAttachState
     AttachState: WeaponAttachState
@@ -37,6 +52,7 @@ class Weapon(engine.Actor):
     UseModeState: unreal.WrappedArray[WeaponUseModeState]
     AimAssetParameters: gbx_game_system_core.AimAssistParameters
     bIsTargetLocked: bool
+    AttributeResolverUseModeBitmask: int
     bForceUnzoomWhenSwitchingModes: bool
     AttachmentSlots3P: unreal.WrappedArray[WeaponAttachmentSlot]
     AttachmentSlots1P: unreal.WrappedArray[WeaponAttachmentSlot]
@@ -51,11 +67,14 @@ class Weapon(engine.Actor):
     AnimSetGenericNames: unreal.WrappedArray[str]
     DamageModifierCompClass: unreal.UClass
     CurrentState: str
-    UnregisteredFirstPersonOnlyAttachmentEffects: unreal.WrappedArray[WeaponRegisterAttachmentEffectData]
+    UnregisteredFirstPersonOnlyAttachmentEffects: unreal.WrappedArray[
+        WeaponRegisterAttachmentEffectData
+    ]
     UseModeIcons: unreal.WrappedArray[engine.Texture2D]
     UseModeIconFrameNames: unreal.WrappedArray[str]
     MainHandGripSocketName: str
     OffHandGripSocketName: str
+
     def Unlock(self, bReplicate: bool): ...
     def TryAutoReload(self): ...
     def ToggleMode(self, InputChannel: int): ...
@@ -74,21 +93,46 @@ class Weapon(engine.Actor):
     def StartReloading(self, bAuto: bool): ...
     def SetTargetLocked(self, bIsLocked: bool): ...
     def SetPreUseState(self, UseModeIndex: int, bEnabled: bool): ...
-    def SetMaterialVectorParameterValue(self, ParamName: str, ParamValue: core_uobject.LinearColor): ...
+    def SetMaterialVectorParameterValue(
+        self, ParamName: str, ParamValue: core_uobject.LinearColor
+    ): ...
     def SetMaterialScalarParameterValue(self, ParamName: str, ParamValue: float): ...
-    def SetEffectVectorParameter(self, ParamName: str, ParamValue: core_uobject.Vector, QueryData: WeaponEffectQueryData): ...
-    def SetEffectMaterialParameter(self, ParamName: str, ParamValue: engine.MaterialInterface, QueryData: WeaponEffectQueryData): ...
-    def SetEffectFloatParameter(self, ParamName: str, ParamValue: float, QueryData: WeaponEffectQueryData): ...
-    def SetEffectEmitterState(self, EmitterName: str, bEnabled: bool, QueryData: WeaponEffectQueryData): ...
-    def SetEffectColorParameter(self, ParamName: str, ParamValue: core_uobject.LinearColor, QueryData: WeaponEffectQueryData): ...
+    def SetEffectVectorParameter(
+        self,
+        ParamName: str,
+        ParamValue: core_uobject.Vector,
+        QueryData: WeaponEffectQueryData,
+    ): ...
+    def SetEffectMaterialParameter(
+        self,
+        ParamName: str,
+        ParamValue: engine.MaterialInterface,
+        QueryData: WeaponEffectQueryData,
+    ): ...
+    def SetEffectFloatParameter(
+        self, ParamName: str, ParamValue: float, QueryData: WeaponEffectQueryData
+    ): ...
+    def SetEffectEmitterState(
+        self, EmitterName: str, bEnabled: bool, QueryData: WeaponEffectQueryData
+    ): ...
+    def SetEffectColorParameter(
+        self,
+        ParamName: str,
+        ParamValue: core_uobject.LinearColor,
+        QueryData: WeaponEffectQueryData,
+    ): ...
     def SetBoneVisibility(self, BoneName: str, bVisible: bool, AttachmentType: int): ...
     def ServerUnlock(self): ...
-    def ServerSwitchMode(self, InputChannel: int, NextUseModeIndex: int, bForced: bool): ...
+    def ServerSwitchMode(
+        self, InputChannel: int, NextUseModeIndex: int, bForced: bool
+    ): ...
     def ServerStopUsing(self, InputChannel: int, bForced: bool): ...
     def ServerStopModeSwitch(self, InputChannel: int, ClientUseModeIndex: int): ...
     def ServerStartUsing(self, InputChannel: int, ClientPatternSeed: int): ...
     def ServerStartReloading(self, UseModeIndex: int, bAuto: bool): ...
-    def ServerSetZoomState(self, UseModeIndex: int, NewState: WeaponZoomState, ZoomStartOffset: float): ...
+    def ServerSetZoomState(
+        self, UseModeIndex: int, NewState: WeaponZoomState, ZoomStartOffset: float
+    ): ...
     def ServerSetPatternSeed(self, ClientPatternSeed: int): ...
     def ServerRestartAutoUse(self): ...
     def ServerLock(self, Duration: float): ...
@@ -96,14 +140,22 @@ class Weapon(engine.Actor):
     def ServerEquipInterruptible(self): ...
     def RegisterTrinketAttachment(self, Data: WeaponRegisterTrinketAttachmentData): ...
     def RegisterSkeletalControl(self, Data: WeaponRegisterSkeletalControlData): ...
-    def RegisterSimpleEffect(self, EffectType: int, Effect: engine.ParticleSystem, EffectSocket: str): ...
+    def RegisterSimpleEffect(
+        self, EffectType: int, Effect: engine.ParticleSystem, EffectSocket: str
+    ): ...
     def RegisterMaterialEffect(self, Data: WeaponRegisterMaterialEffectData): ...
     def RegisterEffect(self, Data: WeaponRegisterAttachmentEffectData): ...
     def ReevaluateConditionalEffects(self): ...
     def PrevZoomLevel(self): ...
     def PlayEffects(self, EffectType: int, UseModeIndex: int, EffectID: int): ...
-    def PlayDynamicMaterialEffect(self, Data: WeaponMaterialEffectData, ReturnValue: int) -> int: ...
-    def PlayAnimation(self, Anim: engine.AnimMontage, bFirstPerson: bool, PlayRate: float, Duration: float, ReturnValue: float) -> float: ...
+    def PlayDynamicMaterialEffect(self, Data: WeaponMaterialEffectData) -> int: ...
+    def PlayAnimation(
+        self,
+        Anim: engine.AnimMontage,
+        bFirstPerson: bool,
+        PlayRate: float,
+        Duration: float,
+    ) -> float: ...
     def OnZoomedOut(self): ...
     def OnUseStarted(self): ...
     def OnUseFinished(self): ...
@@ -116,55 +168,87 @@ class Weapon(engine.Actor):
     def OnRep_CurrentUseModeIndex(self, PreviousUseModeIndex: int): ...
     def OnReloadEnded(self, bCompleted: bool): ...
     def OnAmmoGivenToEmptyWeapon(self): ...
-    def NotifySkeletalControl(self, ControlType: int, ControlName: str, Event: EWeaponSkeletalControlEvent, EventValue: float): ...
+    def NotifySkeletalControl(
+        self,
+        ControlType: int,
+        ControlName: str,
+        Event: EWeaponSkeletalControlEvent,
+        EventValue: float,
+    ): ...
     def NextZoomLevel(self): ...
     def Lock(self, Duration: float, bReplicate: bool): ...
     def K2_StopWeaponActionObj(self, WeaponAction: gbx_game_system_core.GbxAction): ...
-    def K2_PlayWeaponActionEx(self, WeaponAction: int, ActionParams: gbx_game_system_core.ActionState_Base, bCheckForRelevancy: bool, ReturnValue: gbx_game_system_core.GbxAction) -> gbx_game_system_core.GbxAction: ...
-    def K2_PlayWeaponAction(self, WeaponAction: int, PlayRate: float, Duration: float, bCheckForRelevancy: bool, ReturnValue: gbx_game_system_core.GbxAction) -> gbx_game_system_core.GbxAction: ...
-    def IsZoomedIn(self, bIncludeTransitions: bool, ReturnValue: bool) -> bool: ...
-    def IsZoomed(self, ReturnValue: bool) -> bool: ...
-    def IsUsing(self, ReturnValue: bool) -> bool: ...
-    def IsTargetLocked(self, ReturnValue: bool) -> bool: ...
-    def IsSwitchingModes(self, ReturnValue: bool) -> bool: ...
-    def IsReloading(self, ReturnValue: bool) -> bool: ...
-    def IsPuttingDown(self, ReturnValue: bool) -> bool: ...
-    def IsPendingUse(self, InputChannel: int, ReturnValue: bool) -> bool: ...
-    def IsLocked(self, ReturnValue: bool) -> bool: ...
-    def IsLocalAuthority(self, ReturnValue: bool) -> bool: ...
-    def IsInactive(self, ReturnValue: bool) -> bool: ...
-    def IsEquipping(self, ReturnValue: bool) -> bool: ...
-    def IsAuthorityUsing(self, ReturnValue: bool) -> bool: ...
-    def IsAuthoritySwitchingModes(self, ReturnValue: bool) -> bool: ...
-    def IsAuthorityReloading(self, ReturnValue: bool) -> bool: ...
-    def IsAuthorityPuttingDown(self, ReturnValue: bool) -> bool: ...
-    def IsAuthorityEquipping(self, ReturnValue: bool) -> bool: ...
-    def IsActive(self, ReturnValue: bool) -> bool: ...
+    def K2_PlayWeaponActionEx(
+        self,
+        WeaponAction: int,
+        ActionParams: gbx_game_system_core.ActionState_Base,
+        bCheckForRelevancy: bool,
+    ) -> gbx_game_system_core.GbxAction: ...
+    def K2_PlayWeaponAction(
+        self,
+        WeaponAction: int,
+        PlayRate: float,
+        Duration: float,
+        bCheckForRelevancy: bool,
+    ) -> gbx_game_system_core.GbxAction: ...
+    def IsZoomedIn(self, bIncludeTransitions: bool) -> bool: ...
+    def IsZoomed(self) -> bool: ...
+    def IsUsing(self) -> bool: ...
+    def IsTargetLocked(self) -> bool: ...
+    def IsSwitchingModes(self) -> bool: ...
+    def IsReloading(self) -> bool: ...
+    def IsPuttingDown(self) -> bool: ...
+    def IsPendingUse(self, InputChannel: int) -> bool: ...
+    def IsLocked(self) -> bool: ...
+    def IsLocalAuthority(self) -> bool: ...
+    def IsInactive(self) -> bool: ...
+    def IsEquipping(self) -> bool: ...
+    def IsAuthorityUsing(self) -> bool: ...
+    def IsAuthoritySwitchingModes(self) -> bool: ...
+    def IsAuthorityReloading(self) -> bool: ...
+    def IsAuthorityPuttingDown(self) -> bool: ...
+    def IsAuthorityEquipping(self) -> bool: ...
+    def IsActive(self) -> bool: ...
     def GivenTo(self, NewOwner: engine.Pawn): ...
-    def GetZoomFOVScale(self, ReturnValue: float) -> float: ...
-    def GetZoomEffect(self, ReturnValue: float) -> float: ...
-    def GetZoomDuration(self, ReturnValue: float) -> float: ...
-    def GetUseModeComponentByClass(self, ComponentClass: unreal.UClass, UseModeIndex: int, ReturnValue: engine.ActorComponent) -> engine.ActorComponent: ...
-    def GetMuteADSAlpha(self, ReturnValue: float) -> float: ...
-    def GetMaxZoomFOVScale(self, ReturnValue: float) -> float: ...
-    def GetLastInputChannel(self, ReturnValue: int) -> int: ...
-    def GetCurrentReloadPartType(self, ReturnValue: int) -> int: ...
-    def GetAttachmentMesh(self, bFirstPerson: bool, SlotIndex: int, ReturnValue: engine.MeshComponent) -> engine.MeshComponent: ...
-    def GetAssociatedUseModeComponentByClass(self, ComponentClass: unreal.UClass, ReferenceComponent: engine.ActorComponent, ReturnValue: engine.ActorComponent) -> engine.ActorComponent: ...
-    def GetAimAssistParameters(self, ReturnValue: gbx_game_system_core.AimAssistParameters) -> gbx_game_system_core.AimAssistParameters: ...
+    def GetZoomFOVScale(self) -> float: ...
+    def GetZoomEffect(self) -> float: ...
+    def GetZoomDuration(self) -> float: ...
+    def GetUseModeComponentByClass(
+        self, ComponentClass: unreal.UClass, UseModeIndex: int
+    ) -> engine.ActorComponent: ...
+    def GetMuteADSAlpha(self) -> float: ...
+    def GetMaxZoomFOVScale(self) -> float: ...
+    def GetLastInputChannel(self) -> int: ...
+    def GetCurrentReloadPartType(self) -> int: ...
+    def GetAttachmentMesh(
+        self, bFirstPerson: bool, SlotIndex: int
+    ) -> engine.MeshComponent: ...
+    def GetAssociatedUseModeComponentByClass(
+        self, ComponentClass: unreal.UClass, ReferenceComponent: engine.ActorComponent
+    ) -> engine.ActorComponent: ...
+    def GetAimAssistParameters(self) -> gbx_game_system_core.AimAssistParameters: ...
     def EquipInterruptible(self): ...
     def Dropped(self): ...
     def CycleZoomLevel(self): ...
     def ClientUnlock(self): ...
     def ClientStopReloading(self): ...
     def ClientLock(self, Duration: float): ...
-    def AddUseMode(self, UseComponent: WeaponUseComponent, OtherComponents: unreal.WrappedArray[engine.ActorComponent], InputChannels: int, ReturnValue: int) -> int: ...
-    def Activate(self, WeaponOwner: engine.Pawn, InSlot: int, InEquipType: EWeaponEquipType): ...
+    def AddUseMode(
+        self,
+        UseComponent: WeaponUseComponent,
+        OtherComponents: unreal.WrappedArray[engine.ActorComponent],
+        InputChannels: int,
+    ) -> int: ...
+    def Activate(
+        self, WeaponOwner: engine.Pawn, InSlot: int, InEquipType: EWeaponEquipType
+    ): ...
 
 
 class WeaponPreUseComponent(engine.ActorComponent):
+    NotifyPreUseFinished: Any
     bEnabled: bool
     WeaponPrivate: Weapon
+
     def K2_OnDeactivated(self): ...
     def K2_OnActivated(self): ...
 
@@ -179,17 +263,25 @@ class WeaponUseComponent(engine.ActorComponent):
     ZoomedCrosshairData: gbx_ui.GbxCrosshairDataAsset
     Icon: engine.Texture2D
     ModeName: str
-    InstigatorAttributeEffects: unreal.WrappedArray[gbx_game_system_core.AttributeEffectData]
-    InstigatorAttributeModifiers: unreal.WrappedArray[gbx_game_system_core.GbxAttributeModifierHandle]
+    InstigatorAttributeEffects: unreal.WrappedArray[
+        gbx_game_system_core.AttributeEffectData
+    ]
+    NotifyUseStarted: Any
+    NotifyUseFinished: Any
+    NotifyUsed: Any
+    InstigatorAttributeModifiers: unreal.WrappedArray[
+        gbx_game_system_core.GbxAttributeModifierHandle
+    ]
     PreUseComponent: WeaponPreUseComponent
     WeaponPrivate: Weapon
-    def ToggleMode(self, ReturnValue: bool) -> bool: ...
+
+    def ToggleMode(self) -> bool: ...
     def SwitchToZoomedMode(self, ZoomLevel: int): ...
     def SwitchFromZoomedMode(self, ZoomLevel: int): ...
     def OnPreUseFinished(self, bInterrupted: bool): ...
     def K2_OnDeactivated(self): ...
     def K2_OnActivated(self): ...
-    def CanActivateMode(self, ReturnValue: bool) -> bool: ...
+    def CanActivateMode(self) -> bool: ...
 
 
 class WeaponFireComponent(WeaponUseComponent):
@@ -265,6 +357,7 @@ class WeaponFireComponent(WeaponUseComponent):
     AIMinDesiredRange: gbx_game_system_core.GbxParam
     AIMaxDesiredRange: gbx_game_system_core.GbxParam
     ScaledEffect: engine.GbxForceFeedbackEffect
+
     def ServerResetFireSequence(self): ...
     def OnStopFireRateDeceleration(self): ...
     def OnStopFireRateAcceleration(self): ...
@@ -275,11 +368,13 @@ class WeaponFireComponent(WeaponUseComponent):
     def OnRep_FireRateAccelChanged(self): ...
     def OnRep_ClientFireSequenceState(self): ...
     def OnReloadAmmoGiven(self): ...
-    def OnLoopingFireActionEnd(self, EndState: gbx_game_system_core.EGbxActionEndState): ...
+    def OnLoopingFireActionEnd(
+        self, EndState: gbx_game_system_core.EGbxActionEndState
+    ): ...
     def OnGivenTo(self): ...
-    def IsFireRateAccelEnabled(self, ReturnValue: bool) -> bool: ...
-    def GetLockedTarget(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetFireRatePercent(self, ReturnValue: float) -> float: ...
+    def IsFireRateAccelEnabled(self) -> bool: ...
+    def GetLockedTarget(self) -> engine.Actor: ...
+    def GetFireRatePercent(self) -> float: ...
     def ClientStopResetFireSequence(self): ...
 
 
@@ -288,12 +383,15 @@ class WeaponFireProjectileComponent(WeaponFireComponent):
     ProjectileSpeedScale: engine.GbxAttributeFloat
     ShotStrengthProjectileSpeedCurve: engine.CurveFloat
     ProjectileTemplate: unreal.UClass
-    ProjectileBaseValues: unreal.WrappedArray[gbx_game_system_core.AttributeBaseValueData]
+    ProjectileBaseValues: unreal.WrappedArray[
+        gbx_game_system_core.AttributeBaseValueData
+    ]
     LightProjectileData: unreal.UClass
     FiringPatternData: FiringPattern
     Range: float
-    def GetShotProjectileData(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetShotLightProjectileData(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
+
+    def GetShotProjectileData(self) -> unreal.UClass: ...
+    def GetShotLightProjectileData(self) -> unreal.UClass: ...
 
 
 class Projectile(engine.Actor):
@@ -332,6 +430,7 @@ class Projectile(engine.Actor):
     OverrideIgnoreActors: unreal.WrappedArray[engine.Actor]
     WeaponFiredFrom: Weapon
     SpawnSpeedScale: float
+
     def StopBlockingPawns(self): ...
     def SetProjectileDamageType(self, DamageType: unreal.UClass): ...
     def SetProjectileDamageSource(self, DamageSource: unreal.UClass): ...
@@ -351,18 +450,21 @@ class Projectile(engine.Actor):
     def OnBeginExplode(self): ...
     def IgnoreCollisionWith(self, ActorToIgnore: engine.Actor): ...
     def HandleDetachRequest(self): ...
-    def GetProjectileMovementComponent(self, ReturnValue: GbxProjectileMovementComponent) -> GbxProjectileMovementComponent: ...
-    def GetProjectileDamageType(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetProjectileDamageSource(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetProjectileDamageRadius(self, ReturnValue: float) -> float: ...
-    def GetProjectileDamage(self, ReturnValue: float) -> float: ...
-    def GetExplosionComponent(self, ReturnValue: gbx_game_system_core.ExplosionComponent) -> gbx_game_system_core.ExplosionComponent: ...
+    def GetProjectileMovementComponent(self) -> GbxProjectileMovementComponent: ...
+    def GetProjectileDamageType(self) -> unreal.UClass: ...
+    def GetProjectileDamageSource(self) -> unreal.UClass: ...
+    def GetProjectileDamageRadius(self) -> float: ...
+    def GetProjectileDamage(self) -> float: ...
+    def GetExplosionComponent(self) -> gbx_game_system_core.ExplosionComponent: ...
     def Explode(self): ...
     def CheckProjectileAttachment(self): ...
-    def BounceDelegate(self, ImpactResult: engine.HitResult, ImpactVelocity: core_uobject.Vector): ...
+    def BounceDelegate(
+        self, ImpactResult: engine.HitResult, ImpactVelocity: core_uobject.Vector
+    ): ...
 
 
 class GbxProjectileMovementComponent(engine.ProjectileMovementComponent):
+    PostLastBounceDelegate: Any
     ProjectileAcceleration: float
     MinSpeedWhenDecelerating: float
     OwningProjectile: Projectile
@@ -378,11 +480,22 @@ class GbxProjectileMovementComponent(engine.ProjectileMovementComponent):
     bCanTriggerGrenadeDodges: bool
     bDisablePhysicsWhenAttached: bool
     InitialProjectileGravity: float
+
     def ScaleVelocity(self, InScale: float): ...
     def OnRep_InitialProjectileGravity(self): ...
-    def OnProjectilePostLastBounceDelegate__DelegateSignature(self, ImpactResult: engine.HitResult): ...
-    def OnHit(self, SelfActor: engine.Actor, OtherActor: engine.Actor, NormalImpulse: core_uobject.Vector, Hit: engine.HitResult): ...
-    def OnBounce(self, ImpactResult: engine.HitResult, ImpactVelocity: core_uobject.Vector): ...
+    def OnProjectilePostLastBounceDelegate__DelegateSignature(
+        self, ImpactResult: engine.HitResult
+    ): ...
+    def OnHit(
+        self,
+        SelfActor: engine.Actor,
+        OtherActor: engine.Actor,
+        NormalImpulse: core_uobject.Vector,
+        Hit: engine.HitResult,
+    ): ...
+    def OnBounce(
+        self, ImpactResult: engine.HitResult, ImpactVelocity: core_uobject.Vector
+    ): ...
 
 
 class LightProjectileManager(engine.Actor):
@@ -392,7 +505,13 @@ class LightProjectileManager(engine.Actor):
     ActiveParticles: unreal.WrappedArray[engine.ParticleSystemComponent]
     ParticlesPool: unreal.WrappedArray[LightProjectileParticlePoolData]
     MaxAsyncSpawnTime: float
-    def OnParticleSystemFinished(self, FinishedComponent: engine.ParticleSystemComponent): ...
+
+    def ServerSendDebugProjectileImpact(
+        self, ProjSyncID: int, HitActor: engine.Actor, BoneName: str, ProjFlags: int
+    ): ...
+    def OnParticleSystemFinished(
+        self, FinishedComponent: engine.ParticleSystemComponent
+    ): ...
 
 
 class LightProjectile(unreal.UObject):
@@ -426,45 +545,66 @@ class LightProjectile(unreal.UObject):
     Components: unreal.WrappedArray[engine.PrimitiveComponent]
     NumBounces: int
     DamageModifierComp: gbx_game_system_core.DamageModifierComponent
+
     def SetLifetime(self, NewLifetime: float): ...
     def SetHomingTargetLocation(self, HomingLocation: core_uobject.Vector): ...
-    def SetHomingTarget(self, HomingTarget: engine.Actor, TargetOffset: core_uobject.Vector): ...
+    def SetHomingTarget(
+        self, HomingTarget: engine.Actor, TargetOffset: core_uobject.Vector
+    ): ...
     def PlayFeedbackSoundEvent(self, Event: wwise_audio.WwiseEvent): ...
     def OnRep_Shutdown(self): ...
     def OnRep_InitialClientState(self): ...
     def OnRep_Impact(self): ...
     def OnRep_Exploded(self): ...
     def OnRep_Attached(self): ...
-    def OnParticleSystemFinished(self, FinishedComponent: engine.ParticleSystemComponent): ...
-    def OnAttachedComponentUnregistered(self, UnregisteredComponent: engine.ActorComponent): ...
-    def OnAttachedComponentCollisionChanged(self, ChangedComponent: engine.PrimitiveComponent): ...
-    def OnAttachedActorFractured(self, HitPoint: core_uobject.Vector, HitDirection: core_uobject.Vector): ...
+    def OnParticleSystemFinished(
+        self, FinishedComponent: engine.ParticleSystemComponent
+    ): ...
+    def OnAttachedComponentUnregistered(
+        self, UnregisteredComponent: engine.ActorComponent
+    ): ...
+    def OnAttachedComponentCollisionChanged(
+        self, ChangedComponent: engine.PrimitiveComponent
+    ): ...
+    def OnAttachedActorFractured(
+        self, HitPoint: core_uobject.Vector, HitDirection: core_uobject.Vector
+    ): ...
     def OnAttachedActorDestroyed(self, DestroyedActor: engine.Actor): ...
-    def K2_ApplyImpactDamage(self, Hit: engine.HitResult, ImpactDamage: float, bPenetrated: bool, bCanReflect: bool): ...
-    def IsHomingMovingDirectlyTowardsTarget(self, ReturnValue: bool) -> bool: ...
-    def IsHoming(self, ReturnValue: bool) -> bool: ...
+    def K2_ApplyImpactDamage(
+        self,
+        Hit: engine.HitResult,
+        ImpactDamage: float,
+        bPenetrated: bool,
+        bCanReflect: bool,
+    ): ...
+    def IsHomingMovingDirectlyTowardsTarget(self) -> bool: ...
+    def IsHoming(self) -> bool: ...
     def InitChildData(self, InitData: LightProjectileInitializationData): ...
-    def GetTarget(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetSource(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetModifierValue(self, ReturnValue: float) -> float: ...
-    def GetModifierType(self, ReturnValue: EWeaponShotModifierType) -> EWeaponShotModifierType: ...
-    def GetInstigator(self, ReturnValue: engine.Pawn) -> engine.Pawn: ...
-    def GetImpactDataOverride(self, ReturnValue: gbx_game_system_core.ImpactData) -> gbx_game_system_core.ImpactData: ...
-    def GetImpactData(self, ReturnValue: gbx_game_system_core.ImpactData) -> gbx_game_system_core.ImpactData: ...
-    def GetHomingStartTime(self, ReturnValue: float) -> float: ...
-    def GetFiringPatternID(self, ReturnValue: int) -> int: ...
-    def GetDamageType(self, ReturnValue: gbx_game_system_core.GbxDamageType) -> gbx_game_system_core.GbxDamageType: ...
-    def GetDamageCauser(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetAttitudeTowards(self, TargetActor: engine.Actor, ReturnValue: int) -> int: ...
-    def GetAttachedImpactNormal(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetAttachedDamageReceiverActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetAttachedActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetAssociatedActor(self, ActorType: ELightProjectileQueryActorType, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def GetTarget(self) -> engine.Actor: ...
+    def GetSource(self) -> engine.Actor: ...
+    def GetModifierValue(self) -> float: ...
+    def GetModifierType(self) -> EWeaponShotModifierType: ...
+    def GetInstigator(self) -> engine.Pawn: ...
+    def GetImpactDataOverride(self) -> gbx_game_system_core.ImpactData: ...
+    def GetImpactData(self) -> gbx_game_system_core.ImpactData: ...
+    def GetHomingStartTime(self) -> float: ...
+    def GetFiringPatternID(self) -> int: ...
+    def GetDamageType(self) -> gbx_game_system_core.GbxDamageType: ...
+    def GetDamageCauser(self) -> engine.Actor: ...
+    def GetAttitudeTowards(self, TargetActor: engine.Actor) -> int: ...
+    def GetAttachedImpactNormal(self) -> core_uobject.Vector: ...
+    def GetAttachedDamageReceiverActor(self) -> engine.Actor: ...
+    def GetAttachedActor(self) -> engine.Actor: ...
+    def GetAssociatedActor(
+        self, ActorType: ELightProjectileQueryActorType
+    ) -> engine.Actor: ...
     def Explode(self, Delay: float): ...
     def EnableHoming(self): ...
     def DisableHoming(self): ...
     def Destroy(self): ...
-    def ApplyAreaDamage(self, Origin: core_uobject.Vector, HitActor: engine.Actor, Hit: engine.HitResult): ...
+    def ApplyAreaDamage(
+        self, Origin: core_uobject.Vector, HitActor: engine.Actor, Hit: engine.HitResult
+    ): ...
 
 
 class LightProjectileData(unreal.UObject):
@@ -530,7 +670,9 @@ class LightProjectileData(unreal.UObject):
     bRequiresInstigatorToDoDamage: bool
     AttachDamageScale: float
     ImpactedActorDamageScale: gbx_game_system_core.AttributeInitializationData
-    ConditionalDamageModifiers: unreal.WrappedArray[gbx_game_system_core.ConditionalDamageModifier]
+    ConditionalDamageModifiers: unreal.WrappedArray[
+        gbx_game_system_core.ConditionalDamageModifier
+    ]
     AudioProperties: LightProjectileAudioProperties
     AttachedSound: wwise_audio.WwiseEvent
     bCanAttachToTargetables: bool
@@ -546,12 +688,20 @@ class LightProjectileData(unreal.UObject):
     RingSettings: LightProjectileRingSettings
     bMakeProjectileRing: bool
     bCallOnDamageEventOncePerHit: bool
-    def OnRicochet(self, Projectile: LightProjectile, Hit: engine.HitResult, ImpactVelocity: core_uobject.Vector): ...
+
+    def OnRicochet(
+        self,
+        Projectile: LightProjectile,
+        Hit: engine.HitResult,
+        ImpactVelocity: core_uobject.Vector,
+    ): ...
     def OnProxyImpact(self, Projectile: LightProjectile, Hit: engine.HitResult): ...
     def OnLifetimeExpired(self, Projectile: LightProjectile): ...
     def OnImpact(self, Projectile: LightProjectile, Hit: engine.HitResult): ...
     def OnExplode(self, Projectile: LightProjectile): ...
-    def OnDamage(self, Projectile: LightProjectile, Hit: engine.HitResult, bCritical: bool): ...
+    def OnDamage(
+        self, Projectile: LightProjectile, Hit: engine.HitResult, bCritical: bool
+    ): ...
     def OnBegin(self, Projectile: LightProjectile): ...
     def OnAttached(self, Projectile: LightProjectile, AttachedActor: engine.Actor): ...
     def GetTimedEventNameList(self, FuncList: unreal.WrappedArray[str]): ...
@@ -562,7 +712,10 @@ class LightBeamManager(engine.Actor):
     BeamPool: unreal.WrappedArray[LightBeam]
     ActiveParticles: unreal.WrappedArray[engine.ParticleSystemComponent]
     ParticlesPool: unreal.WrappedArray[LightBeamParticlePoolData]
-    def OnParticleSystemFinished(self, FinishedComponent: engine.ParticleSystemComponent): ...
+
+    def OnParticleSystemFinished(
+        self, FinishedComponent: engine.ParticleSystemComponent
+    ): ...
 
 
 class LightBeam(unreal.UObject):
@@ -585,23 +738,28 @@ class LightBeam(unreal.UObject):
     RootParentBeam: LightBeam
     ChildBeams: unreal.WrappedArray[LightBeam]
     TrackingImpactEffects: unreal.WrappedArray[LightBeamImpactFXTrackingData]
+
     def SetTargetSocket(self, Socket: str): ...
-    def OnTrackedImpactParticleSystemFinished(self, PSC: engine.ParticleSystemComponent): ...
+    def OnTrackedImpactParticleSystemFinished(
+        self, PSC: engine.ParticleSystemComponent
+    ): ...
     def OnRep_ModifierValue(self): ...
     def OnRep_ModifierType(self): ...
     def OnRep_ClientState(self): ...
     def LockOntoTarget(self, Target: LightBeamAttachment): ...
     def InitChildData(self, InitData: LightBeamInitializationData): ...
-    def GetTargetActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetTarget(self, ReturnValue: LightBeamAttachment) -> LightBeamAttachment: ...
-    def GetSourceActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetSource(self, ReturnValue: LightBeamAttachment) -> LightBeamAttachment: ...
-    def GetInstigator(self, ReturnValue: engine.Pawn) -> engine.Pawn: ...
-    def GetImpactForce(self, ReturnValue: float) -> float: ...
-    def GetDamageType(self, ReturnValue: gbx_game_system_core.GbxDamageType) -> gbx_game_system_core.GbxDamageType: ...
-    def GetDamageCauser(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetDamage(self, ReturnValue: float) -> float: ...
-    def GetAssociatedActor(self, ActorType: ELightBeamQueryActorType, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def GetTargetActor(self) -> engine.Actor: ...
+    def GetTarget(self) -> LightBeamAttachment: ...
+    def GetSourceActor(self) -> engine.Actor: ...
+    def GetSource(self) -> LightBeamAttachment: ...
+    def GetInstigator(self) -> engine.Pawn: ...
+    def GetImpactForce(self) -> float: ...
+    def GetDamageType(self) -> gbx_game_system_core.GbxDamageType: ...
+    def GetDamageCauser(self) -> engine.Actor: ...
+    def GetDamage(self) -> float: ...
+    def GetAssociatedActor(
+        self, ActorType: ELightBeamQueryActorType
+    ) -> engine.Actor: ...
 
 
 class LightBeamData(unreal.UObject):
@@ -642,7 +800,9 @@ class LightBeamData(unreal.UObject):
     DamageInterval: float
     bDamageDirectTargetOnce: bool
     DamageData: unreal.UClass
-    ConditionalDamageModifiers: unreal.WrappedArray[gbx_game_system_core.ConditionalDamageModifier]
+    ConditionalDamageModifiers: unreal.WrappedArray[
+        gbx_game_system_core.ConditionalDamageModifier
+    ]
     bEnableDamageProxy: bool
     DamageProxyRadius: float
     DamageProxyTraceChannel: int
@@ -666,8 +826,9 @@ class LightBeamData(unreal.UObject):
     MaxChainDistance: float
     ChainBreakDistance: float
     NetUpdateTime: float
-    def UpdateTarget(self, Beam: LightBeam, ReturnValue: float) -> float: ...
-    def CanLockOn(self, Beam: LightBeam, TargetActor: engine.Actor, ReturnValue: bool) -> bool: ...
+
+    def UpdateTarget(self, Beam: LightBeam) -> float: ...
+    def CanLockOn(self, Beam: LightBeam, TargetActor: engine.Actor) -> bool: ...
 
 
 class WeaponAnimInstance(engine.AnimInstance):
@@ -676,6 +837,7 @@ class WeaponAnimInstance(engine.AnimInstance):
     ZoomDuration: float
     ZoomEffect: float
     bIsZoomedIn: bool
+
     def BlueprintSwitchedMode(self, NewMode: int): ...
 
 
@@ -693,13 +855,17 @@ class WalkingProjectileMovementComponent(GbxProjectileMovementComponent):
     WallBounciness: float
     bOverrideWalkingSpeed: bool
     WalkingSpeedOverride: float
-
+    OnHitUnwalkableSurface: Any
+    OnBecomeAirborne: Any
+    OnLanded: Any
 
 
 class WeaponAmmoComponent(engine.ActorComponent):
     AmmoTypeData: GbxAmmoTypeData
     bDisplayAmmoInHUD: bool
+    NotifyAmmoChanged: Any
     WeaponPrivate: Weapon
+
     def ClientRefillAmmo(self, Amount: int): ...
 
 
@@ -722,10 +888,12 @@ class WeaponHeatComponent(engine.ActorComponent):
     CoolDownEffectType: int
     CoolDownEffectOnThreshold: float
     CoolDownEffectOffThreshold: float
+    NotifyHeatChanged: Any
     Heat: float
     ReplicatedHeat: int
     bOverheated: bool
     WeaponPrivate: Weapon
+
     def SetCanUseWhenOverheated(self, bEnabled: bool): ...
     def OnUseFinished(self): ...
     def OnUsed(self): ...
@@ -741,9 +909,11 @@ class WeaponHeatComponent(engine.ActorComponent):
 
 class WeaponReloadComponent(engine.ActorComponent):
     ReloadPartType: int
+    NotifyReloadStarted: Any
+    NotifyReloadEnded: Any
+    NotifyAmmoGiven: Any
     ReloadTime: engine.GbxAttributeFloat
     WeaponPrivate: Weapon
-
 
 
 class WeaponZoomComponent(engine.ActorComponent):
@@ -766,7 +936,9 @@ class WeaponZoomComponent(engine.ActorComponent):
     bShowCrosshairWhenZoomed: bool
     bApplyAttributesWhenFullyZoomed: bool
     AttributeEffects: unreal.WrappedArray[gbx_game_system_core.AttributeEffectData]
-    InstigatorAttributeEffects: unreal.WrappedArray[gbx_game_system_core.AttributeEffectData]
+    InstigatorAttributeEffects: unreal.WrappedArray[
+        gbx_game_system_core.AttributeEffectData
+    ]
     DepthOfFieldFocusSocket: str
     bEnableBlurVignetteSize: bool
     bOverrideStartBlurVignetteSize: bool
@@ -786,22 +958,31 @@ class WeaponZoomComponent(engine.ActorComponent):
     LateralMotionScale: float
     UseFeedback: gbx_game_system_core.FeedbackData
     UseFeedbackScale: float
+    NotifyZoomingIn: Any
+    NotifyZoomedIn: Any
+    NotifyZoomingOut: Any
+    NotifyZoomedOut: Any
     bApplyWeaponModeZoom: bool
     ZoomState: WeaponZoomState
     ReplicatedZoomState: WeaponZoomState
     DesiredZoomLevel: int
     ZoomStartTime: float
     ZoomTransitionStartTime: float
-    AttributeModifiers: unreal.WrappedArray[gbx_game_system_core.GbxAttributeModifierHandle]
-    InstigatorAttributeModifiers: unreal.WrappedArray[gbx_game_system_core.GbxAttributeModifierHandle]
+    AttributeModifiers: unreal.WrappedArray[
+        gbx_game_system_core.GbxAttributeModifierHandle
+    ]
+    InstigatorAttributeModifiers: unreal.WrappedArray[
+        gbx_game_system_core.GbxAttributeModifierHandle
+    ]
     CachedWeaponModeIndex: int
     WeaponPrivate: Weapon
+
     def OnSwitchedWeaponMode(self): ...
     def OnRep_ReplicatedZoomState(self): ...
     def OnDetached(self): ...
     def OnAttached(self): ...
-    def GetMaxZoomFOVScaleWithMode(self, ModeIndex: int, ReturnValue: float) -> float: ...
-    def GetMaxZoomFOVScale(self, ReturnValue: float) -> float: ...
+    def GetMaxZoomFOVScaleWithMode(self, ModeIndex: int) -> float: ...
+    def GetMaxZoomFOVScale(self) -> float: ...
 
 
 class AmmoProviderInterface(core_uobject.Interface): ...
@@ -809,7 +990,6 @@ class AmmoProviderInterface(core_uobject.Interface): ...
 
 class WeaponAnimNotify(engine.AnimNotify):
     bTriggerOnFirstPerson: bool
-
 
 
 class AnimNotify_AmmoReloaded(WeaponAnimNotify): ...
@@ -825,7 +1005,6 @@ class AnimNotify_WeaponSkeletalControlEvent(WeaponAnimNotify):
     ControlInput: float
 
 
-
 class BodyWeaponHoldData(gbx_runtime.GbxDataAsset):
     HoldName: str
     HoldNames: unreal.WrappedArray[str]
@@ -834,12 +1013,10 @@ class BodyWeaponHoldData(gbx_runtime.GbxDataAsset):
     DepthOfFieldForegroundFocusNearRegionPct: float
 
 
-
 class BodyWeaponHoldManagerComponent(engine.ActorComponent):
     DefaultWeaponHold: BodyWeaponHoldData
     WeaponHolds: unreal.WrappedArray[BodyWeaponHoldData]
     UnarmedHoldName: str
-
 
 
 class EnvQueryContext_ProjectileProxy(aimodule.EnvQueryContext): ...
@@ -853,7 +1030,6 @@ class EnvQueryGenerator_FindProjectileTargets(aimodule.EnvQueryGenerator):
     bAllowNeutrals: bool
     bAlsoFindTargetableComponents: bool
     bIgnoreNonHostileAttachedParent: bool
-
 
 
 class EnvQueryItemType_ProjectileProxy(aimodule.EnvQueryItemType_VectorBase): ...
@@ -873,7 +1049,6 @@ class FiringPattern(gbx_runtime.GbxDataAsset):
     RequiredProjectilesPerShot: int
 
 
-
 class FiringPatternData(unreal.UObject):
     Samples: unreal.WrappedArray[FiringPatternSample]
     bFireRandomlyFromPattern: bool
@@ -887,7 +1062,6 @@ class FiringPatternData(unreal.UObject):
     RequiredProjectilesPerShot: int
 
 
-
 class GbxAmmoTypeData(gbx_runtime.GbxDataAsset):
     DisplayName: str
     DisplayIcon: engine.Texture2D
@@ -896,10 +1070,10 @@ class GbxAmmoTypeData(gbx_runtime.GbxDataAsset):
     RegenerationRate: float
 
 
-
 class GbxProjectileManager(gbx_game_system_core.IGbxProjectileManager):
-    HomingComponents: unreal.WrappedArray[gbx_game_system_core.ProjectileHomingComponent]
-
+    HomingComponents: unreal.WrappedArray[
+        gbx_game_system_core.ProjectileHomingComponent
+    ]
 
 
 class GbxTrajectometerComponent(engine.ActorComponent):
@@ -925,6 +1099,8 @@ class GbxTrajectometerComponent(engine.ActorComponent):
     bSimulateWeaponProjectile: bool
     bUseProjectileForCollision: bool
     bConvergeTowardsAimLocation: bool
+    OnPostSimulation: Any
+
     def UpdateCollisionShape(self): ...
     def SimulationResultEvent__DelegateSignature(self, HitResult: engine.HitResult): ...
     def SetTrajectometerEnabled(self, bEnabled: bool): ...
@@ -934,20 +1110,43 @@ class GbxTrajectometerProjectile(Projectile):
     TrailParticle: engine.ParticleSystemComponent
 
 
-
 class GbxWeaponUserInterface(gbx_game_system_core.WeaponUserInterface): ...
 
 
 class LightBeamStatics(engine.BlueprintFunctionLibrary):
 
-    def SetBeamFlag(self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag): ...
+    def SetBeamFlag(
+        self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag
+    ): ...
     def RemoveLightBeamsBySource(self, Source: engine.Actor, NameId: str): ...
     def RemoveLightBeamsByActor(self, Query: LightBeamQueryData): ...
-    def IsBeamFlagSet(self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag, ReturnValue: bool) -> bool: ...
-    def DoesLightBeamExist(self, Query: LightBeamQueryData, ReturnValue: bool) -> bool: ...
+    def IsBeamFlagSet(
+        self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag
+    ) -> bool: ...
+    def ForEachLightBeam(self, Query: LightBeamQueryData, Callback: Any): ...
+    def DoesLightBeamExist(self, Query: LightBeamQueryData) -> bool: ...
     def CreateLightBeamFromData(self, InitData: LightBeamInitializationData): ...
-    def CreateLightBeam(self, Data: unreal.UClass, Instigator: engine.Pawn, Source: LightBeamAttachment, Target: LightBeamAttachment, bTargetLocked: bool, NameId: str, Damage: float, DamageType: unreal.UClass, DamageSource: unreal.UClass, DamageRadius: float, DamageCauser: engine.Actor, ImpactDataOverride: gbx_game_system_core.ImpactData, ImpactForce: gbx_game_system_core.ForceSelection, LifetimeOverride: float, bViewDependent: bool): ...
-    def ClearBeamFlag(self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag): ...
+    def CreateLightBeam(
+        self,
+        Data: unreal.UClass,
+        Instigator: engine.Pawn,
+        Source: LightBeamAttachment,
+        Target: LightBeamAttachment,
+        bTargetLocked: bool,
+        NameId: str,
+        Damage: float,
+        DamageType: unreal.UClass,
+        DamageSource: unreal.UClass,
+        DamageRadius: float,
+        DamageCauser: engine.Actor,
+        ImpactDataOverride: gbx_game_system_core.ImpactData,
+        ImpactForce: gbx_game_system_core.ForceSelection,
+        LifetimeOverride: float,
+        bViewDependent: bool,
+    ): ...
+    def ClearBeamFlag(
+        self, InitData: LightBeamInitializationData, Flag: ELightBeamFlag
+    ): ...
 
 
 class LightProjectileMoveModifier(unreal.UObject):
@@ -955,15 +1154,12 @@ class LightProjectileMoveModifier(unreal.UObject):
     bRestrictFiringPattern: bool
 
 
-
 class LightProjectileAimViewPointHomingModifier(LightProjectileMoveModifier):
     LookAheadDistance: float
 
 
-
 class LightProjectileCurveModifier(LightProjectileMoveModifier):
     StartTangentMultiplier: float
-
 
 
 class LightProjectileHomingModifier(LightProjectileMoveModifier):
@@ -976,7 +1172,6 @@ class LightProjectileHomingModifier(LightProjectileMoveModifier):
     EaseInTime: float
     EaseInFunc: gbx_game_system_core.GbxEasingFunc
     StopHomingDistance: float
-
 
 
 class LightProjectileRandomDrunkenModifier(LightProjectileMoveModifier):
@@ -993,20 +1188,67 @@ class LightProjectileRandomDrunkenModifier(LightProjectileMoveModifier):
     EaseInFunc: gbx_game_system_core.GbxEasingFunc
 
 
-
 class LightProjectileStatics(engine.BlueprintFunctionLibrary):
 
-    def SplitLightProjectile(self, Projectile: LightProjectile, Data: unreal.UClass, Pattern: ELightProjectileSplitPattern, Count: int, SpreadAngle: float, RotateAngle: float, OffsetDistance: float, bDestroySource: bool): ...
-    def SetProjectileFlag(self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag): ...
+    def SplitLightProjectile(
+        self,
+        Projectile: LightProjectile,
+        Data: unreal.UClass,
+        Pattern: ELightProjectileSplitPattern,
+        Count: int,
+        SpreadAngle: float,
+        RotateAngle: float,
+        OffsetDistance: float,
+        bDestroySource: bool,
+    ): ...
+    def SetProjectileFlag(
+        self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag
+    ): ...
     def SetHomingState(self, Query: LightProjectileQueryData, bIsHoming: bool): ...
     def RemoveLightProjectilesByActor(self, Query: LightProjectileQueryData): ...
-    def IsProjectileFlagSet(self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag, ReturnValue: bool) -> bool: ...
-    def DetonateLightProjectiles(self, Query: LightProjectileQueryData, StackingEnemyBonusDamage: float, MinDetonationDelay: float, MaxDetonationDelay: float): ...
-    def CreateLightProjectileFromSource(self, SourceProjectile: LightProjectile, Data: unreal.UClass, Location: core_uobject.Vector, Direction: core_uobject.Vector, Damage: float): ...
-    def CreateLightProjectileFromDataAsync(self, InitData: LightProjectileInitializationData, ForceSpawnTimer: float): ...
-    def CreateLightProjectileFromData(self, InitData: LightProjectileInitializationData): ...
-    def CreateLightProjectile(self, Data: unreal.UClass, Location: core_uobject.Vector, Direction: core_uobject.Vector, Instigator: engine.Pawn, Source: engine.Actor, DamageCauser: engine.Actor, Damage: float, DamageType: unreal.UClass, DamageSource: unreal.UClass, ImpactDataOverride: gbx_game_system_core.ImpactData): ...
-    def ClearProjectileFlag(self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag): ...
+    def IsProjectileFlagSet(
+        self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag
+    ) -> bool: ...
+    def ForEachLightProjectile(
+        self, Query: LightProjectileQueryData, Callback: Any
+    ): ...
+    def DetonateLightProjectiles(
+        self,
+        Query: LightProjectileQueryData,
+        StackingEnemyBonusDamage: float,
+        MinDetonationDelay: float,
+        MaxDetonationDelay: float,
+    ): ...
+    def CreateLightProjectileFromSource(
+        self,
+        SourceProjectile: LightProjectile,
+        Data: unreal.UClass,
+        Location: core_uobject.Vector,
+        Direction: core_uobject.Vector,
+        Damage: float,
+    ): ...
+    def CreateLightProjectileFromDataAsync(
+        self, InitData: LightProjectileInitializationData, ForceSpawnTimer: float
+    ): ...
+    def CreateLightProjectileFromData(
+        self, InitData: LightProjectileInitializationData
+    ): ...
+    def CreateLightProjectile(
+        self,
+        Data: unreal.UClass,
+        Location: core_uobject.Vector,
+        Direction: core_uobject.Vector,
+        Instigator: engine.Pawn,
+        Source: engine.Actor,
+        DamageCauser: engine.Actor,
+        Damage: float,
+        DamageType: unreal.UClass,
+        DamageSource: unreal.UClass,
+        ImpactDataOverride: gbx_game_system_core.ImpactData,
+    ): ...
+    def ClearProjectileFlag(
+        self, InitData: LightProjectileInitializationData, Flag: ELightProjectileFlag
+    ): ...
 
 
 class LightProjectileWaveModifier(LightProjectileMoveModifier):
@@ -1019,20 +1261,94 @@ class LightProjectileWaveModifier(LightProjectileMoveModifier):
     bRandomize: bool
 
 
-
 class ProjectileBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def ThrowProjectileAsync(self, WorldContext: unreal.UObject, Request: ThrowProjectileAsyncRequest, ReturnValue: int) -> int: ...
-    def ThrowActorAt(self, Actor: engine.Actor, TargetLocation: core_uobject.Vector, TargetVelocity: core_uobject.Vector, MaxPrediction: float, Speed: float, AnglePercent: float, DirectionOffset: core_uobject.Rotator, LocalTargetOffset: core_uobject.Vector): ...
-    def PredictProjectilePathAsync(self, WorldContext: unreal.UObject, Request: PredictProjectilePathAsyncRequest): ...
-    def GetSafeProjectileThrowTransform_Component(self, SourceActor: engine.Actor, SourceComponent: engine.SceneComponent, SocketName: str, IgnoreActors: unreal.WrappedArray[engine.Actor], TraceChannel: int, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetSafeProjectileThrowTransform(self, SourceActor: engine.Actor, SocketName: str, IgnoreActors: unreal.WrappedArray[engine.Actor], bThrowFromFirstPersonSocket: bool, TraceChannel: int, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GeneratePointsOnFan(self, Origin: core_uobject.Vector, Direction: core_uobject.Vector, SampleCount: int, SpreadAngle: float, RotateAngle: float, OriginOffset: float, ReturnValue: unreal.WrappedArray[core_uobject.Transform]) -> unreal.WrappedArray[core_uobject.Transform]: ...
-    def GeneratePointsOnCone(self, Origin: core_uobject.Vector, Direction: core_uobject.Vector, SampleCount: int, SpreadAngle: float, RotateAngle: float, OriginOffset: float, ReturnValue: unreal.WrappedArray[core_uobject.Transform]) -> unreal.WrappedArray[core_uobject.Transform]: ...
+    def ThrowProjectileAsync(
+        self, WorldContext: unreal.UObject, Request: ThrowProjectileAsyncRequest
+    ) -> int: ...
+    def ThrowActorAt(
+        self,
+        Actor: engine.Actor,
+        TargetLocation: core_uobject.Vector,
+        TargetVelocity: core_uobject.Vector,
+        MaxPrediction: float,
+        Speed: float,
+        AnglePercent: float,
+        DirectionOffset: core_uobject.Rotator,
+        LocalTargetOffset: core_uobject.Vector,
+    ): ...
+    def PredictProjectilePathAsync(
+        self, WorldContext: unreal.UObject, Request: PredictProjectilePathAsyncRequest
+    ): ...
+    def GetSafeProjectileThrowTransform_Component(
+        self,
+        SourceActor: engine.Actor,
+        SourceComponent: engine.SceneComponent,
+        SocketName: str,
+        IgnoreActors: unreal.WrappedArray[engine.Actor],
+        TraceChannel: int,
+    ) -> core_uobject.Transform: ...
+    def GetSafeProjectileThrowTransform(
+        self,
+        SourceActor: engine.Actor,
+        SocketName: str,
+        IgnoreActors: unreal.WrappedArray[engine.Actor],
+        bThrowFromFirstPersonSocket: bool,
+        TraceChannel: int,
+    ) -> core_uobject.Transform: ...
+    def GeneratePointsOnFan(
+        self,
+        Origin: core_uobject.Vector,
+        Direction: core_uobject.Vector,
+        SampleCount: int,
+        SpreadAngle: float,
+        RotateAngle: float,
+        OriginOffset: float,
+    ) -> unreal.WrappedArray[core_uobject.Transform]: ...
+    def GeneratePointsOnCone(
+        self,
+        Origin: core_uobject.Vector,
+        Direction: core_uobject.Vector,
+        SampleCount: int,
+        SpreadAngle: float,
+        RotateAngle: float,
+        OriginOffset: float,
+    ) -> unreal.WrappedArray[core_uobject.Transform]: ...
     def DetachProjectilesFromActor(self, BaseActor: engine.Actor): ...
-    def CalculateConeVector(self, Fraction: float, Origin: core_uobject.Vector, Direction: core_uobject.Vector, AngleWidth: float, AngleHeight: float, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def CalcThrowVelocityAtActor(self, ResultVelocity: core_uobject.Vector, ResultGravityScale: float, StartLocation: core_uobject.Vector, Target: engine.Actor, MaxPrediction: float, Speed: float, AnglePercent: float, DirectionOffset: core_uobject.Rotator, LocalTargetOffset: core_uobject.Vector): ...
-    def CalcThrowVelocity(self, WorldContextObject: unreal.UObject, ResultVelocity: core_uobject.Vector, ResultGravityScale: float, StartLocation: core_uobject.Vector, TargetLocation: core_uobject.Vector, TargetVelocity: core_uobject.Vector, MaxPrediction: float, Speed: float, AnglePercent: float, DirectionOffset: core_uobject.Rotator, LocalTargetOffset: core_uobject.Vector): ...
+    def CalculateConeVector(
+        self,
+        Fraction: float,
+        Origin: core_uobject.Vector,
+        Direction: core_uobject.Vector,
+        AngleWidth: float,
+        AngleHeight: float,
+    ) -> core_uobject.Vector: ...
+    def CalcThrowVelocityAtActor(
+        self,
+        ResultVelocity: core_uobject.Vector,
+        ResultGravityScale: float,
+        StartLocation: core_uobject.Vector,
+        Target: engine.Actor,
+        MaxPrediction: float,
+        Speed: float,
+        AnglePercent: float,
+        DirectionOffset: core_uobject.Rotator,
+        LocalTargetOffset: core_uobject.Vector,
+    ): ...
+    def CalcThrowVelocity(
+        self,
+        WorldContextObject: unreal.UObject,
+        ResultVelocity: core_uobject.Vector,
+        ResultGravityScale: float,
+        StartLocation: core_uobject.Vector,
+        TargetLocation: core_uobject.Vector,
+        TargetVelocity: core_uobject.Vector,
+        MaxPrediction: float,
+        Speed: float,
+        AnglePercent: float,
+        DirectionOffset: core_uobject.Rotator,
+        LocalTargetOffset: core_uobject.Vector,
+    ): ...
 
 
 class ProjectileEQSProxy(unreal.UObject):
@@ -1041,16 +1357,18 @@ class ProjectileEQSProxy(unreal.UObject):
     ReferenceActor: engine.Actor
 
 
-
 class ProjectileSourceInterface(core_uobject.Interface): ...
 
 
 class RecoilControlComponent(engine.ActorComponent):
+    NotifyRecoveryFinished: Any
+    NotifyResetRecoil: Any
     bServerSimulatesRecoil: bool
     CurrentRotation: core_uobject.Rotator
     TargetRotation: core_uobject.Rotator
     InputPassthroughThreshold: core_uobject.Rotator
 
+    def ServerApplyInput(self, CompressedInputRot: int): ...
 
 
 class RecoilPatternData(gbx_runtime.GbxDataAsset):
@@ -1065,10 +1383,10 @@ class RecoilPatternData(gbx_runtime.GbxDataAsset):
     PatternWidthGoodness: float
 
 
-
-class WeaponAccuracyPoolAttributePropertyValueResolver(gbx_game_system_core.AttributePropertyValueResolver):
+class WeaponAccuracyPoolAttributePropertyValueResolver(
+    gbx_game_system_core.AttributePropertyValueResolver
+):
     DefaultResource: gbx_game_system_core.GameResourceData
-
 
 
 class WeaponSkeletalControlBase(unreal.UObject):
@@ -1081,18 +1399,19 @@ class WeaponSkeletalControlBase(unreal.UObject):
     UseInputValue: gbx_game_system_core.AttributeInitializationData
     MinFireRate: float
     MaxFireRate: float
+    UseModeContextBitmask: int
     ReceivedInputSound: wwise_audio.WwiseEvent
     bAttachToBone: bool
     bUseDefaultAudioComponent: bool
-
 
 
 class WeaponAmmoChamberBoneControl(WeaponSkeletalControlBase):
     AmmoBoneNames: unreal.WrappedArray[str]
 
 
-
-class WeaponConsumedLoadedAmmoValueResolver(gbx_game_system_core.AttributeValueResolver): ...
+class WeaponConsumedLoadedAmmoValueResolver(
+    gbx_game_system_core.AttributeValueResolver
+): ...
 
 
 class WeaponAmmoPoolComponent(WeaponAmmoComponent):
@@ -1112,6 +1431,7 @@ class WeaponAmmoPoolComponent(WeaponAmmoComponent):
     ConsumeAmmoRegenDelay: float
     ResourcePool: gbx_game_system_core.GameResourcePoolReference
     ServerSyncedLoadedAmmo: int
+
     def ServerSendAmmoState(self): ...
     def OnRep_SpareAmmo(self): ...
     def OnRep_ServerSyncedLoadedAmmo(self): ...
@@ -1121,7 +1441,9 @@ class WeaponAmmoPoolComponent(WeaponAmmoComponent):
     def ClientConsumeAmmo(self, Amount: int): ...
 
 
-class WeaponAmmoRegenAttributeValueResolver(gbx_game_system_core.AttributeValueResolver): ...
+class WeaponAmmoRegenAttributeValueResolver(
+    gbx_game_system_core.AttributeValueResolver
+): ...
 
 
 class WeaponAttachmentSlot(unreal.UObject):
@@ -1134,10 +1456,12 @@ class WeaponAttachmentSlot(unreal.UObject):
     ActiveSkeletalControls: unreal.WrappedArray[WeaponSkeletalControlInstance]
     TrinketAttachments: unreal.WrappedArray[WeaponTrinketAttachment]
     SecondaryMeshes: unreal.WrappedArray[engine.MeshComponent]
+
     def SetMesh(self, InMesh: engine.MeshComponent): ...
 
 
-class WeaponAttributeContextResolver(gbx_game_system_core.AttributeContextResolver): ...
+class WeaponAttributeContextResolver(gbx_game_system_core.AttributeContextResolver):
+    UseModeContextBitmask: int
 
 
 class WeaponChargePercentValueResolver(gbx_game_system_core.AttributeValueResolver): ...
@@ -1165,14 +1489,23 @@ class WeaponChargeComponent(WeaponPreUseComponent):
     FeedbackSocket: str
     ChargeEvents: unreal.WrappedArray[WeaponChargeEventNotify]
     DischargeEvents: unreal.WrappedArray[WeaponChargeEventNotify]
+    NotifyChargeStarted: Any
+    NotifyChargeStopped: Any
+    NotifyFullyCharged: Any
+    NotifyChargeCanceled: Any
+    NotifyOvercharged: Any
+    NotifyDischargeStarted: Any
+    NotifyDischargeStopped: Any
+    NotifyFullyDischarged: Any
     ChargeState: EWeaponChargeState
+
     def StopEffects(self): ...
     def Overcharged(self): ...
     def OnRep_ChargeState(self, PrevChargeState: EWeaponChargeState): ...
     def OnChargeActionEnd(self, EndState: gbx_game_system_core.EGbxActionEndState): ...
-    def GetDischargeDuration(self, ReturnValue: float) -> float: ...
-    def GetChargePercent(self, ReturnValue: float) -> float: ...
-    def GetChargeDuration(self, ReturnValue: float) -> float: ...
+    def GetDischargeDuration(self) -> float: ...
+    def GetChargePercent(self) -> float: ...
+    def GetChargeDuration(self) -> float: ...
     def FullyDischarged(self): ...
     def FullyCharged(self): ...
     def DelayChargeFinished(self): ...
@@ -1185,13 +1518,13 @@ class WeaponClipReloadComponent(WeaponReloadComponent):
     TapedClipCount: int
     ClientReloadState: int
     CurrentClip: int
+
     def OnRep_ClientReloadState(self): ...
 
 
 class GbxCondition_ZoomState(gbx_runtime.GbxCondition):
     bIsZoomedIn: bool
     bIncludeTransitions: bool
-
 
 
 class WeaponDebugInterface(core_uobject.Interface): ...
@@ -1206,21 +1539,27 @@ class WeaponFireBeamComponent(WeaponFireComponent):
     LockOnBreakAngle: float
     DamageRampCurve: engine.CurveFloat
     DamageRampScale: engine.GbxAttributeFloat
-    def GetShotLightBeamData(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
+
+    def GetShotLightBeamData(self) -> unreal.UClass: ...
 
 
-class WeaponFireRateAccelPercentValueResolver(gbx_game_system_core.AttributeValueResolver): ...
+class WeaponFireRateAccelPercentValueResolver(
+    gbx_game_system_core.AttributeValueResolver
+): ...
 
 
 class WeaponRecoilComponent(engine.ActorComponent):
     CachedControlComponent: RecoilControlComponent
     WeaponPrivate: Weapon
+
     def OnUsed(self): ...
     def OnDetached(self): ...
     def OnAttached(self): ...
 
 
-class WeaponRecoilGoodnessValueResolver(gbx_game_system_core.AttributeValueResolver): ...
+class WeaponRecoilGoodnessValueResolver(
+    gbx_game_system_core.AttributeValueResolver
+): ...
 
 
 class WeaponRecoilPatternComponent(WeaponRecoilComponent):
@@ -1234,11 +1573,12 @@ class WeaponRecoilPatternComponent(WeaponRecoilComponent):
     RecoilRecoveryTime: float
     RecoilRecoveryDelayTime: float
     bStartRecoilRecoveryWhenFiringEnds: bool
+
     def ResetPattern(self): ...
     def OnUseFinished(self): ...
-    def GetRecoilPatternWidthGoodness(self, ReturnValue: float) -> float: ...
-    def GetRecoilPatternHeightGoodness(self, ReturnValue: float) -> float: ...
-    def GetRecoilPatternGoodness(self, ReturnValue: float) -> float: ...
+    def GetRecoilPatternWidthGoodness(self) -> float: ...
+    def GetRecoilPatternHeightGoodness(self) -> float: ...
+    def GetRecoilPatternGoodness(self) -> float: ...
 
 
 class WeaponSettings(engine.DeveloperSettings):
@@ -1247,7 +1587,6 @@ class WeaponSettings(engine.DeveloperSettings):
     LightProjectileFlags: unreal.WrappedArray[LightProjectileFlagName]
     LightBeamFlags: unreal.WrappedArray[LightBeamFlagName]
     WeaponShotModifierTypes: unreal.WrappedArray[WeaponShotModifierTypeName]
-
 
 
 class WeaponShotModifier(gbx_runtime.GbxDataAsset):
@@ -1271,7 +1610,6 @@ class WeaponShotModifier(gbx_runtime.GbxDataAsset):
     bSuppressRefundThatWouldPreventReload: bool
 
 
-
 class WeaponSimpleMotionControlBase(WeaponSkeletalControlBase):
     bStartActive: bool
     bAutoActivate: bool
@@ -1287,7 +1625,6 @@ class WeaponSimpleMotionControlBase(WeaponSkeletalControlBase):
     ControlImpulseDecaySpeed: float
 
 
-
 class WeaponSimpleMotionBlendControl(WeaponSimpleMotionControlBase):
     bUseExistingNode: bool
     bMeshSpaceBlend: bool
@@ -1296,7 +1633,6 @@ class WeaponSimpleMotionBlendControl(WeaponSimpleMotionControlBase):
     ActiveState: gbx_game_system_core.SimpleMotionState
     ActiveBlendTarget: float
     RecoveryState: gbx_game_system_core.SimpleMotionState
-
 
 
 class WeaponSimpleMotionBoneControl(WeaponSimpleMotionControlBase):
@@ -1324,17 +1660,19 @@ class WeaponSimpleMotionBoneControl(WeaponSimpleMotionControlBase):
     RecoveryScaleState: gbx_game_system_core.SimpleMotionState
 
 
-
 class WeaponSingleFeedReloadComponent(WeaponReloadComponent):
     bDisableInterruptedToUse: bool
     SingleFeedIncrement: int
     SingleFeedCompletePercent: float
     ClientReloadState: int
+
     def OnUserInput(self, InputChannel: int): ...
     def OnRep_ClientReloadState(self): ...
 
 
-class WeaponEffectShotStrengthValueResolver(gbx_game_system_core.AttributeValueResolver): ...
+class WeaponEffectShotStrengthValueResolver(
+    gbx_game_system_core.AttributeValueResolver
+): ...
 
 
 class WeaponStatics(engine.BlueprintFunctionLibrary):
@@ -1342,22 +1680,48 @@ class WeaponStatics(engine.BlueprintFunctionLibrary):
     def UpdateVisibleAmmo(self, Weapon: Weapon): ...
     def UnhideWeapons(self, WeaponUser: engine.Actor, Reason: str): ...
     def UnhideWeapon(self, WeaponUser: engine.Actor, Slot: int, Reason: str): ...
-    def SetVisibleAmmoUpdateMethod(self, Weapon: Weapon, NewUpdateMethod: EWeaponVisibleAmmoUpdateMethod): ...
-    def SetVisibleAmmoState(self, Weapon: Weapon, NewState: EWeaponVisibleAmmoState): ...
+    def SetVisibleAmmoUpdateMethod(
+        self, Weapon: Weapon, NewUpdateMethod: EWeaponVisibleAmmoUpdateMethod
+    ): ...
+    def SetVisibleAmmoState(
+        self, Weapon: Weapon, NewState: EWeaponVisibleAmmoState
+    ): ...
     def ResetVisibleAmmoState(self, Weapon: Weapon): ...
     def RefillAmmo(self, Weapon: Weapon, Amount: int, bAsPercent: bool): ...
-    def K2_PlayWeaponHoldActionEx(self, Actor: engine.Actor, WeaponAction: int, Weapon: Weapon, ActionParams: gbx_game_system_core.ActionState_Base, ReturnValue: gbx_game_system_core.GbxAction) -> gbx_game_system_core.GbxAction: ...
-    def K2_PlayWeaponHoldAction(self, Actor: engine.Actor, WeaponAction: int, Weapon: Weapon, PlayRate: float, Duration: float, ReturnValue: gbx_game_system_core.GbxAction) -> gbx_game_system_core.GbxAction: ...
+    def K2_PlayWeaponHoldActionEx(
+        self,
+        Actor: engine.Actor,
+        WeaponAction: int,
+        Weapon: Weapon,
+        ActionParams: gbx_game_system_core.ActionState_Base,
+    ) -> gbx_game_system_core.GbxAction: ...
+    def K2_PlayWeaponHoldAction(
+        self,
+        Actor: engine.Actor,
+        WeaponAction: int,
+        Weapon: Weapon,
+        PlayRate: float,
+        Duration: float,
+    ) -> gbx_game_system_core.GbxAction: ...
     def HideWeapons(self, WeaponUser: engine.Actor, Reason: str): ...
     def HideWeapon(self, WeaponUser: engine.Actor, Slot: int, Reason: str): ...
-    def GiveAmmo(self, Weapon: Weapon, Amount: int, bLoaded: bool, bAsPercent: bool): ...
-    def GetWeapon(self, Context: unreal.UObject, ReturnValue: Weapon) -> Weapon: ...
-    def GetMaxZoomFOVScale(self, Weapon: Weapon, UseMode: int, ReturnValue: float) -> float: ...
-    def GetLoadedAmmo(self, Weapon: Weapon, UseMode: int, ReturnValue: int) -> int: ...
-    def GetFireRateAccelPercent(self, Weapon: Weapon, UseMode: int, ReturnValue: float) -> float: ...
-    def GetFireRate(self, Weapon: Weapon, UseMode: int, ReturnValue: float) -> float: ...
-    def GetDamageType(self, Weapon: Weapon, UseMode: int, ReturnValue: gbx_game_system_core.GbxDamageType) -> gbx_game_system_core.GbxDamageType: ...
-    def CreateProjectileEQSProxy(self, Location: core_uobject.Vector, Rotation: core_uobject.Rotator, ReferenceActor: engine.Actor, ReturnValue: ProjectileEQSProxy) -> ProjectileEQSProxy: ...
+    def GiveAmmo(
+        self, Weapon: Weapon, Amount: int, bLoaded: bool, bAsPercent: bool
+    ): ...
+    def GetWeapon(self, Context: unreal.UObject) -> Weapon: ...
+    def GetMaxZoomFOVScale(self, Weapon: Weapon, UseMode: int) -> float: ...
+    def GetLoadedAmmo(self, Weapon: Weapon, UseMode: int) -> int: ...
+    def GetFireRateAccelPercent(self, Weapon: Weapon, UseMode: int) -> float: ...
+    def GetFireRate(self, Weapon: Weapon, UseMode: int) -> float: ...
+    def GetDamageType(
+        self, Weapon: Weapon, UseMode: int
+    ) -> gbx_game_system_core.GbxDamageType: ...
+    def CreateProjectileEQSProxy(
+        self,
+        Location: core_uobject.Vector,
+        Rotation: core_uobject.Rotator,
+        ReferenceActor: engine.Actor,
+    ) -> ProjectileEQSProxy: ...
 
 
 class WeaponTriggerFeedbackAsset(gbx_runtime.GbxDataAsset):
@@ -1368,12 +1732,10 @@ class WeaponTriggerFeedbackAsset(gbx_runtime.GbxDataAsset):
     FireThreshold: WeaponTriggerFireThreasholdData
 
 
-
 class WeaponTypeAsset(gbx_runtime.GbxDataAsset):
     DisplayName: str
     ScaleformDisplayFrameID: str
     EquipAudioEventName: str
-
 
 
 class WeaponTypeData(gbx_runtime.GbxDataAsset):
@@ -1381,10 +1743,10 @@ class WeaponTypeData(gbx_runtime.GbxDataAsset):
     ManufacturerDamageScaleRow: engine.DataTableRowHandle
 
 
-
-class WeaponTypeDataTableAttributeValueResolver(gbx_game_system_core.DataTableFunctionAttributeValueResolver):
+class WeaponTypeDataTableAttributeValueResolver(
+    gbx_game_system_core.DataTableFunctionAttributeValueResolver
+):
     DataTableFromWeaponType: EWeaponTypeDataTableType
-
 
 
 class WeaponVisibleAmmoComponent(engine.ActorComponent):
@@ -1398,8 +1760,11 @@ class WeaponVisibleAmmoComponent(engine.ActorComponent):
     ServerAmmoCount: int
     CachedAmmoComponent: WeaponAmmoComponent
     WeaponPrivate: Weapon
+
     def UpdateBoneVisibility(self, bForce: bool): ...
-    def SetVisibleAmmoUpdateMethod(self, NewUpdateMethod: EWeaponVisibleAmmoUpdateMethod): ...
+    def SetVisibleAmmoUpdateMethod(
+        self, NewUpdateMethod: EWeaponVisibleAmmoUpdateMethod
+    ): ...
     def SetVisibleAmmoState(self, NewState: EWeaponVisibleAmmoState): ...
     def ResetVisibleAmmoState(self): ...
     def OnRep_ServerAmmoCount(self): ...
@@ -1413,14 +1778,12 @@ class WeaponMaxZoomFOVScaleValueResolver(gbx_game_system_core.AttributeValueReso
     bApplyWeaponModeZoom: bool
 
 
-
 class GbxTrajectometerTraceData:
     Channel: int
     Shape: EGbxTrajectoryTraceShape
     ExtentX: float
     ExtentY: float
     ExtentZ: float
-
 
 
 class WeaponShotModifierData:
@@ -1432,7 +1795,6 @@ class WeaponShotModifierData:
     CriticalHitOverrides: gbx_game_system_core.CriticalHitDamageOverrides
     ModifierValue: float
     GoreModifiers: gbx_game_system_core.DamageGoreModifiers
-
 
 
 class LightBeamInitializationData:
@@ -1461,12 +1823,10 @@ class LightBeamInitializationData:
     ParentBeam: LightBeam
 
 
-
 class LightBeamAttachment:
     Actor: engine.Actor
     Component: engine.SceneComponent
     Socket: str
-
 
 
 class LightProjectileInitializationData:
@@ -1499,7 +1859,6 @@ class LightProjectileInitializationData:
     RingData: LightProjectileRingData
 
 
-
 class LightProjectileRingData: ...
 
 
@@ -1511,14 +1870,12 @@ class FiringPatternSample:
     ID: int
 
 
-
 class LightBeamTickFunction(engine.TickFunction): ...
 
 
 class LightBeamImpactFXTrackingData:
     Component: engine.SceneComponent
     PhysicalMaterial: engine.PhysicalMaterial
-
 
 
 class ClientLightBeamState:
@@ -1530,6 +1887,7 @@ class ClientLightBeamState:
     DamageCauser: engine.Actor
     ImpactDataOverride: gbx_game_system_core.ImpactData
     Spread: float
+    Flags: int
     BeamFXOverride: engine.ParticleSystem
     ViewerBeamFXOverride: engine.ParticleSystem
     BeamImpactAudioOverride: wwise_audio.WwiseEvent
@@ -1543,7 +1901,6 @@ class ClientLightBeamState:
     ImpactForce: float
 
 
-
 class LightBeamQueryData:
     Actor: engine.Actor
     ActorType: ELightBeamQueryActorType
@@ -1552,10 +1909,8 @@ class LightBeamQueryData:
     NameId: str
 
 
-
 class LightBeamParticlePoolData:
     PSC: engine.ParticleSystemComponent
-
 
 
 class PostLightBeamTickFunction(engine.TickFunction): ...
@@ -1569,11 +1924,9 @@ class LightProjectileExplodeData:
     Location: engine.Vector_NetQuantize
 
 
-
 class LightProjectileImpactData:
     bPlayEffect: bool
     Location: engine.Vector_NetQuantize
-
 
 
 class LightProjectileAttachment:
@@ -1582,7 +1935,6 @@ class LightProjectileAttachment:
     Socket: str
     RelativeRotation: core_uobject.Rotator
     RelativeImpactNormal: engine.Vector_NetQuantizeNormal
-
 
 
 class ReplicatedLightProjectileInitializationData:
@@ -1596,6 +1948,7 @@ class ReplicatedLightProjectileInitializationData:
     ImpactDataOverride: gbx_game_system_core.ImpactData
     SpeedScale: float
     GravityScaleOverride: float
+    Flags: int
     ModifierType: EWeaponShotModifierType
     FiringPatternID: int
     FireSocketID: int
@@ -1610,13 +1963,11 @@ class ReplicatedLightProjectileInitializationData:
     BulletByAdditiveLayer: wwise_audio.WwiseEvent
 
 
-
 class LightProjectileQueryData:
     Actor: engine.Actor
     ActorType: ELightProjectileQueryActorType
     ProjectileClass: unreal.UClass
     NameId: str
-
 
 
 class LightProjectileAudioProperties:
@@ -1631,7 +1982,6 @@ class LightProjectileAudioProperties:
     ListenerApproachSpeedRtpc: wwise_audio.WwiseRtpc
 
 
-
 class LightProjectileRingSettings:
     InitialRadius: float
     Angle: float
@@ -1644,12 +1994,10 @@ class LightProjectileRingSettings:
     bUseRingAxis: bool
 
 
-
 class LightProjectileRingSubdivisionSettings:
     MaxSubdivisions: int
     ValueMode: ELightProjectileSubdivisionMode
     Value: float
-
 
 
 class LightProjectileTimedEvent:
@@ -1657,10 +2005,8 @@ class LightProjectileTimedEvent:
     CustomEvent: str
 
 
-
 class LightProjectileParticlePoolData:
     PSC: engine.ParticleSystemComponent
-
 
 
 class LightProjectileBatchTickFunction(engine.TickFunction): ...
@@ -1683,22 +2029,23 @@ class ThrowProjectileAsyncRequest:
     InstanceCount: int
     InstanceDelay: float
     ExposeOnSpawnCache: engine.GbxExposeOnSpawnValueCache
-
+    Spawned: Any
+    Failed: Any
 
 
 class PredictProjectilePathAsyncRequest(engine.PredictProjectilePathParams):
     TraceMode: engine.EGbxTraceAsyncMode
     ObjectType: int
     TraceName: str
-
+    Finished: Any
 
 
 class WeaponAttachState:
+    NetworkID: int
     Slot: int
     Instigator: engine.Pawn
     EquipType: EWeaponEquipType
     PutDownType: EWeaponPutDownType
-
 
 
 class WeaponUseModeState:
@@ -1714,13 +2061,11 @@ class WeaponUseModeState:
     Components: unreal.WrappedArray[engine.ActorComponent]
 
 
-
 class BodyWeaponActionInfo:
     WeaponAction: int
     Condition: gbx_runtime.GbxCondition
     ConditionalWeaponActions: unreal.WrappedArray[ConditionalWeaponActionSet]
     ConditionalActions: unreal.WrappedArray[ConditionalActionInfo]
-
 
 
 class ConditionalActionInfo:
@@ -1729,11 +2074,9 @@ class ConditionalActionInfo:
     ActionNetMode: gbx_game_system_core.EGbxActionNetMode
 
 
-
 class ConditionalWeaponActionSet:
     Condition: gbx_runtime.GbxCondition
     ConditionalActions: unreal.WrappedArray[ConditionalActionInfo]
-
 
 
 class WeaponTrinketAttachment:
@@ -1742,22 +2085,18 @@ class WeaponTrinketAttachment:
     AnimInstanceClass: unreal.UClass
 
 
-
 class WeaponSkeletalControlInstance:
     Data: WeaponSkeletalControlBase
-
 
 
 class WeaponMaterialEffectInstance:
     ValueOverTime: engine.CurveFloat
 
 
-
 class WeaponEffectAttachment:
     Effect: engine.ParticleSystem
     ConditionalEffect: unreal.UClass
     PSC: engine.ParticleSystemComponent
-
 
 
 class WeaponChargeEventNotify:
@@ -1767,7 +2106,6 @@ class WeaponChargeEventNotify:
     EventName: str
 
 
-
 class WeaponChargeAttributeEffect:
     StatesBitmask: int
     bApplyToInstigator: bool
@@ -1775,13 +2113,11 @@ class WeaponChargeAttributeEffect:
     AttributeModifier: gbx_game_system_core.GbxAttributeModifierHandle
 
 
-
 class WeaponRegisterSkeletalControlData:
     Type: int
     Visibility: int
     bPlayerOnly: bool
     Control: WeaponSkeletalControlBase
-
 
 
 class WeaponRegisterTrinketAttachmentData:
@@ -1793,13 +2129,11 @@ class WeaponRegisterTrinketAttachmentData:
     Visibility: int
 
 
-
 class WeaponEffectQueryData:
     Type: int
     ID: int
     Visibility: int
     UseModeBitmask: int
-
 
 
 class WeaponMaterialEffectData:
@@ -1817,7 +2151,6 @@ class WeaponMaterialEffectData:
     Duration: float
     DecayRate: float
     MaxValue: float
-
 
 
 class WeaponRegisterMaterialEffectData:
@@ -1841,7 +2174,6 @@ class WeaponRegisterMaterialEffectData:
     MaxValue: float
 
 
-
 class WeaponRegisterAttachmentEffectData:
     Type: int
     Effect: engine.ParticleSystem
@@ -1863,12 +2195,10 @@ class WeaponRegisterAttachmentEffectData:
     bHideWhenScoped: bool
 
 
-
 class WeaponHeatEventNotify:
     Threshold: float
     Comparision: EWeaponHeatComparisonOperatorType
     EventName: str
-
 
 
 class WeaponShotModifierTypeName:
@@ -1877,12 +2207,10 @@ class WeaponShotModifierTypeName:
     Tooltip: str
 
 
-
 class LightBeamFlagName:
     Type: ELightBeamFlag
     Name: str
     Tooltip: str
-
 
 
 class LightProjectileFlagName:
@@ -1891,19 +2219,16 @@ class LightProjectileFlagName:
     Tooltip: str
 
 
-
 class WeaponActionTypeName:
     Type: int
     Name: str
     Tooltip: str
 
 
-
 class WeaponEffectTypeName:
     Type: int
     Name: str
     Tooltip: str
-
 
 
 class WeaponSkeletalControlState: ...
@@ -1913,12 +2238,10 @@ class WeaponTriggerFireThreasholdData:
     Position: float
 
 
-
 class WeaponTriggerVibrationData:
     Position: float
     Frequency: float
     Amplitude: float
-
 
 
 class WeaponTriggerWeaponData:
@@ -1927,17 +2250,14 @@ class WeaponTriggerWeaponData:
     Force: float
 
 
-
 class WeaponTriggerFeedbackData:
     Position: float
     Force: float
 
 
-
 class WeaponVisibleAmmoEffectData:
     Effect: engine.ParticleSystem
     RelativeTransform: core_uobject.Transform
-
 
 
 class WeaponZoomLevel:
@@ -1947,11 +2267,9 @@ class WeaponZoomLevel:
     ViewModelFOVScale: float
 
 
-
 class WeaponZoomState:
     State: EWeaponZoomState
     Level: int
-
 
 
 class EGbxTrajectoryTraceShape(enum.Enum):

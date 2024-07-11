@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -8,11 +8,10 @@ from . import core_uobject
 from . import engine
 
 
-
 class DestructibleActor(engine.Actor):
     DestructibleComponent: DestructibleComponent
     bAffectNavigation: bool
-
+    OnActorFracture: Any
 
 
 class DestructibleComponent(engine.SkinnedMeshComponent):
@@ -20,14 +19,31 @@ class DestructibleComponent(engine.SkinnedMeshComponent):
     FractureEffects: unreal.WrappedArray[engine.FractureEffect]
     bEnableHardSleeping: bool
     LargeChunkThreshold: float
+    OnComponentFracture: Any
     bUseParentComponentPose: bool
     DestructiblePoseComponent: engine.SkinnedMeshComponent
     bIsPosable: bool
-    def SetDestructiblePoseComponent(self, NewDestructiblePoseComponent: engine.SkinnedMeshComponent): ...
+
+    def SetDestructiblePoseComponent(
+        self, NewDestructiblePoseComponent: engine.SkinnedMeshComponent
+    ): ...
     def SetDestructibleMesh(self, NewMesh: DestructibleMesh): ...
-    def GetDestructibleMesh(self, ReturnValue: DestructibleMesh) -> DestructibleMesh: ...
-    def ApplyRadiusDamage(self, BaseDamage: float, HurtOrigin: core_uobject.Vector, DamageRadius: float, ImpulseStrength: float, bFullDamage: bool): ...
-    def ApplyDamage(self, DamageAmount: float, HitLocation: core_uobject.Vector, ImpulseDir: core_uobject.Vector, ImpulseStrength: float): ...
+    def GetDestructibleMesh(self) -> DestructibleMesh: ...
+    def ApplyRadiusDamage(
+        self,
+        BaseDamage: float,
+        HurtOrigin: core_uobject.Vector,
+        DamageRadius: float,
+        ImpulseStrength: float,
+        bFullDamage: bool,
+    ): ...
+    def ApplyDamage(
+        self,
+        DamageAmount: float,
+        HitLocation: core_uobject.Vector,
+        ImpulseDir: core_uobject.Vector,
+        ImpulseStrength: float,
+    ): ...
 
 
 class DestructibleFractureSettings(unreal.UObject):
@@ -41,13 +57,11 @@ class DestructibleFractureSettings(unreal.UObject):
     CustomBuilder: engine.DestructibleMeshCustomBuilder
 
 
-
 class DestructibleMesh(engine.SkeletalMesh):
     DefaultDestructibleParameters: DestructibleParameters
     FractureEffects: unreal.WrappedArray[engine.FractureEffect]
     PosableChunkInfo: unreal.WrappedArray[PosableDestructibleChunkInfo]
     InitialPosableFractureChunkIndex: int
-
 
 
 class DestructibleChunkParameters:
@@ -58,7 +72,6 @@ class DestructibleChunkParameters:
     bDoNotSplit: bool
 
 
-
 class FractureMaterial:
     UVScale: core_uobject.Vector2D
     UVOffset: core_uobject.Vector2D
@@ -67,12 +80,10 @@ class FractureMaterial:
     InteriorElementIndex: int
 
 
-
 class PosableDestructibleChunkInfo:
     BoneName: str
     GestaltPartName: str
     bIsSupportChunk: bool
-
 
 
 class DestructibleParameters:
@@ -85,22 +96,29 @@ class DestructibleParameters:
     ApexCollisionVolumeParameters: DestructibleApexCollisionVolumeParameters
 
 
-
 class DestructibleApexCollisionVolumeParameters:
-    DepthCollisionVolume: unreal.WrappedArray[DestructibleApexDepthCollisionVolumeParameters]
+    DepthCollisionVolume: unreal.WrappedArray[
+        DestructibleApexDepthCollisionVolumeParameters
+    ]
     bHigherDepthsUseDefaultCollisionVolume: bool
     MaximumTrimming: float
     ConvexHullMethod: EApexConvexHullMethod
     ConcavityPercent: float
     MergeThreshold: float
-
+    RecursionDepth: int
+    MaxVertexCount: int
+    MaxEdgeCount: int
+    MaxFaceCount: int
 
 
 class DestructibleApexDepthCollisionVolumeParameters:
     ConvexHullMethod: EApexConvexHullMethod
     ConcavityPercent: float
     MergeThreshold: float
-
+    RecursionDepth: int
+    MaxVertexCount: int
+    MaxEdgeCount: int
+    MaxFaceCount: int
 
 
 class DestructibleParametersFlag:
@@ -115,10 +133,8 @@ class DestructibleParametersFlag:
     bFormExtendedStructures: bool
 
 
-
 class DestructibleDepthParameters:
     ImpactDamageOverride: int
-
 
 
 class DestructibleSpecialHierarchyDepths:
@@ -129,13 +145,11 @@ class DestructibleSpecialHierarchyDepths:
     EssentialDepth: int
 
 
-
 class DestructibleAdvancedParameters:
     DamageCap: float
     ImpactVelocityThreshold: float
     MaxChunkSpeed: float
     FractureImpulseScale: float
-
 
 
 class DestructibleDebrisParameters:
@@ -144,7 +158,6 @@ class DestructibleDebrisParameters:
     DebrisMaxSeparationMin: float
     DebrisMaxSeparationMax: float
     ValidBounds: core_uobject.Box
-
 
 
 class DestructibleDamageParameters:
@@ -160,11 +173,9 @@ class DestructibleDamageParameters:
     ImpactResistance: float
 
 
-
 class MeshParentIndex:
     Mesh: engine.StaticMesh
     ParentIndex: int
-
 
 
 class EApexConvexHullMethod(enum.Enum):

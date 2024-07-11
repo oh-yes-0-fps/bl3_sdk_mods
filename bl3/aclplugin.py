@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import engine
-
 
 
 class ACLStatsDumpCommandlet(engine.Commandlet): ...
@@ -20,7 +19,6 @@ class AnimCompress_ACL(AnimCompress_ACLBase):
     SafetyFallbackThreshold: float
     ErrorThreshold: float
     BoneToIgnores: unreal.WrappedArray[str]
-
 
 
 class AnimCompress_ACLCustom(AnimCompress_ACLBase):
@@ -40,7 +38,8 @@ class AnimCompress_ACLCustom(AnimCompress_ACLBase):
     bSegmentRangeReduceRotations: bool
     bSegmentRangeReduceTranslations: bool
     bSegmentRangeReduceScales: bool
-
+    IdealNumKeyFramesPerSegment: int
+    MaxNumKeyFramesPerSegment: int
 
 
 class ACLVectorFormat(enum.Enum):

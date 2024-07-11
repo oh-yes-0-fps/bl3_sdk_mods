@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -21,7 +21,6 @@ from . import gameplay_tags
 from . import immediate_physics
 from . import animation_core
 from . import gbx_anim_runtime_base
-
 
 
 class StanceDataProvider(gbx_runtime.GbxDataAsset): ...
@@ -52,11 +51,11 @@ class StanceData(StanceDataProvider):
     HitReactionData: HitReactionData
 
 
-
 class GbxAnimTable(gbx_runtime.GbxDataAsset):
     TriggerAutofill: gbx_runtime.GbxTriggerProperty
     DataTable: engine.DataTable
     bScaleRateByMeshScale: bool
+
     def Autofill(self): ...
 
 
@@ -65,20 +64,25 @@ class GbxAction(unreal.UObject):
     ActionSlotName: str
     ActionPriority: EGbxActionPriority
     InstanceDataType: core_uobject.ScriptStruct
+
     def OnServerEnd(self, ActionEndState: EGbxActionEndState, Actor: engine.Actor): ...
     def OnServerBegin(self, Actor: engine.Actor): ...
     def OnEnd(self, ActionEndState: EGbxActionEndState, Actor: engine.Actor): ...
     def OnBegin(self, Actor: engine.Actor): ...
-    def K2_GetVectorRegisterValue(self, InName: str, OutVector: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def K2_GetTimeRemaining(self, ReturnValue: float) -> float: ...
-    def K2_GetObjectRegisterValue(self, InName: str, OutObject: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def K2_GetNameRegisterValue(self, InName: str, OutName: str, ReturnValue: bool) -> bool: ...
-    def K2_GetMaxCurrentTime(self, ReturnValue: float) -> float: ...
-    def K2_GetIntRegisterValue(self, InName: str, OutInt: int, ReturnValue: bool) -> bool: ...
-    def K2_GetFloatRegisterValue(self, InName: str, OutFloat: float, ReturnValue: bool) -> bool: ...
-    def K2_GetCurrentTime(self, ReturnValue: float) -> float: ...
-    def K2_GetCurrentNormalizedTime(self, ReturnValue: float) -> float: ...
-    def K2_GetActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def K2_GetVectorRegisterValue(
+        self, InName: str, OutVector: core_uobject.Vector
+    ) -> bool: ...
+    def K2_GetTimeRemaining(self) -> float: ...
+    def K2_GetObjectRegisterValue(
+        self, InName: str, OutObject: unreal.UObject
+    ) -> bool: ...
+    def K2_GetNameRegisterValue(self, InName: str, OutName: str) -> bool: ...
+    def K2_GetMaxCurrentTime(self) -> float: ...
+    def K2_GetIntRegisterValue(self, InName: str, OutInt: int) -> bool: ...
+    def K2_GetFloatRegisterValue(self, InName: str, OutFloat: float) -> bool: ...
+    def K2_GetCurrentTime(self) -> float: ...
+    def K2_GetCurrentNormalizedTime(self) -> float: ...
+    def K2_GetActor(self) -> engine.Actor: ...
 
 
 class GbxAction_SimpleAnim(GbxAction):
@@ -108,6 +112,7 @@ class GbxAction_SimpleAnim(GbxAction):
     DefaultInterruptBlendOutTime: float
     bReleaseResourceFlagsOnAnimEnd: bool
     bEndActionOnBlendOut: bool
+
     def OnAnimEnd(self, Actor: engine.Actor): ...
     def K2_SetTickAndRefreshBones(self, bLockResource: bool): ...
     def K2_SetPhysNoneWithRootMotion(self, bEnable: bool): ...
@@ -126,7 +131,6 @@ class GbxAISystemBase(aimodule.AISystem):
     GbxQueryManager: GbxQueryManager
 
 
-
 class PreviewComponent(engine.PrimitiveComponent):
     bSpawnInPIE: bool
     bPreviewEnabled: bool
@@ -134,6 +138,7 @@ class PreviewComponent(engine.PrimitiveComponent):
     PreviewState: PreviewState
     bEnabled: bool
     SkinnedMeshComponent: engine.SkinnedMeshComponent
+
     def OnBlueprintCompiled(self, BP: engine.Blueprint): ...
 
 
@@ -170,6 +175,7 @@ class GbxAction_Anim(GbxAction_SimpleAnim):
     OverridePlayRate: float
     BlendSpaceXRegisterName: str
     BlendSpaceYRegisterName: str
+
     def K2_SetMantlingBlocked(self, bBlocked: bool): ...
     def K2_SetGodMode(self, bEnable: bool): ...
     def K2_SetFootIK(self, bDisable: bool): ...
@@ -190,6 +196,7 @@ class TeamComponent(engine.ActorComponent):
     bIgnoreCollisionWithTeam: bool
     bInheritSourceTeamFromInstigator: bool
     SourceTeamComponent: TeamComponent
+
     def SetTeamToDefault(self): ...
     def SetTeamCollision(self, bOn: bool): ...
     def SetTeam(self, NewTeam: Team): ...
@@ -197,13 +204,13 @@ class TeamComponent(engine.ActorComponent):
     def SetCollidesWithTeam(self, bCollidesWithTeam: bool): ...
     def OnRep_Team(self, OldTeam: Team): ...
     def OnRep_bIgnoreCollisionWithTeam(self): ...
-    def IsNeutral(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def IsHostile(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def IsFriendly(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
+    def IsNeutral(self, Actor: engine.Actor) -> bool: ...
+    def IsHostile(self, Actor: engine.Actor) -> bool: ...
+    def IsFriendly(self, Actor: engine.Actor) -> bool: ...
     def InitializeTeam(self, NewTeam: Team): ...
-    def GetTeamCollisionChannel(self, ReturnValue: ETeamCollisionChannel) -> ETeamCollisionChannel: ...
-    def GetTeamAttitudeTowardsTeam(self, OtherTeam: Team, ReturnValue: int) -> int: ...
-    def GetTeamAttitudeTowardsActor(self, Actor: engine.Actor, ReturnValue: int) -> int: ...
+    def GetTeamCollisionChannel(self) -> ETeamCollisionChannel: ...
+    def GetTeamAttitudeTowardsTeam(self, OtherTeam: Team) -> int: ...
+    def GetTeamAttitudeTowardsActor(self, Actor: engine.Actor) -> int: ...
 
 
 class GbxCharacter(engine.Character):
@@ -225,6 +232,7 @@ class GbxCharacter(engine.Character):
     LadderHandImpact: ImpactData
     FootstepSockets: unreal.WrappedArray[str]
     HandAccessoryTags: unreal.WrappedArray[str]
+    LandingDataTriggeredDelegate: Any
     OwnerPlayerController: GbxPlayerController
     OwnerAIController: aimodule.AIController
     PlayerMaster: GbxCharacter
@@ -259,42 +267,78 @@ class GbxCharacter(engine.Character):
     DefaultBoneSetFilter: engine.GbxBoneSet
     ActionBoneSetFilter: engine.GbxBoneSet
     bPauseAIWhileFalling: bool
+
     def SetTeam(self, Team: Team): ...
     def SetPlayerMaster(self, NewPlayerMaster: GbxCharacter): ...
     def SetCharacterUIName(self, NewCharacterUIName: GbxUIName): ...
     def SetCharacterNameFromString(self, NewCharacterName: str): ...
     def SetCharacterName(self, NewCharacterName: str): ...
-    def RotateCharacterTo(self, TargetRotation: core_uobject.Rotator, Duration: float, Easing: int): ...
-    def ReceiveOwnerPlayerControllerChanged(self, NewPlayerControllerOwner: GbxPlayerController): ...
+    def RotateCharacterTo(
+        self, TargetRotation: core_uobject.Rotator, Duration: float, Easing: int
+    ): ...
+    def ReceiveOwnerPlayerControllerChanged(
+        self, NewPlayerControllerOwner: GbxPlayerController
+    ): ...
     def OnRep_ReplicatedPawnAttachState(self): ...
     def OnLandingDataTriggered(self, LandingInfo: LandingInfo, Index: int): ...
-    def NetMulticast_TriggerHitReactionSound(self, Tag: gbx_audio.CharacterSoundTag): ...
-    def NetMulticast_PlayLanded(self, Hit: engine.HitResult, ImpactSpeed: float, bLandFromJump: bool, LandingDataOverride: LandingData): ...
+    def NetMulticast_TriggerHitReactionSound(
+        self, Tag: gbx_audio.CharacterSoundTag
+    ): ...
+    def NetMulticast_PlayLanded(
+        self,
+        Hit: engine.HitResult,
+        ImpactSpeed: float,
+        bLandFromJump: bool,
+        LandingDataOverride: LandingData,
+    ): ...
     def NetMulticast_PlayJumped(self): ...
-    def IsZoomed(self, ReturnValue: bool) -> bool: ...
-    def GetTeamComponent(self, ReturnValue: TeamComponent) -> TeamComponent: ...
-    def GetTeam(self, ReturnValue: Team) -> Team: ...
-    def GetTargetingComponent(self, ReturnValue: TargetingComponent) -> TargetingComponent: ...
-    def GetTargetableComponent(self, ReturnValue: TargetableComponent) -> TargetableComponent: ...
-    def GetPerceptionComponent(self, ReturnValue: GbxPerceptionComponent) -> GbxPerceptionComponent: ...
-    def GetPawnAttachStatus(self, ReturnValue: EPawnAttachStatus) -> EPawnAttachStatus: ...
-    def GetPawnAttachComponent(self, ReturnValue: PawnAttachSlotComponent) -> PawnAttachSlotComponent: ...
-    def GetPawnAttachActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetLookAtLocation(self, OutWeight: float, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetLookAt(self, HeadLocation: core_uobject.Vector, EyeLocation: core_uobject.Vector, HeadWeight: float, ReturnValue: float) -> float: ...
-    def GetFirstPersonMesh(self, ReturnValue: engine.SkeletalMeshComponent) -> engine.SkeletalMeshComponent: ...
-    def GetFirstPersonComponent(self, ReturnValue: FirstPersonComponent) -> FirstPersonComponent: ...
-    def GetBlackboardComponent(self, ReturnValue: aimodule.BlackboardComponent) -> aimodule.BlackboardComponent: ...
-    def GetBlackboardAsset(self, ReturnValue: aimodule.BlackboardData) -> aimodule.BlackboardData: ...
+    def IsZoomed(self) -> bool: ...
+    def GetTeamComponent(self) -> TeamComponent: ...
+    def GetTeam(self) -> Team: ...
+    def GetTargetingComponent(self) -> TargetingComponent: ...
+    def GetTargetableComponent(self) -> TargetableComponent: ...
+    def GetPerceptionComponent(self) -> GbxPerceptionComponent: ...
+    def GetPawnAttachStatus(self) -> EPawnAttachStatus: ...
+    def GetPawnAttachComponent(self) -> PawnAttachSlotComponent: ...
+    def GetPawnAttachActor(self) -> engine.Actor: ...
+    def GetLookAtLocation(self, OutWeight: float) -> core_uobject.Vector: ...
+    def GetLookAt(
+        self,
+        HeadLocation: core_uobject.Vector,
+        EyeLocation: core_uobject.Vector,
+        HeadWeight: float,
+    ) -> float: ...
+    def GetFirstPersonMesh(self) -> engine.SkeletalMeshComponent: ...
+    def GetFirstPersonComponent(self) -> FirstPersonComponent: ...
+    def GetBlackboardComponent(self) -> aimodule.BlackboardComponent: ...
+    def GetBlackboardAsset(self) -> aimodule.BlackboardData: ...
     def GetAvailableSocketNames(self, Array: unreal.WrappedArray[str]): ...
-    def GetAimVectorStartLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetAimOffset(self, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
-    def FindFirstPersonComponent(self, ReturnValue: FirstPersonComponent) -> FirstPersonComponent: ...
+    def GetAimVectorStartLocation(self) -> core_uobject.Vector: ...
+    def GetAimOffset(self) -> core_uobject.Rotator: ...
+    def FindFirstPersonComponent(self) -> FirstPersonComponent: ...
     def DetachCharacter(self, LocationRule: engine.EDetachmentRule): ...
-    def ClientRotateCharacterTo(self, TargetRotation: core_uobject.Rotator, Duration: float, Easing: int): ...
+    def ClientRotateCharacterTo(
+        self, TargetRotation: core_uobject.Rotator, Duration: float, Easing: int
+    ): ...
     def CauseEveryoneToForgetMe(self): ...
-    def AttachCharacterToComponent(self, Parent: engine.SceneComponent, SocketName: str, LocationRule: engine.EAttachmentRule, RotationRule: engine.EAttachmentRule, ScaleRule: engine.EAttachmentRule, bWeldSimulatedBodies: bool): ...
-    def AttachCharacterToActor(self, ParentActor: engine.Actor, SocketName: str, LocationRule: engine.EAttachmentRule, RotationRule: engine.EAttachmentRule, ScaleRule: engine.EAttachmentRule, bWeldSimulatedBodies: bool): ...
+    def AttachCharacterToComponent(
+        self,
+        Parent: engine.SceneComponent,
+        SocketName: str,
+        LocationRule: engine.EAttachmentRule,
+        RotationRule: engine.EAttachmentRule,
+        ScaleRule: engine.EAttachmentRule,
+        bWeldSimulatedBodies: bool,
+    ): ...
+    def AttachCharacterToActor(
+        self,
+        ParentActor: engine.Actor,
+        SocketName: str,
+        LocationRule: engine.EAttachmentRule,
+        RotationRule: engine.EAttachmentRule,
+        ScaleRule: engine.EAttachmentRule,
+        bWeldSimulatedBodies: bool,
+    ): ...
 
 
 class BalanceStateComponent(engine.ActorComponent):
@@ -302,14 +346,21 @@ class BalanceStateComponent(engine.ActorComponent):
     InheritedBalanceTableRowHandle: engine.DataTableRowHandle
     GameStage: int
     ExperienceLevel: int
+    OnLevelChanged: Any
     bAutoRefreshInheritedBalanceWhenSourceChangesLevel: bool
+
     def SetGameStage(self, NewGameStage: int): ...
     def SetExperienceLevel(self, NewExperienceLevel: int): ...
     def OnRep_ExperienceLevel(self, OldExperienceLevel: int): ...
-    def OnInheritedBalanceSourceLevelChanged(self, InheritedBalanceStateSource: BalanceStateComponent, OldExperienceLevel: int, NewExperienceLevel: int): ...
-    def GetGameStage(self, ReturnValue: int) -> int: ...
-    def GetExperienceLevel(self, ReturnValue: int) -> int: ...
-    def GetBalanceTableRow(self, ReturnValue: engine.DataTableRowHandle) -> engine.DataTableRowHandle: ...
+    def OnInheritedBalanceSourceLevelChanged(
+        self,
+        InheritedBalanceStateSource: BalanceStateComponent,
+        OldExperienceLevel: int,
+        NewExperienceLevel: int,
+    ): ...
+    def GetGameStage(self) -> int: ...
+    def GetExperienceLevel(self) -> int: ...
+    def GetBalanceTableRow(self) -> engine.DataTableRowHandle: ...
 
 
 class GbxChildActorComponent(engine.ChildActorComponent):
@@ -318,6 +369,8 @@ class GbxChildActorComponent(engine.ChildActorComponent):
     bDestroyExistingChildActorOnSpawn: bool
     bDeferChildActorClassUpdate: bool
     bClearChildActorReferenceToMeWhenChildActorIsDetached: bool
+    OnChildActorSpawned: Any
+
     def SpawnChildActor(self): ...
     def DespawnChildActor(self): ...
 
@@ -328,7 +381,6 @@ class AnimNotify_PawnAttachSlotTransition(engine.AnimNotify):
     bAttach: bool
 
 
-
 class AttributeEffectMutatorData(gbx_runtime.GbxDataAsset): ...
 
 
@@ -336,10 +388,12 @@ class GbxAnimInstance(engine.AnimInstance):
     GbxSkeletalMeshComponent: GbxSkeletalMeshComponent
     AnimStateMachineDefinitions: unreal.WrappedArray[GbxAnimStateMachineDefinition]
     RuntimeStateMachines: unreal.WrappedArray[RuntimeStateMachineData]
+    AnimTableMap: Any
     ManagerRuntime: engine.GbxStateManagerRuntime
     bEarlyBindBoneSetDelegates: bool
-    def GetAnimTableSequence(self, AnimTable: GbxAnimTable, ReturnValue: engine.AnimSequence) -> engine.AnimSequence: ...
-    def CanUseAnimTable(self, AnimTable: GbxAnimTable, ReturnValue: bool) -> bool: ...
+
+    def GetAnimTableSequence(self, AnimTable: GbxAnimTable) -> engine.AnimSequence: ...
+    def CanUseAnimTable(self, AnimTable: GbxAnimTable) -> bool: ...
 
 
 class GbxCustomizationData(gbx_runtime.GbxDataAsset):
@@ -348,6 +402,7 @@ class GbxCustomizationData(gbx_runtime.GbxDataAsset):
     IconFrameName: str
     UIStats: unreal.WrappedArray[UIStatPriorityData]
     ItemCardTypeFrameName: str
+    PreviewImage: Any
     PurchasePrice: AttributeInitializationData
     CustomizationType: GbxCustomizationTypeData
     CustomizationTargetAssets: unreal.WrappedArray[CustomizationAssetEntry]
@@ -355,12 +410,18 @@ class GbxCustomizationData(gbx_runtime.GbxDataAsset):
     bEquippedByDefault: bool
     DefaultSkin: GbxCustomizationData
     DependentBody: GbxCustomizationData
-    def RemoveCustomizationFromActor(self, TargetActor: engine.Actor, ReturnValue: bool) -> bool: ...
+
+    def RemoveCustomizationFromActor(self, TargetActor: engine.Actor) -> bool: ...
     def OnCustomizationAssetLoaded(self): ...
-    def K2_PlayAction(self, TargetActor: engine.Actor, ActionData: ActionState_Base, ReturnValue: GbxAction) -> GbxAction: ...
-    def IsLoading(self, ReturnValue: bool) -> bool: ...
-    def IsLoaded(self, OptionalCustomizationId: int, ReturnValue: bool) -> bool: ...
-    def ApplyCustomizationToActor(self, TargetActor: engine.Actor, OptionalCustomizationId: int, ReturnValue: bool) -> bool: ...
+    def K2_PlayAction(
+        self, TargetActor: engine.Actor, ActionData: ActionState_Base
+    ) -> GbxAction: ...
+    def IsLoading(self) -> bool: ...
+    def IsLoaded(self, OptionalCustomizationId: int) -> bool: ...
+    def AsyncLoadCustomizationAssets(self, LoadedDelegate: Any): ...
+    def ApplyCustomizationToActor(
+        self, TargetActor: engine.Actor, OptionalCustomizationId: int
+    ) -> bool: ...
 
 
 class ActorPartSelectionData(gbx_runtime.GbxDataAsset):
@@ -372,11 +433,14 @@ class ActorPartSelectionData(gbx_runtime.GbxDataAsset):
     InheritedRuntimePartListGuid: core_uobject.Guid
 
 
-
 class AttributeValueResolver(unreal.UObject):
 
-    def SetValueForAttribute(self, Attribute: GbxAttributeData, Context: unreal.UObject, Value: float, ReturnValue: bool) -> bool: ...
-    def GetValueForAttribute(self, Attribute: GbxAttributeData, Context: unreal.UObject, ReturnValue: float) -> float: ...
+    def SetValueForAttribute(
+        self, Attribute: GbxAttributeData, Context: unreal.UObject, Value: float
+    ) -> bool: ...
+    def GetValueForAttribute(
+        self, Attribute: GbxAttributeData, Context: unreal.UObject
+    ) -> float: ...
 
 
 class GbxAreaComponent(engine.PrimitiveComponent):
@@ -386,19 +450,41 @@ class GbxAreaComponent(engine.PrimitiveComponent):
     DetectionHalfHeight: float
     bWorldAreaRadius: bool
     bManualTest: bool
+    OnPlayerEnteredArea: Any
+    OnPlayerExitedArea: Any
     DrawStyle: EGbxAreaDrawStyle
     PlayersDetected: unreal.WrappedArray[engine.PlayerController]
+
     def AreaTest(self): ...
 
 
 class EffectCollectionData(unreal.UObject):
 
-    def StaticGetWwiseEvent(self, Collection: unreal.UClass, ContextObject: unreal.UObject, ReturnValue: wwise_audio.WwiseEvent) -> wwise_audio.WwiseEvent: ...
-    def StaticGetParticleEffectAndWwiseEvent(self, Collection: unreal.UClass, ContextObject: unreal.UObject, ParticleEffect: engine.ParticleSystem, WwiseEvent: wwise_audio.WwiseEvent): ...
-    def StaticGetParticleEffect(self, Collection: unreal.UClass, ContextObject: unreal.UObject, ReturnValue: engine.ParticleSystem) -> engine.ParticleSystem: ...
-    def GetWwiseEvent(self, ContextObject: unreal.UObject, ReturnValue: wwise_audio.WwiseEvent) -> wwise_audio.WwiseEvent: ...
-    def GetParticleEffectAndWwiseEvent(self, ContextObject: unreal.UObject, ParticleEffect: engine.ParticleSystem, WwiseEvent: wwise_audio.WwiseEvent): ...
-    def GetParticleEffect(self, ContextObject: unreal.UObject, ReturnValue: engine.ParticleSystem) -> engine.ParticleSystem: ...
+    def StaticGetWwiseEvent(
+        self, Collection: unreal.UClass, ContextObject: unreal.UObject
+    ) -> wwise_audio.WwiseEvent: ...
+    def StaticGetParticleEffectAndWwiseEvent(
+        self,
+        Collection: unreal.UClass,
+        ContextObject: unreal.UObject,
+        ParticleEffect: engine.ParticleSystem,
+        WwiseEvent: wwise_audio.WwiseEvent,
+    ): ...
+    def StaticGetParticleEffect(
+        self, Collection: unreal.UClass, ContextObject: unreal.UObject
+    ) -> engine.ParticleSystem: ...
+    def GetWwiseEvent(
+        self, ContextObject: unreal.UObject
+    ) -> wwise_audio.WwiseEvent: ...
+    def GetParticleEffectAndWwiseEvent(
+        self,
+        ContextObject: unreal.UObject,
+        ParticleEffect: engine.ParticleSystem,
+        WwiseEvent: wwise_audio.WwiseEvent,
+    ): ...
+    def GetParticleEffect(
+        self, ContextObject: unreal.UObject
+    ) -> engine.ParticleSystem: ...
 
 
 class EnvQueryGenerator_TargetableActors(aimodule.EnvQueryGenerator):
@@ -412,11 +498,12 @@ class EnvQueryGenerator_TargetableActors(aimodule.EnvQueryGenerator):
     bAllowNeutrals: bool
     TargetCondition: gbx_runtime.GbxCondition
     TagQuery: ActorTagCompositeQuery
+    AllowedTypes: unreal.WrappedArray[Any]
     bUseAllowedTypes: bool
+    DisallowedTypes: unreal.WrappedArray[Any]
     bUseDisallowedTypes: bool
     AllowedTypesCache: unreal.WrappedArray[unreal.UClass]
     DisallowedTypesCache: unreal.WrappedArray[unreal.UClass]
-
 
 
 class UsableComponent(engine.ActorComponent):
@@ -441,13 +528,23 @@ class UsableComponent(engine.ActorComponent):
     AngleRestriction: UsableAngleRestriction
     bRequiresNetAuthority: bool
     HeaderName: str
+    OnUsed: Any
+    OnUsedPrimary: Any
+    OnUsedPrimaryHold: Any
+    OnUsedSecondary: Any
+    OnUsedSecondaryHold: Any
+    OnLookedAt: Any
+    OnLookedAwayFrom: Any
+
     def SetUsableLocked(self, bLocked: bool, Reason: str): ...
     def SetInteractionHeader(self, NewHeaderName: str): ...
     def ResetUseCount(self): ...
-    def K2_GetOptionalErrorText(self, ReturnValue: str) -> str: ...
-    def K2_CanBeUsed(self, Query: UsabilityQuery, ReturnValue: bool) -> bool: ...
-    def GetValidPrimitiveComponentNames(self, ComponentNames: unreal.WrappedArray[str]): ...
-    def GetInteractionHeader(self, ReturnValue: str) -> str: ...
+    def K2_GetOptionalErrorText(self) -> str: ...
+    def K2_CanBeUsed(self, Query: UsabilityQuery) -> bool: ...
+    def GetValidPrimitiveComponentNames(
+        self, ComponentNames: unreal.WrappedArray[str]
+    ): ...
+    def GetInteractionHeader(self) -> str: ...
 
 
 class GbxGameplayGlobals(gbx_runtime.GbxDataAsset):
@@ -470,10 +567,10 @@ class GbxGameplayGlobals(gbx_runtime.GbxDataAsset):
     ExplosionSoundStackingMaxDistanceSquared: float
     ExplosionSoundStackingPreventionDelay: float
     DefaultFeedbackTable: engine.DataTable
+    KillStatMap: Any
     GameStatLists: unreal.WrappedArray[GameStatList]
     GameChallengeLists: unreal.WrappedArray[ChallengeList]
     MantleGlobals: MantleGlobalData
-
 
 
 class GbxGameMode(engine.GameMode): ...
@@ -490,12 +587,57 @@ class GbxGameState(engine.GameState):
     GameInstanceTimeUpdateRate: float
     CustomizationManagerClass: unreal.UClass
     bRepPlayersOnly: bool
-    def SpawnEmitterAtLocationMulticastImpl(self, EmitterTemplate: engine.ParticleSystem, Location: core_uobject.Vector, Rotation: core_uobject.Rotator, Scale: core_uobject.Vector, bAutoDestroy: bool, ParameterEvaluationContext: unreal.UObject): ...
-    def SpawnEmitterAtLocationMulticast(self, WorldContextObject: unreal.UObject, EmitterTemplate: engine.ParticleSystem, Location: core_uobject.Vector, Rotation: core_uobject.Rotator, Scale: core_uobject.Vector, bAutoDestroy: bool, ParameterEvaluationContext: unreal.UObject): ...
-    def SpawnEmitterAtComponentSocketMulticast(self, WorldContextObject: unreal.UObject, EmitterTemplate: engine.ParticleSystem, Component: engine.SceneComponent, Socket: str, bAutoDestroy: bool, ParameterEvaluationContext: unreal.UObject): ...
-    def SpawnEmitterAtActorSocketMulticast(self, WorldContextObject: unreal.UObject, EmitterTemplate: engine.ParticleSystem, Actor: engine.Actor, Socket: str, bAutoDestroy: bool, ParameterEvaluationContext: unreal.UObject): ...
-    def PlayImpactMulticast(self, ImpactData: ImpactData, ImpactInstigator: engine.Actor, HitResult: ReplicatedImpactHitResult, ResponseParams: ImpactResponseParams): ...
-    def PlayHitRegionImpactMulticast(self, HitRegion: HitRegionData, ImpactInstigator: engine.Actor, HitResult: ReplicatedImpactHitResult): ...
+
+    def SpawnEmitterAtLocationMulticastImpl(
+        self,
+        EmitterTemplate: engine.ParticleSystem,
+        Location: core_uobject.Vector,
+        Rotation: core_uobject.Rotator,
+        Scale: core_uobject.Vector,
+        bAutoDestroy: bool,
+        ParameterEvaluationContext: unreal.UObject,
+    ): ...
+    def SpawnEmitterAtLocationMulticast(
+        self,
+        WorldContextObject: unreal.UObject,
+        EmitterTemplate: engine.ParticleSystem,
+        Location: core_uobject.Vector,
+        Rotation: core_uobject.Rotator,
+        Scale: core_uobject.Vector,
+        bAutoDestroy: bool,
+        ParameterEvaluationContext: unreal.UObject,
+    ): ...
+    def SpawnEmitterAtComponentSocketMulticast(
+        self,
+        WorldContextObject: unreal.UObject,
+        EmitterTemplate: engine.ParticleSystem,
+        Component: engine.SceneComponent,
+        Socket: str,
+        bAutoDestroy: bool,
+        ParameterEvaluationContext: unreal.UObject,
+    ): ...
+    def SpawnEmitterAtActorSocketMulticast(
+        self,
+        WorldContextObject: unreal.UObject,
+        EmitterTemplate: engine.ParticleSystem,
+        Actor: engine.Actor,
+        Socket: str,
+        bAutoDestroy: bool,
+        ParameterEvaluationContext: unreal.UObject,
+    ): ...
+    def PlayImpactMulticast(
+        self,
+        ImpactData: ImpactData,
+        ImpactInstigator: engine.Actor,
+        HitResult: ReplicatedImpactHitResult,
+        ResponseParams: ImpactResponseParams,
+    ): ...
+    def PlayHitRegionImpactMulticast(
+        self,
+        HitRegion: HitRegionData,
+        ImpactInstigator: engine.Actor,
+        HitResult: ReplicatedImpactHitResult,
+    ): ...
     def OnRep_StatsManager(self): ...
     def OnRep_HostPlayerState(self): ...
     def OnRep_GameInstanceTime(self): ...
@@ -617,6 +759,7 @@ class GbxCharacterAnimInstance(GbxAnimInstance):
     BoneSetBlendSpeed: float
     DefaultBoneSetBlendSpeed: float
     DefaultBoneSetTransitionBlendSpeed: float
+
     def SetDesiredFacialEmoteWeight(self, Weight: float, BlendTime: float): ...
     def OnStanceChanged(self): ...
 
@@ -670,10 +813,35 @@ class DamageData(unreal.UObject):
     bOnlyDrawParticleIfFacingDamage: bool
     ScreenParticleParams: ScreenParticleInitParams
     PlayerAudioEvent: wwise_audio.WwiseEvent
-    def OnKilledEnemy(self, DamageInstigator: engine.Actor, DamageCauser: engine.Actor, DamageTarget: engine.Actor, Details: DamageDataEventDetails): ...
-    def OnHitFriendly(self, DamageInstigator: engine.Actor, DamageCauser: engine.Actor, DamageTarget: engine.Actor, Details: DamageDataEventDetails): ...
-    def OnHitEnemy(self, DamageInstigator: engine.Actor, DamageCauser: engine.Actor, DamageTarget: engine.Actor, Details: DamageDataEventDetails): ...
-    def OnHitAnyAttitude(self, DamageInstigator: engine.Actor, DamageCauser: engine.Actor, DamageTarget: engine.Actor, Details: DamageDataEventDetails): ...
+
+    def OnKilledEnemy(
+        self,
+        DamageInstigator: engine.Actor,
+        DamageCauser: engine.Actor,
+        DamageTarget: engine.Actor,
+        Details: DamageDataEventDetails,
+    ): ...
+    def OnHitFriendly(
+        self,
+        DamageInstigator: engine.Actor,
+        DamageCauser: engine.Actor,
+        DamageTarget: engine.Actor,
+        Details: DamageDataEventDetails,
+    ): ...
+    def OnHitEnemy(
+        self,
+        DamageInstigator: engine.Actor,
+        DamageCauser: engine.Actor,
+        DamageTarget: engine.Actor,
+        Details: DamageDataEventDetails,
+    ): ...
+    def OnHitAnyAttitude(
+        self,
+        DamageInstigator: engine.Actor,
+        DamageCauser: engine.Actor,
+        DamageTarget: engine.Actor,
+        Details: DamageDataEventDetails,
+    ): ...
 
 
 class ProjectileHomingComponent(engine.ActorComponent):
@@ -694,29 +862,38 @@ class ProjectileHomingComponent(engine.ActorComponent):
     ReachDistanceSquared: float
     HomingTargetLocalOffset: core_uobject.Vector
     StopHomingDistance: float
+    OnStopHomingDistanceReached: Any
+    OnReachedTargetLocation: Any
     bHomeIn: bool
     ProjectileMovement: engine.ProjectileMovementComponent
     Projectile: engine.Actor
     bModifyDefault: bool
+
     def ToggleHoming(self): ...
     def SetHomeIn(self, bEnabled: bool): ...
-    def SetAssociatedProjectileMovement(self, ProjectileMovementComponent: engine.ProjectileMovementComponent): ...
-    def GetHomingLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+    def SetAssociatedProjectileMovement(
+        self, ProjectileMovementComponent: engine.ProjectileMovementComponent
+    ): ...
+    def GetHomingLocation(self) -> core_uobject.Vector: ...
 
 
 class HitReactionLayer(unreal.UObject):
     bStackable: bool
 
 
-
 class AttributeContextResolver(unreal.UObject):
+    ComponentTypeToFurtherResolveTo: Any
 
-    def GetContextForAttribute(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, ReturnValue: unreal.WrappedArray[unreal.UObject]) -> unreal.WrappedArray[unreal.UObject]: ...
+    def GetContextForAttribute(
+        self, Attribute: GbxAttributeData, ContextSource: unreal.UObject
+    ) -> unreal.WrappedArray[unreal.UObject]: ...
 
 
 class SpawnPatternData(gbx_runtime.GbxDataAsset):
 
-    def CalculateSpawnPoint(self, Inputs: SpawnPatternInputs, Result: SpawnPatternResult): ...
+    def CalculateSpawnPoint(
+        self, Inputs: SpawnPatternInputs, Result: SpawnPatternResult
+    ): ...
 
 
 class PhysicsSpawnPatternData(SpawnPatternData):
@@ -735,10 +912,8 @@ class PhysicsSpawnPatternData(SpawnPatternData):
     ActorBoundsScale: core_uobject.Vector
 
 
-
 class GbxPlayerCameraManager(engine.PlayerCameraManager):
     GbxPCOwner: GbxPlayerController
-
 
 
 class StatusEffectData(engine.DataAsset):
@@ -750,14 +925,12 @@ class StatusEffectData(engine.DataAsset):
     GameplayTags: gameplay_tags.GameplayTagContainer
 
 
-
 class CharacterAttributeContextResolver(AttributeContextResolver): ...
 
 
 class AttributePropertyValueResolver(AttributeValueResolver):
     PropertySupportsModifierRemoval: bool
     Property: engine.ParsedProperty
-
 
 
 class UIStatData(gbx_runtime.GbxDataAsset):
@@ -767,11 +940,18 @@ class UIStatData(gbx_runtime.GbxDataAsset):
     BasePriority: float
     SectionName: str
     IconFrameName: str
-    def K2_ShouldDisplayStat(self, Context: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def K2_GetValueText(self, Context: unreal.UObject, Collector: UIStatCollector, ReturnValue: str) -> str: ...
-    def K2_GetComparisonValue(self, Context: unreal.UObject, Collector: UIStatCollector, ReturnValue: float) -> float: ...
+
+    def K2_ShouldDisplayStat(self, Context: unreal.UObject) -> bool: ...
+    def K2_GetValueText(
+        self, Context: unreal.UObject, Collector: UIStatCollector
+    ) -> str: ...
+    def K2_GetComparisonValue(
+        self, Context: unreal.UObject, Collector: UIStatCollector
+    ) -> float: ...
     def EnumerateSectionNames(self, OutSectionNameList: unreal.WrappedArray[str]): ...
-    def ComputeAttributeModification(self, Attribute: GbxAttributeData, bScale: bool, Collector: UIStatCollector, ReturnValue: float) -> float: ...
+    def ComputeAttributeModification(
+        self, Attribute: GbxAttributeData, bScale: bool, Collector: UIStatCollector
+    ) -> float: ...
 
 
 class UIStatData_Numeric(UIStatData):
@@ -793,13 +973,13 @@ class UIStatData_Numeric(UIStatData):
     MinValueCondition: AttributeInitializationData
     MaxValueCondition: AttributeInitializationData
     Condition: gbx_runtime.GbxCondition
+    FloatPrecision: int
     FormatText: str
     ValueRemapping: UIStatValueRemappingData
     SupplementalStat: UIStatData_Numeric
     SupplementalStatCombinationMethod: EUIStatCombinationMethod
     SupplementalStatCondition: gbx_runtime.GbxCondition
     SupplementalStatFormatText: str
-
 
 
 class AchievementUtility(unreal.UObject): ...
@@ -818,7 +998,9 @@ class GbxAction_CoordinatedEffect(GbxAction):
     OverrideMaterial: engine.MaterialInterface
     MaskMaterial: engine.MaterialInterface
     GlowMaterial: engine.MaterialInterface
-    ConditionalOverrideMaterials: unreal.WrappedArray[CoordinatedConditionalMaterialData]
+    ConditionalOverrideMaterials: unreal.WrappedArray[
+        CoordinatedConditionalMaterialData
+    ]
     MaterialScalarParameters: unreal.WrappedArray[CoordinatedScalarParameter]
     MaterialVectorParameters: unreal.WrappedArray[CoordinatedVectorParameter]
     InheritedMaterialParameters: unreal.WrappedArray[str]
@@ -838,7 +1020,10 @@ class GbxAction_CoordinatedEffect(GbxAction):
     bHideOwnedParticles: bool
     AudioEffects: unreal.WrappedArray[CoordinatedAudioData]
     LightParameters: unreal.WrappedArray[CoordinatedLightParameterData]
-    def SetConstantMaterialVectorParamValue(self, ParamName: str, Color: core_uobject.LinearColor): ...
+
+    def SetConstantMaterialVectorParamValue(
+        self, ParamName: str, Color: core_uobject.LinearColor
+    ): ...
 
 
 class GbxAction_Gib(GbxAction):
@@ -853,7 +1038,6 @@ class GbxAction_Gib(GbxAction):
     GibEffectScale: float
     GibParticle: engine.ParticleSystem
     GibSound: wwise_audio.WwiseEvent
-
 
 
 class GbxAction_Loop(GbxAction_SimpleAnim):
@@ -878,6 +1062,7 @@ class GbxAction_Loop(GbxAction_SimpleAnim):
     AnimData1st: LoopAnimData
     bPlay1st: bool
     AnimLoop: AnimMeshList
+
     def OnStop(self, Actor: engine.Actor): ...
     def OnLoop(self, Actor: engine.Actor): ...
     def K2_StopLooping(self): ...
@@ -896,7 +1081,10 @@ class GbxAction_PhysicalAnim(GbxAction_Anim):
     UpwardForceMultiplier: float
     bForceAppliedAtLocation: bool
     bHasValidHitForce: bool
-    def K2_GetDynamicBodyState(self, AngularThreshold: float, ReturnValue: EGbxPhysicalActionDynamicBodyState) -> EGbxPhysicalActionDynamicBodyState: ...
+
+    def K2_GetDynamicBodyState(
+        self, AngularThreshold: float
+    ) -> EGbxPhysicalActionDynamicBodyState: ...
     def K2_FixupDynamicToKinematicIssues(self, AngularThreshold: float): ...
 
 
@@ -907,7 +1095,6 @@ class GbxAction_PhysicalDeath(GbxAction_PhysicalAnim):
     bAllowPrematurePhysicalAnimation: bool
     bTearOffOnDeath: bool
     MaxRagdollTime: float
-
 
 
 class AimAssistParameters(gbx_runtime.GbxDataAsset): ...
@@ -922,6 +1109,8 @@ class GbxPlayerController(engine.PlayerController):
     PlayerInputClass: unreal.UClass
     AimAssistStrategyClass: unreal.UClass
     CheatClassGbx: core_uobject.SoftClassPath
+    OnPrimaryCharacterChanged: Any
+    OnPauseChanged: Any
     CachedGlyphMode: EGbxGlyphSetOption
     TargetingComponent: TargetingComponent
     TargetableComponent: TargetableComponent
@@ -935,6 +1124,7 @@ class GbxPlayerController(engine.PlayerController):
     CinematicModeStack: unreal.WrappedArray[CinematicModeData]
     CinematicMode: CinematicModeData
     ScreenParticleManagerComponent: ScreenParticleManagerComponent
+
     def SetTeam(self, Team: Team): ...
     def ServerRequestPawnSlotDetach(self, Occupant: engine.Pawn): ...
     def ServerCanSplitscreenJoin(self, ControllerId: int): ...
@@ -942,30 +1132,68 @@ class GbxPlayerController(engine.PlayerController):
     def PopCinematicMode(self, InCinematicMode: CinematicModeData): ...
     def OnRep_PrimaryCharacter(self): ...
     def OnRep_CinematicMode(self): ...
-    def OnPrimaryCharacterChanged__DelegateSignature(self, NewCharacter: GbxCharacter): ...
+    def OnPrimaryCharacterChanged__DelegateSignature(
+        self, NewCharacter: GbxCharacter
+    ): ...
     def OnPausedChangedDelegate__DelegateSignature(self, bPaused: bool): ...
-    def IsUsingGamepad(self, ReturnValue: bool) -> bool: ...
-    def GetTeamComponent(self, ReturnValue: TeamComponent) -> TeamComponent: ...
-    def GetTeam(self, ReturnValue: Team) -> Team: ...
-    def GetTargetingComponent(self, ReturnValue: TargetingComponent) -> TargetingComponent: ...
-    def GetTargetableComponent(self, ReturnValue: TargetableComponent) -> TargetableComponent: ...
-    def GetPrimaryCharacter(self, ReturnValue: GbxCharacter) -> GbxCharacter: ...
+    def IsUsingGamepad(self) -> bool: ...
+    def GetTeamComponent(self) -> TeamComponent: ...
+    def GetTeam(self) -> Team: ...
+    def GetTargetingComponent(self) -> TargetingComponent: ...
+    def GetTargetableComponent(self) -> TargetableComponent: ...
+    def GetPrimaryCharacter(self) -> GbxCharacter: ...
     def GetPlayerViewportSize(self, SizeX: int, SizeY: int): ...
     def GetPlayerViewportOffset(self, OffsetX: int, OffsetY: int): ...
-    def GetPlayerProfile(self, ReturnValue: GbxProfile) -> GbxProfile: ...
-    def GetGbxPerceptionComponent(self, ReturnValue: GbxPerceptionComponent) -> GbxPerceptionComponent: ...
-    def DeprojectViewportPositionToWorld(self, ViewportX: float, ViewportY: float, WorldLocation: core_uobject.Vector, WorldDirection: core_uobject.Vector, bUseForegroundProjection: bool, ReturnValue: bool) -> bool: ...
+    def GetPlayerProfile(self) -> GbxProfile: ...
+    def GetGbxPerceptionComponent(self) -> GbxPerceptionComponent: ...
+    def DeprojectViewportPositionToWorld(
+        self,
+        ViewportX: float,
+        ViewportY: float,
+        WorldLocation: core_uobject.Vector,
+        WorldDirection: core_uobject.Vector,
+        bUseForegroundProjection: bool,
+    ) -> bool: ...
     def DebugCategory(self, CategoryName: str): ...
     def ClientStopFeedback(self, Data: FeedbackData): ...
     def ClientPlayWwiseEvent(self, Event: wwise_audio.WwiseEvent): ...
-    def ClientPlayFeedback(self, Data: FeedbackData, Scale: float, bLoop: bool, SourceContext: unreal.UObject): ...
-    def ClientPerformFeedbackAtLocation(self, FeedbackData: FeedbackData, SourceLocation: core_uobject.Vector, bLoop: bool, SourceContext: unreal.UObject, RangedOverrides: RangedDistanceOverrides): ...
-    def ClientPerformFeedback(self, FeedbackData: FeedbackData, SourceContext: unreal.UObject): ...
+    def ClientPlayFeedback(
+        self,
+        Data: FeedbackData,
+        Scale: float,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+    ): ...
+    def ClientPerformFeedbackAtLocation(
+        self,
+        FeedbackData: FeedbackData,
+        SourceLocation: core_uobject.Vector,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+        RangedOverrides: RangedDistanceOverrides,
+    ): ...
+    def ClientPerformFeedback(
+        self, FeedbackData: FeedbackData, SourceContext: unreal.UObject
+    ): ...
     def ClientNotifyActivateCheckpoint(self): ...
     def ClientCanSplitscreenJoin(self, ControllerId: int, bCanJoin: bool): ...
-    def ClientApplyDamageDataPresentation(self, DamageData: DamageData, PlayerPresentation: PlayerDamageDataPresentation): ...
-    def Client_StopGbxFeedback(self, Data: GbxFeedbackData, SourceContext: unreal.UObject): ...
-    def Client_PlayGbxFeedback(self, Data: GbxFeedbackData, bIs3D: bool, bLoop: bool, Scale: float, SourceContext: unreal.UObject, SourceLocation: core_uobject.Vector, EffectFalloffMinDistance: float, EffectFalloffMaxDistance: float): ...
+    def ClientApplyDamageDataPresentation(
+        self, DamageData: DamageData, PlayerPresentation: PlayerDamageDataPresentation
+    ): ...
+    def Client_StopGbxFeedback(
+        self, Data: GbxFeedbackData, SourceContext: unreal.UObject
+    ): ...
+    def Client_PlayGbxFeedback(
+        self,
+        Data: GbxFeedbackData,
+        bIs3D: bool,
+        bLoop: bool,
+        Scale: float,
+        SourceContext: unreal.UObject,
+        SourceLocation: core_uobject.Vector,
+        EffectFalloffMinDistance: float,
+        EffectFalloffMaxDistance: float,
+    ): ...
     def ClearCinematicMode(self): ...
     def ClearAndSetCinematicMode(self, InCinematicMode: CinematicModeData): ...
 
@@ -978,8 +1206,14 @@ class GbxAssetManager(engine.AssetManager):
     StartupAssetFiles: unreal.WrappedArray[str]
 
 
-
-class AssetMappingData(gbx_runtime.GbxDataAsset): ...
+class AssetMappingData(gbx_runtime.GbxDataAsset):
+    ChallengesMap: Any
+    GameStatDataMap: Any
+    CustomizationDataMap: Any
+    MissionsMap: Any
+    ObjectiveSetsMap: Any
+    InventoryCategoryMap: Any
+    UINamesMap: Any
 
 
 class Challenge(unreal.UObject):
@@ -1013,22 +1247,38 @@ class Challenge(unreal.UObject):
     CompletedBySubChallenges: bool
     ActivateIfSubChallengesComplete: bool
     bIncrementProgressViaSubChallenges: bool
-    def TestForCompleted(self, PlayerToTest: GbxPlayerController, OtherObject: unreal.UObject, EnumTag: unreal.WrappedArray[str], ReturnValue: bool) -> bool: ...
+
+    def TestForCompleted(
+        self,
+        PlayerToTest: GbxPlayerController,
+        OtherObject: unreal.UObject,
+        EnumTag: unreal.WrappedArray[str],
+    ) -> bool: ...
     def SetChallengeProgress(self, NewProgress: int): ...
-    def PlayerExitChallengeArea(self, LevelActorComponent: ChallengeLevelActorComponent): ...
-    def PlayerEnterChallengeArea(self, LevelActorComponent: ChallengeLevelActorComponent): ...
-    def OnLevelActorRegistered(self, RegisteredLevelActor: ChallengeLevelActorComponent): ...
-    def OnInitChallengeInstance(self, OwningChallenges: ChallengesComponent, AssociatedCharacter: GbxCharacter): ...
+    def PlayerExitChallengeArea(
+        self, LevelActorComponent: ChallengeLevelActorComponent
+    ): ...
+    def PlayerEnterChallengeArea(
+        self, LevelActorComponent: ChallengeLevelActorComponent
+    ): ...
+    def OnLevelActorRegistered(
+        self, RegisteredLevelActor: ChallengeLevelActorComponent
+    ): ...
+    def OnInitChallengeInstance(
+        self, OwningChallenges: ChallengesComponent, AssociatedCharacter: GbxCharacter
+    ): ...
     def OnChallengeActivated(self): ...
-    def IsChallengeComplete(self, ReturnValue: bool) -> bool: ...
-    def IsChallengeActive(self, ReturnValue: bool) -> bool: ...
+    def IsChallengeComplete(self) -> bool: ...
+    def IsChallengeActive(self) -> bool: ...
     def IncrementChallengeProgressByValue(self, Value: int): ...
     def IncrementChallengeProgress(self): ...
-    def GetLevelActorComponents(self, LevelActorList: unreal.WrappedArray[ChallengeLevelActorComponent]): ...
-    def GetChallengeProgressGoalValue(self, ReturnValue: int) -> int: ...
-    def GetChallengeProgress(self, ReturnValue: int) -> int: ...
+    def GetLevelActorComponents(
+        self, LevelActorList: unreal.WrappedArray[ChallengeLevelActorComponent]
+    ): ...
+    def GetChallengeProgressGoalValue(self) -> int: ...
+    def GetChallengeProgress(self) -> int: ...
     def GetChallengeCompleteInfo(self, NumCompleted: int, NumChallenges: int): ...
-    def CompletedConditional(self, ReturnValue: bool) -> bool: ...
+    def CompletedConditional(self) -> bool: ...
     def CompletedChallenge(self, CompletedPlayer: GbxPlayerController): ...
     def CompleteChallenge(self): ...
     def ActivateChallenge(self): ...
@@ -1039,46 +1289,70 @@ class ChallengeCategoryData(gbx_runtime.GbxDataAsset):
     ProgressWeight: float
 
 
-
 class ChallengeList(gbx_runtime.GbxDataAsset):
     AssociatedDLC: online_subsystem_utils.DownloadableContentData
-
+    Challenges: unreal.WrappedArray[Any]
 
 
 class ChallengeManager(engine.Actor):
 
-    def OnStatIncrement(self, StatContext: engine.Actor, StatId: GameStatData, Amount: int): ...
+    def OnStatIncrement(
+        self, StatContext: engine.Actor, StatId: GameStatData, Amount: int
+    ): ...
 
 
 class CustomChallengePersistentState(unreal.UObject): ...
 
 
 class ChallengesComponent(engine.ActorComponent):
+    OnChallengeRegistrationComplete: Any
+    OnChallengeActivated: Any
+    OnChallengeUpdated: Any
+    OnChallengeCompleted: Any
+    OnChallengeChildCompleted: Any
     LocalChallengeDataCache: unreal.WrappedArray[ChallengeInstanceData]
     ChallengeRewardsEarned: unreal.WrappedArray[int]
     ChallengeRewardsToOfferNext: unreal.WrappedArray[int]
     GameStatsComponent: GameStatsComponent
+
     def UnregisterInActivePlayerChallenges(self): ...
     def SetChallengeProgress(self, ChalClass: unreal.UClass, NewProgress: int): ...
     def SetChallengeActive(self, ChalClass: unreal.UClass, bInIsActive: bool): ...
-    def IsChallengeComplete(self, ChalClass: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def IsChallengeActive(self, ChalClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+    def IsChallengeComplete(self, ChalClass: unreal.UClass) -> bool: ...
+    def IsChallengeActive(self, ChalClass: unreal.UClass) -> bool: ...
     def IncrementChallengeProgress(self, ChalClass: unreal.UClass): ...
-    def GetMaxChallengeTiers(self, ChalClass: unreal.UClass, ReturnValue: int) -> int: ...
-    def GetLocalChallenges(self, ReturnValue: unreal.WrappedArray[ChallengeInstanceData]) -> unreal.WrappedArray[ChallengeInstanceData]: ...
-    def GetCompletedChallengeTiers(self, ChalClass: unreal.UClass, ReturnValue: int) -> int: ...
-    def GetChallengeStatValue(self, ChalClass: unreal.UClass, StatId: GameStatData, ReturnValue: int) -> int: ...
-    def GetChallengeStatGoalValue(self, ChalClass: unreal.UClass, StatId: GameStatData, ReturnValue: int) -> int: ...
-    def GetChallengeProgressGoalValue(self, ChalClass: unreal.UClass, ReturnValue: int) -> int: ...
-    def GetChallengeProgress(self, ChalClass: unreal.UClass, ReturnValue: int) -> int: ...
-    def GetChallengeCompleteInfoForLevels(self, LevelsForChallenges: unreal.WrappedArray[str], Category: ChallengeCategoryData, NumCompleted: int, NumActive: int, bIgnoreHidden: bool): ...
-    def GetChallengeCompleteInfo(self, ChalClass: unreal.UClass, NumCompleted: int, NumChallenges: int): ...
+    def GetMaxChallengeTiers(self, ChalClass: unreal.UClass) -> int: ...
+    def GetLocalChallenges(self) -> unreal.WrappedArray[ChallengeInstanceData]: ...
+    def GetCompletedChallengeTiers(self, ChalClass: unreal.UClass) -> int: ...
+    def GetChallengeStatValue(
+        self, ChalClass: unreal.UClass, StatId: GameStatData
+    ) -> int: ...
+    def GetChallengeStatGoalValue(
+        self, ChalClass: unreal.UClass, StatId: GameStatData
+    ) -> int: ...
+    def GetChallengeProgressGoalValue(self, ChalClass: unreal.UClass) -> int: ...
+    def GetChallengeProgress(self, ChalClass: unreal.UClass) -> int: ...
+    def GetChallengeCompleteInfoForLevels(
+        self,
+        LevelsForChallenges: unreal.WrappedArray[str],
+        Category: ChallengeCategoryData,
+        NumCompleted: int,
+        NumActive: int,
+        bIgnoreHidden: bool,
+    ): ...
+    def GetChallengeCompleteInfo(
+        self, ChalClass: unreal.UClass, NumCompleted: int, NumChallenges: int
+    ): ...
     def CompleteChallengeIfConditionsMet(self, ChalClass: unreal.UClass): ...
     def CompleteChallenge(self, ChalClass: unreal.UClass, bForceActive: bool): ...
-    def ClientChallengeUpdateProgress(self, ChalClass: unreal.UClass, NewProgress: int): ...
-    def ClientChallengeCompleted(self, ChalClass: unreal.UClass, NumTiersComplete: int, bForceActive: bool): ...
+    def ClientChallengeUpdateProgress(
+        self, ChalClass: unreal.UClass, NewProgress: int
+    ): ...
+    def ClientChallengeCompleted(
+        self, ChalClass: unreal.UClass, NumTiersComplete: int, bForceActive: bool
+    ): ...
     def ClientActivateChallenge(self, ChalClass: unreal.UClass): ...
-    def AreGlobalChallengesRegistered(self, ReturnValue: bool) -> bool: ...
+    def AreGlobalChallengesRegistered(self) -> bool: ...
     def ActivateChallenge(self, ChalClass: unreal.UClass): ...
 
 
@@ -1109,10 +1383,19 @@ class GbxCharacterMovementComponent(engine.CharacterMovementComponent):
     EnterTopAnimation: unreal.UClass
     ExitTopAnimation: unreal.UClass
     LadderInteractData: LadderInteractData
+    OnEnterLadder: Any
+    OnExitLadderTop: Any
+    OnExitLadderBottom: Any
+    OnJumpFromLadder: Any
+    OnMantleStarted: Any
+    OnMantleFinished: Any
     StanceComponent: StanceComponent
     ActionComponent: GbxActionComponent
     ScriptedMeshOffsetState: CharacterScriptedMeshOffsetState
     bClientWasOnLadder: bool
+    OverlappingLadderVolumes: unreal.WrappedArray[Any]
+    CurrentLadderVolume: Any
+    JumpLadderVolume: Any
     LadderJumpTime: float
     bAlreadyCenteredOnLadder: bool
     bWantsToBeOnLadder: bool
@@ -1168,12 +1451,24 @@ class GbxCharacterMovementComponent(engine.CharacterMovementComponent):
     InterpData: GbxInterpData
     IdleVelocity: IdleVelocityData
     RootMotionState: RootMotionStateData
+
     def StopRotateTo(self): ...
     def StopMoveTo(self, bForce: bool, bReplicateStop: bool): ...
-    def StopControlledMove(self, ControlledMove: unreal.UClass, bZeroVelocity: bool, bInterrupted: bool): ...
+    def StopControlledMove(
+        self, ControlledMove: unreal.UClass, bZeroVelocity: bool, bInterrupted: bool
+    ): ...
     def StartRotateTo(self, RotateToCommand: CharacterRotateToCommand): ...
     def StartMoveTo(self, MoveToCommand: CharacterMoveToCommand): ...
-    def StartControlledMove(self, ControlledMove: unreal.UClass, Instigator: engine.Actor, SpeedOverride: float, DurationOverride: float, LaunchAngleOverride: float, TargetActor: engine.Actor, TargetLocation: core_uobject.Vector, ReturnValue: bool) -> bool: ...
+    def StartControlledMove(
+        self,
+        ControlledMove: unreal.UClass,
+        Instigator: engine.Actor,
+        SpeedOverride: float,
+        DurationOverride: float,
+        LaunchAngleOverride: float,
+        TargetActor: engine.Actor,
+        TargetLocation: core_uobject.Vector,
+    ) -> bool: ...
     def SetPendingRawInputVector(self, NewInputVector: core_uobject.Vector): ...
     def SetNoneWithRootMotionMode(self, bAnimationWalking: bool, Reason: str): ...
     def SetFacingTarget(self, FacingTarget: FacingInfo, Channel: EFacingChannel): ...
@@ -1185,42 +1480,86 @@ class GbxCharacterMovementComponent(engine.CharacterMovementComponent):
     def OnRep_ControlledMove(self): ...
     def OnNotifyTurnExit(self): ...
     def OnNotifyTurnEnter(self): ...
-    def OnCapsuleEndOverlap(self, OverlappedComp: engine.PrimitiveComponent, OtherActor: engine.Actor, OtherComp: engine.PrimitiveComponent, OtherBodyIndex: int): ...
-    def OnCapsuleBeginOverlap(self, OverlappedComp: engine.PrimitiveComponent, OtherActor: engine.Actor, OtherComp: engine.PrimitiveComponent, OtherBodyIndex: int, bFromSweep: bool, SweepResult: engine.HitResult): ...
-    def MakeFacingInfoRotation(self, Rotation: core_uobject.Rotator, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoNone(self, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoLocation(self, Location: core_uobject.Vector, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoDirection(self, Direction: core_uobject.Vector, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoComponent(self, Component: engine.SceneComponent, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoActorEyes(self, Actor: engine.Actor, ReturnValue: FacingInfo) -> FacingInfo: ...
-    def MakeFacingInfoActor(self, Actor: engine.Actor, ReturnValue: FacingInfo) -> FacingInfo: ...
+    def OnCapsuleEndOverlap(
+        self,
+        OverlappedComp: engine.PrimitiveComponent,
+        OtherActor: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        OtherBodyIndex: int,
+    ): ...
+    def OnCapsuleBeginOverlap(
+        self,
+        OverlappedComp: engine.PrimitiveComponent,
+        OtherActor: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        OtherBodyIndex: int,
+        bFromSweep: bool,
+        SweepResult: engine.HitResult,
+    ): ...
+    def MakeFacingInfoRotation(self, Rotation: core_uobject.Rotator) -> FacingInfo: ...
+    def MakeFacingInfoNone(self) -> FacingInfo: ...
+    def MakeFacingInfoLocation(self, Location: core_uobject.Vector) -> FacingInfo: ...
+    def MakeFacingInfoDirection(self, Direction: core_uobject.Vector) -> FacingInfo: ...
+    def MakeFacingInfoComponent(
+        self, Component: engine.SceneComponent
+    ) -> FacingInfo: ...
+    def MakeFacingInfoActorEyes(self, Actor: engine.Actor) -> FacingInfo: ...
+    def MakeFacingInfoActor(self, Actor: engine.Actor) -> FacingInfo: ...
     def LeaveNoneWithRootMotionMode(self, bApplyDefault: bool): ...
-    def IsPerformingSpecificControlledMove(self, ControlledMove: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def IsPerformingControlledMove(self, ReturnValue: bool) -> bool: ...
-    def IsMovingOnLadder(self, ReturnValue: bool) -> bool: ...
-    def IsMantlingAllowed(self, ReturnValue: bool) -> bool: ...
-    def IsMantling(self, ReturnValue: bool) -> bool: ...
-    def IsInNoneWithRootMotionMode(self, ReturnValue: bool) -> bool: ...
-    def IsHandIkEnabled(self, ReturnValue: bool) -> bool: ...
-    def IsFootIkTracingEnabled(self, ReturnValue: bool) -> bool: ...
-    def IsFootIkEnabled(self, ReturnValue: bool) -> bool: ...
-    def IsFacingTargetBP(self, ThresholdDegrees: float, Channel: EFacingChannel, ReturnValue: bool) -> bool: ...
-    def GetMaxAllowedAimOffset(self, ReturnValue: float) -> float: ...
-    def GetMantleData(self, ReturnValue: MantleData) -> MantleData: ...
-    def GetDesiredFacingRotation(self, Channel: EFacingChannel, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
-    def GetDesiredFacingLocation(self, Channel: EFacingChannel, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetCurrentFacingRotation(self, Channel: EFacingChannel, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
-    def GetCurrentFacingOrigin(self, Channel: EFacingChannel, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetCurrentFacingLocation(self, Channel: EFacingChannel, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GbxSetAnimInstanceClass(self, SkelMeshComponent: engine.SkeletalMeshComponent, NewClass: unreal.UClass): ...
+    def IsPerformingSpecificControlledMove(
+        self, ControlledMove: unreal.UClass
+    ) -> bool: ...
+    def IsPerformingControlledMove(self) -> bool: ...
+    def IsMovingOnLadder(self) -> bool: ...
+    def IsMantlingAllowed(self) -> bool: ...
+    def IsMantling(self) -> bool: ...
+    def IsInNoneWithRootMotionMode(self) -> bool: ...
+    def IsHandIkEnabled(self) -> bool: ...
+    def IsFootIkTracingEnabled(self) -> bool: ...
+    def IsFootIkEnabled(self) -> bool: ...
+    def IsFacingTargetBP(
+        self, ThresholdDegrees: float, Channel: EFacingChannel
+    ) -> bool: ...
+    def GetMaxAllowedAimOffset(self) -> float: ...
+    def GetMantleData(self) -> MantleData: ...
+    def GetDesiredFacingRotation(
+        self, Channel: EFacingChannel
+    ) -> core_uobject.Rotator: ...
+    def GetDesiredFacingLocation(
+        self, Channel: EFacingChannel
+    ) -> core_uobject.Vector: ...
+    def GetCurrentFacingRotation(
+        self, Channel: EFacingChannel
+    ) -> core_uobject.Rotator: ...
+    def GetCurrentFacingOrigin(
+        self, Channel: EFacingChannel
+    ) -> core_uobject.Vector: ...
+    def GetCurrentFacingLocation(
+        self, Channel: EFacingChannel
+    ) -> core_uobject.Vector: ...
+    def GbxSetAnimInstanceClass(
+        self, SkelMeshComponent: engine.SkeletalMeshComponent, NewClass: unreal.UClass
+    ): ...
     def GbxCharacterMovementEvent__DelegateSignature(self): ...
-    def ClientAdjustControlledMovePosition(self, Timestamp: float, ServerCMData: ControlledMoveNetCorrection, NewLoc: core_uobject.Vector, NewVel: core_uobject.Vector, NewBase: engine.PrimitiveComponent, NewBaseBoneName: str, bHasBase: bool, bBaseRelativePosition: bool, ServerMovementMode: int): ...
-    def CanStartPassiveMantle(self, ReturnValue: bool) -> bool: ...
-    def CanStartMantle(self, ReturnValue: bool) -> bool: ...
+    def ClientAdjustControlledMovePosition(
+        self,
+        Timestamp: float,
+        ServerCMData: ControlledMoveNetCorrection,
+        NewLoc: core_uobject.Vector,
+        NewVel: core_uobject.Vector,
+        NewBase: engine.PrimitiveComponent,
+        NewBaseBoneName: str,
+        bHasBase: bool,
+        bBaseRelativePosition: bool,
+        ServerMovementMode: int,
+    ): ...
+    def CanStartPassiveMantle(self) -> bool: ...
+    def CanStartMantle(self) -> bool: ...
 
 
 class GbxCheatManager(engine.CheatManager):
     bHLQNoClipActive: bool
+
     def TestGameStage(self, GameStageOverride: int): ...
     def StartPlayerInit(self): ...
     def ShowProjectileImpacts(self, Size: float, LifeTime: float): ...
@@ -1250,7 +1589,6 @@ class CinematicModeData(gbx_runtime.GbxDataAsset):
     bEnableGodMode: bool
     bEnableNoTarget: bool
     AudioMode: ECinematicAudioMode
-
 
 
 class ControlledMove(unreal.UObject):
@@ -1353,14 +1691,21 @@ class ControlledMove(unreal.UObject):
     MaxTrackingCorrectionAngle: float
     TrackingVelocity: float
     ControlledCharacter: GbxCharacter
-    def OnTeleported(self, MoveDuration: float, PreTeleportLocation: core_uobject.Vector): ...
+
+    def OnTeleported(
+        self, MoveDuration: float, PreTeleportLocation: core_uobject.Vector
+    ): ...
     def OnTargetLocationChanged(self, NewTargetLocation: core_uobject.Vector): ...
     def OnStop(self, bInterrupted: bool): ...
     def OnStart(self, MoveDuration: float, TargetActor: engine.Actor): ...
     def OnServerStop(self, bInterrupted: bool): ...
-    def OnServerStart(self, MoveDuration: float, TargetActor: engine.Actor, Instigator: engine.Actor): ...
+    def OnServerStart(
+        self, MoveDuration: float, TargetActor: engine.Actor, Instigator: engine.Actor
+    ): ...
     def OnHitWorld(self, HitActor: engine.Actor, HitNormal: core_uobject.Vector): ...
-    def OnHitTargetable(self, HitActor: engine.Actor, HitNormal: core_uobject.Vector): ...
+    def OnHitTargetable(
+        self, HitActor: engine.Actor, HitNormal: core_uobject.Vector
+    ): ...
 
 
 class GbxCustomizationComponent(engine.ActorComponent):
@@ -1371,36 +1716,63 @@ class GbxCustomizationComponent(engine.ActorComponent):
     TextureInheritanceSettings: CustomizationTextureInheritanceSettings
     CustomizationList: GbxCustomizationContainer
     CustomColorSelections: unreal.WrappedArray[CustomizationColorApplication]
+    OnCustomizationApplied: Any
+    OnCustomizationRemoved: Any
     LinkedCustomizationSource: GbxCustomizationComponent
+    CustomMaterials: Any
     bUseCustomMaterials: bool
-    def ServerApplyCustomizationData(self, CustomizationToApply: GbxCustomizationData, OptionalCustomizationId: int): ...
-    def ServerApplyCustomColor(self, CustomColorIndex: int, InAppliedColor: core_uobject.Vector, InSplitColor: core_uobject.Vector, InUseDefaultColor: bool, InUseDefaultSplitColor: bool): ...
-    def RemoveCustomization(self, Customization: GbxCustomizationData, ReturnValue: bool) -> bool: ...
+
+    def ServerApplyCustomizationData(
+        self, CustomizationToApply: GbxCustomizationData, OptionalCustomizationId: int
+    ): ...
+    def ServerApplyCustomColor(
+        self,
+        CustomColorIndex: int,
+        InAppliedColor: core_uobject.Vector,
+        InSplitColor: core_uobject.Vector,
+        InUseDefaultColor: bool,
+        InUseDefaultSplitColor: bool,
+    ): ...
+    def RemoveCustomization(self, Customization: GbxCustomizationData) -> bool: ...
     def OnRep_CustomColorSelections(self): ...
     def LinkToCustomization(self, SourceComponent: GbxCustomizationComponent): ...
     def LinkedCustomizationRemoved(self, Customization: GbxCustomizationData): ...
     def LinkedCustomizationApplied(self, Customization: GbxCustomizationData): ...
-    def GetDefaultCustomSplitColor(self, SelectionIndex: int, DefaultSplitColor: core_uobject.LinearColor, ReturnValue: bool) -> bool: ...
-    def GetDefaultCustomColor(self, SelectionIndex: int, DefaultColor: core_uobject.LinearColor, ReturnValue: bool) -> bool: ...
+    def GetDefaultCustomSplitColor(
+        self, SelectionIndex: int, DefaultSplitColor: core_uobject.LinearColor
+    ) -> bool: ...
+    def GetDefaultCustomColor(
+        self, SelectionIndex: int, DefaultColor: core_uobject.LinearColor
+    ) -> bool: ...
     def CopyFromCustomization(self, SourceComponent: GbxCustomizationComponent): ...
 
 
 class GbxCustomizationManager(engine.Actor):
     CustomizationStreamingEntries: unreal.WrappedArray[CustomizationStreamingEntry]
+
     def OnCustomizationAssetLoaded(self): ...
 
 
 class DamageBaseComponent(engine.ActorComponent):
     CachedTeamComponent: TeamComponent
     CachedTargetableComponent: TargetableComponent
-    ConditionalValueModifiers: unreal.WrappedArray[RegisteredConditionalDamageValueModifier]
-    ConditionalCritModifiers: unreal.WrappedArray[RegisteredConditionalDamageCriticalModifier]
+    ConditionalValueModifiers: unreal.WrappedArray[
+        RegisteredConditionalDamageValueModifier
+    ]
+    ConditionalCritModifiers: unreal.WrappedArray[
+        RegisteredConditionalDamageCriticalModifier
+    ]
     ConditionalTypeModifiers: unreal.WrappedArray[ConditionalDamageTypeModifier]
-    ConditionalHitRegionModifiers: unreal.WrappedArray[ConditionalDamageHitRegionModifier]
-
+    ConditionalHitRegionModifiers: unreal.WrappedArray[
+        ConditionalDamageHitRegionModifier
+    ]
 
 
 class DamageCauserComponent(DamageBaseComponent):
+    OnCausedAnyDamage: Any
+    OnCausedDeath: Any
+    OnCausedHealing: Any
+    OnHitFriendly: Any
     DefaultModificationContextStrategy: EDamageCausedModificationStrategy
     AttitudeDamageRules: AttitudeDamageRules
     bCanHurtSelf: bool
@@ -1417,11 +1789,23 @@ class DamageCauserComponent(DamageBaseComponent):
     DefaultConditionalDamageModifiers: unreal.WrappedArray[ConditionalDamageModifier]
     EnemyReflectionChance: float
     EnemyReflectionParams: ReflectedDamageParams
-    def UnregisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
-    def RegisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
+
+    def UnregisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
+    def RegisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
 
 
 class DamageComponent(DamageBaseComponent):
+    OnTakeAnyDamage: Any
+    OnPlayerMeleeHit: Any
+    OnTakeAnyHealing: Any
+    OnHealthDepleted: Any
+    OnDeath: Any
+    OnHitByFriendly: Any
+    OnHitReaction: Any
     HitReactions: HitReactionState
     bShowDamageNumbers: bool
     bShowImmuneFeedbackInGodMode: bool
@@ -1467,32 +1851,51 @@ class DamageComponent(DamageBaseComponent):
     bCurrentlyDead: bool
     ImpactPhysicalMaterialOverride: engine.PhysicalMaterial
     bSuppressOnDeathCall: bool
-    def UnregisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
+
+    def UnregisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
     def SetSelfReflectedDamageType(self, DamageType: unreal.UClass): ...
     def SetGodMode(self, bInGodMode: bool): ...
     def SetDemiGodMode(self, bInDemiGodMode: bool): ...
     def SetCurrentShield(self, NewCurrentShield: float): ...
     def SetCurrentHealth(self, NewCurrentHealth: float): ...
-    def RegisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
+    def RegisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
     def ReceiveHealthDepleted(self, DamageCauser: DamageCauserComponent): ...
     def ReceiveAnyHealing(self, Healing: float, HealInstigator: engine.Actor): ...
-    def ReceiveAnyDamage(self, Damage: float, DamageType: GbxDamageType, DamageSource: DamageSource, InstigatedBy: engine.Controller, DamageCauser: DamageCauserComponent, Details: ReceivedDamageDetails): ...
+    def ReceiveAnyDamage(
+        self,
+        Damage: float,
+        DamageType: GbxDamageType,
+        DamageSource: DamageSource,
+        InstigatedBy: engine.Controller,
+        DamageCauser: DamageCauserComponent,
+        Details: ReceivedDamageDetails,
+    ): ...
     def OnRep_HealthInformation(self): ...
     def OnRep_DeathHitReaction(self): ...
     def OnRep_bCurrentlyDead(self): ...
-    def OnOwnerExperienceLevelChanged(self, OldExperienceLevel: int, NewExperienceLevel: int): ...
-    def OnHealthResourceNowNotDepleted(self, ResourcePool: GameResourcePoolReference): ...
+    def OnOwnerExperienceLevelChanged(
+        self, OldExperienceLevel: int, NewExperienceLevel: int
+    ): ...
+    def OnHealthResourceNowNotDepleted(
+        self, ResourcePool: GameResourcePoolReference
+    ): ...
     def OnHealthResourceNowDepleted(self, ResourcePool: GameResourcePoolReference): ...
-    def IsInGodMode(self, ReturnValue: bool) -> bool: ...
-    def IsInDemiGodMode(self, ReturnValue: bool) -> bool: ...
-    def IsDamageOverkill(self, DamageAmount: float, OverkillThreshold: float, ReturnValue: bool) -> bool: ...
+    def IsInGodMode(self) -> bool: ...
+    def IsInDemiGodMode(self) -> bool: ...
+    def IsDamageOverkill(
+        self, DamageAmount: float, OverkillThreshold: float
+    ) -> bool: ...
     def GetValidDamageEventFunctionNames(self, Names: unreal.WrappedArray[str]): ...
-    def GetTotalMaxHealth(self, ReturnValue: float) -> float: ...
-    def GetMaxShield(self, ReturnValue: float) -> float: ...
-    def GetMaxHealth(self, ReturnValue: float) -> float: ...
-    def GetCurrentShield(self, ReturnValue: float) -> float: ...
-    def GetCurrentHealthPercent(self, ReturnValue: float) -> float: ...
-    def GetCurrentHealth(self, ReturnValue: float) -> float: ...
+    def GetTotalMaxHealth(self) -> float: ...
+    def GetMaxShield(self) -> float: ...
+    def GetMaxHealth(self) -> float: ...
+    def GetCurrentShield(self) -> float: ...
+    def GetCurrentHealthPercent(self) -> float: ...
+    def GetCurrentHealth(self) -> float: ...
 
 
 class DamageFilter(unreal.UObject):
@@ -1506,7 +1909,6 @@ class DamageFilter(unreal.UObject):
     bMustNotBeSelfDamage: bool
     bUseRandomChance: bool
     RandomChance: AttributeInitializationData
-
 
 
 class DamageGlobalsData(gbx_runtime.GbxDataAsset):
@@ -1524,21 +1926,31 @@ class DamageGlobalsData(gbx_runtime.GbxDataAsset):
     GibCollisionProfileName: str
     GibCollisionProfileNameAttached: str
     GibMaterialParameterResetList: unreal.WrappedArray[str]
-
+    LanguageToTextureMap: Any
 
 
 class DamageModifierComponent(engine.ActorComponent):
     ConditionalValueModifiers: unreal.WrappedArray[ConditionalDamageValueModifier]
     ConditionalCritModifiers: unreal.WrappedArray[ConditionalDamageCriticalModifier]
     ConditionalTypeModifiers: unreal.WrappedArray[ConditionalDamageTypeModifier]
-    ConditionalHitRegionModifiers: unreal.WrappedArray[ConditionalDamageHitRegionModifier]
-    def UnregisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
-    def RegisterConditionalDamageModifier(self, Modifier: ConditionalDamageModifier): ...
+    ConditionalHitRegionModifiers: unreal.WrappedArray[
+        ConditionalDamageHitRegionModifier
+    ]
+
+    def UnregisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
+    def RegisterConditionalDamageModifier(
+        self, Modifier: ConditionalDamageModifier
+    ): ...
 
 
 class DamageOverTimeManager(unreal.UObject):
     DamageInstances: unreal.WrappedArray[DamageOverTimeInstance]
-    def OnParticleSystemStopped(self, ParticleSystem: engine.ParticleSystemComponent): ...
+
+    def OnParticleSystemStopped(
+        self, ParticleSystem: engine.ParticleSystemComponent
+    ): ...
 
 
 class DamageSource(unreal.UObject):
@@ -1548,7 +1960,6 @@ class DamageSource(unreal.UObject):
     bCanCauseCriticals: bool
     bCollectForHitReactions: bool
     bIgnoreCooldown: bool
-
 
 
 class GbxDamageType(engine.DamageType):
@@ -1568,13 +1979,13 @@ class GbxDamageType(engine.DamageType):
     StatusEffectData: StatusEffectData
     SurfaceDamageModifiers: unreal.WrappedArray[DamageSurfaceModifier]
     UIStats: unreal.WrappedArray[UIStatData]
-    def IsElementalType(self, ReturnValue: bool) -> bool: ...
+
+    def IsElementalType(self) -> bool: ...
 
 
 class EnvQueryContext_EnvQueryParam(aimodule.EnvQueryContext):
     DefaultBlackboardKeyName: str
     AllowsUnboundContext: bool
-
 
 
 class FirstPersonComponent(engine.ActorComponent):
@@ -1604,6 +2015,7 @@ class FirstPersonComponent(engine.ActorComponent):
     InterruptFlinchBlendInTime: float
     FlinchInterruptThreshold: float
     ZoomedFlinchWeight: float
+    OnFirstPersonCreated: Any
     ViewModelOffsetList: unreal.WrappedArray[core_uobject.Transform]
     CurrentShotRotationOffset: core_uobject.Rotator
     BaseViewModelLocationOffset: core_uobject.Vector
@@ -1612,8 +2024,11 @@ class FirstPersonComponent(engine.ActorComponent):
     TargetShotRotationOffset: core_uobject.Rotator
     CurrentRelativeLocation: core_uobject.Vector
     DefaultTranslationOffset: core_uobject.Vector
-    def SetBaseEyeToWeaponTransform(self, NewWeaponTransform: core_uobject.Transform): ...
-    def GetFirstPersonComponentByName(self, Name: str, ReturnValue: engine.SceneComponent) -> engine.SceneComponent: ...
+
+    def SetBaseEyeToWeaponTransform(
+        self, NewWeaponTransform: core_uobject.Transform
+    ): ...
+    def GetFirstPersonComponentByName(self, Name: str) -> engine.SceneComponent: ...
 
 
 class GbxGameInstance(engine.GameInstance):
@@ -1628,6 +2043,7 @@ class GbxGameInstance(engine.GameInstance):
     CinematicMode: CinematicModeData
     ProjectileManager: IGbxProjectileManager
     SharedPickupInventoryActors: unreal.WrappedArray[SharedPickupInventoryActor]
+
     def DebugLoadStartupAssets(self): ...
 
 
@@ -1648,11 +2064,11 @@ class GlobalAIData(gbx_runtime.GbxDataAsset):
     MinAccuracy: float
 
 
-
 class GbxGlobalsData(gbx_runtime.GbxDataAsset):
+    DamageGlobalsData: Any
     GameplayGlobals: GbxGameplayGlobals
+    StatusEffectGlobals: Any
     AssetMapping: AssetMappingData
-
 
 
 class HitRegionComponent(engine.ActorComponent):
@@ -1660,12 +2076,19 @@ class HitRegionComponent(engine.ActorComponent):
     HitRegions: unreal.WrappedArray[HitRegionState]
     CachedMesh: engine.SkeletalMeshComponent
     CachedDamageComponent: DamageComponent
+
     def TriggerClientEvent(self, EventSummary: DamageReactionEventSummary): ...
     def GetValidDamageEventFunctionNames(self, Array: unreal.WrappedArray[str]): ...
     def GetValidAssociatedComponentNames(self, Array: unreal.WrappedArray[str]): ...
-    def GetHitRegionPercentHealth(self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent, ReturnValue: float) -> float: ...
-    def GetHitRegionMaxHealth(self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent, ReturnValue: float) -> float: ...
-    def GetHitRegionCurrentHealth(self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent, ReturnValue: float) -> float: ...
+    def GetHitRegionPercentHealth(
+        self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent
+    ) -> float: ...
+    def GetHitRegionMaxHealth(
+        self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent
+    ) -> float: ...
+    def GetHitRegionCurrentHealth(
+        self, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent
+    ) -> float: ...
 
 
 class HitRegionData(gbx_runtime.GbxDataAsset):
@@ -1703,33 +2126,43 @@ class HitRegionData(gbx_runtime.GbxDataAsset):
     DefaultDamageSurface: EDamageSurfaceType
 
 
-
 class ActorPartData(gbx_runtime.GbxDataAsset):
     PartTypeEnum: unreal.UEnum
     PartType: int
     GestaltData: engine.GestaltData
     GestaltMeshPartName: str
     AdditionalGestaltMeshPartNames: unreal.WrappedArray[str]
-    MultiSelectionGestaltPartNames: unreal.WrappedArray[MultiSelectionGestaltPartNameData]
+    MultiSelectionGestaltPartNames: unreal.WrappedArray[
+        MultiSelectionGestaltPartNameData
+    ]
     MinGameStage: AttributeInitializationData
     MaxGameStage: AttributeInitializationData
     Dependencies: unreal.WrappedArray[ActorPartData]
     Excluders: unreal.WrappedArray[ActorPartData]
-    def EnumeratePossibleExcluders(self, OutPartList: unreal.WrappedArray[ActorPartData]): ...
-    def EnumeratePossibleDependencies(self, OutPartList: unreal.WrappedArray[ActorPartData]): ...
+
+    def EnumeratePossibleExcluders(
+        self, OutPartList: unreal.WrappedArray[ActorPartData]
+    ): ...
+    def EnumeratePossibleDependencies(
+        self, OutPartList: unreal.WrappedArray[ActorPartData]
+    ): ...
     def EnumerateOtherParts(self, OutPartList: unreal.WrappedArray[ActorPartData]): ...
-    def EnumerateGestaltMeshPartNames(self, OutPartNameList: unreal.WrappedArray[str]): ...
+    def EnumerateGestaltMeshPartNames(
+        self, OutPartNameList: unreal.WrappedArray[str]
+    ): ...
 
 
 class DataTableAttributeValueResolver(AttributePropertyValueResolver):
     DataTableRow: engine.DataTableRowHandle
     DataTableColumn: str
+
     def GetDataTableColumnNames(self, ValueNames: unreal.WrappedArray[str]): ...
 
 
 class DataTableFunctionAttributeValueResolver(DataTableAttributeValueResolver):
     DataTableStruct: core_uobject.ScriptStruct
-    def GetDataTableRow(self, Context: unreal.UObject, ReturnValue: engine.DataTableRowHandle) -> engine.DataTableRowHandle: ...
+
+    def GetDataTableRow(self, Context: unreal.UObject) -> engine.DataTableRowHandle: ...
 
 
 class LadderInteractData(gbx_runtime.GbxDataAsset):
@@ -1748,7 +2181,6 @@ class LadderInteractData(gbx_runtime.GbxDataAsset):
     LadderTopMountCurveVert: engine.RuntimeFloatCurve
     LadderTopDismountCurveHorz: engine.RuntimeFloatCurve
     LadderTopDismountCurveVert: engine.RuntimeFloatCurve
-
 
 
 class NavComponent(engine.ActorComponent): ...
@@ -1772,6 +2204,7 @@ class GbxSkeletalMeshComponent(engine.SkeletalMeshComponent):
     NoBodyMass: float
     ImpulseMultiplier: float
     DefaultImpactData: ImpactData
+    BodyImpactDataOverrides: Any
     CustomizationTargets: unreal.WrappedArray[GbxCustomizationTargetData]
     StretchAnimData: StretchAnimData
     AnimBPProfile: GbxAnimBlueprintProfile
@@ -1783,26 +2216,55 @@ class GbxSkeletalMeshComponent(engine.SkeletalMeshComponent):
     UpdateRateParametersOverride: engine.AnimUpdateRateParameters
     bOverrideUpdateRateParameters: bool
     PoseMatch: GbxAnimPoseMatch
-    def ShowGestaltMeshParts(self, Parts: unreal.WrappedArray[GestaltPartData_Mesh], bLocalOnly: bool): ...
-    def ShowGestaltMeshPart(self, GestaltMeshPart: GestaltPartData_Mesh, bLocalOnly: bool): ...
-    def SetUpdateOverrideValues(self, UpdateRateOverrides: unreal.WrappedArray[float], bEnableOverrideProperties: bool): ...
-    def SetParentAnimationComponent(self, ParentComponent: engine.SkeletalMeshComponent): ...
+
+    def ShowGestaltMeshParts(
+        self, Parts: unreal.WrappedArray[GestaltPartData_Mesh], bLocalOnly: bool
+    ): ...
+    def ShowGestaltMeshPart(
+        self, GestaltMeshPart: GestaltPartData_Mesh, bLocalOnly: bool
+    ): ...
+    def SetUpdateOverrideValues(
+        self,
+        UpdateRateOverrides: unreal.WrappedArray[float],
+        bEnableOverrideProperties: bool,
+    ): ...
+    def SetParentAnimationComponent(
+        self, ParentComponent: engine.SkeletalMeshComponent
+    ): ...
     def SetGestaltPartList(self, NewGestaltPartList: GestaltPartListData): ...
     def RunPoseTest(self): ...
     def OnRep_GlobalBoneMod(self): ...
     def OnRep_GestaltMeshParts(self): ...
-    def LinkSkelMeshAnimInstances(self, InLinkedSkelMeshComponents: unreal.WrappedArray[engine.SkeletalMeshComponent]): ...
-    def LinkSkelMeshAnimInstance(self, InLinkedSkelMeshComponent: engine.SkeletalMeshComponent): ...
-    def IsGestaltMeshPartVisible(self, GestaltMeshPart: GestaltPartData_Mesh, ReturnValue: bool) -> bool: ...
-    def IsCustomizationTargetFor(self, TargetToTest: GbxCustomizationTargetData, ReturnValue: bool) -> bool: ...
-    def HideGestaltMeshParts(self, Parts: unreal.WrappedArray[GestaltPartData_Mesh], bLocalOnly: bool): ...
-    def HideGestaltMeshPart(self, GestaltMeshPart: GestaltPartData_Mesh, bLocalOnly: bool): ...
-    def GetUpdateOverrideValues(self, ReturnValue: unreal.WrappedArray[float]) -> unreal.WrappedArray[float]: ...
+    def LinkSkelMeshAnimInstances(
+        self,
+        InLinkedSkelMeshComponents: unreal.WrappedArray[engine.SkeletalMeshComponent],
+    ): ...
+    def LinkSkelMeshAnimInstance(
+        self, InLinkedSkelMeshComponent: engine.SkeletalMeshComponent
+    ): ...
+    def IsGestaltMeshPartVisible(
+        self, GestaltMeshPart: GestaltPartData_Mesh
+    ) -> bool: ...
+    def IsCustomizationTargetFor(
+        self, TargetToTest: GbxCustomizationTargetData
+    ) -> bool: ...
+    def HideGestaltMeshParts(
+        self, Parts: unreal.WrappedArray[GestaltPartData_Mesh], bLocalOnly: bool
+    ): ...
+    def HideGestaltMeshPart(
+        self, GestaltMeshPart: GestaltPartData_Mesh, bLocalOnly: bool
+    ): ...
+    def GetUpdateOverrideValues(self) -> unreal.WrappedArray[float]: ...
     def GetAvailableBoneNames(self, Array: unreal.WrappedArray[str]): ...
     def CopyGestaltPartList(self, GestaltPartListSource: engine.Actor): ...
 
 
 class PawnAttachSlotComponent(UsableComponent):
+    OnAttachStarted: Any
+    OnAttachFinished: Any
+    OnDetachStarted: Any
+    OnDetachFinished: Any
+    OnAttachStateChanged: Any
     AttachState: PawnAttachSlotState
     PersistentAttachInfo: PawnSceneAttachmentInfo
     PersistentPawnAction: unreal.UClass
@@ -1837,16 +2299,17 @@ class PawnAttachSlotComponent(UsableComponent):
     bDisableDelayRootMotionOneFrameDuringDetach: bool
     bDisableOverlapOptimization: bool
     bGenerateOverlapEventOnDetach: bool
+
     def SetPersistentAttachSocketName(self, SocketName: str): ...
     def SetDetachabilityLocked(self, bLock: bool, Reason: str): ...
     def RequestDetachPawn(self): ...
     def OnRep_AttachState(self): ...
     def ManuallyFinishAttach(self): ...
-    def IsOccupied(self, bIncludeDetaching: bool, ReturnValue: bool) -> bool: ...
+    def IsOccupied(self, bIncludeDetaching: bool) -> bool: ...
     def HandleActorDestroyed(self, Actor: engine.Actor): ...
-    def GetPersistentAttachSocketTransform(self, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
-    def GetOccupant(self, bIncludeDetaching: bool, ReturnValue: engine.Pawn) -> engine.Pawn: ...
-    def GetAttachStatus(self, ReturnValue: EPawnAttachStatus) -> EPawnAttachStatus: ...
+    def GetPersistentAttachSocketTransform(self) -> core_uobject.Transform: ...
+    def GetOccupant(self, bIncludeDetaching: bool) -> engine.Pawn: ...
+    def GetAttachStatus(self) -> EPawnAttachStatus: ...
     def DetachPawn(self, bInstant: bool, bSkipPlacement: bool): ...
     def AttachPawn(self, AttachingPawn: engine.Pawn, bInstant: bool): ...
 
@@ -1895,13 +2358,33 @@ class GbxProfile(engine.SaveGame):
     HudScaleMultiplier: float
     PlayerInputBindings: PlayerInputBindings
     bShowTextChat: bool
-
+    NewsHashes: unreal.WrappedArray[int]
+    LastUsedSavegameId: int
 
 
 class RadiusDamageReplicationManager(engine.Actor):
 
-    def Multicast_StopRadiusEffect(self, ContextActor: engine.Actor, DamageData: unreal.UClass, bStopAllForContext: bool): ...
-    def Multicast_ProcessRadiusRequest(self, ContextActor: engine.Actor, DamageData: unreal.UClass, DamageType: unreal.UClass, Radius: float, Location: engine.Vector_NetQuantize, Damage: float, ExplosionData: ExplosionData, DefaultParticles: engine.ParticleSystem, DefaultAudioEvent: wwise_audio.WwiseEvent, DefaultImpactData: ImpactData, SignificanceEvent: GbxSignificanceEvent, Force: float): ...
+    def Multicast_StopRadiusEffect(
+        self,
+        ContextActor: engine.Actor,
+        DamageData: unreal.UClass,
+        bStopAllForContext: bool,
+    ): ...
+    def Multicast_ProcessRadiusRequest(
+        self,
+        ContextActor: engine.Actor,
+        DamageData: unreal.UClass,
+        DamageType: unreal.UClass,
+        Radius: float,
+        Location: engine.Vector_NetQuantize,
+        Damage: float,
+        ExplosionData: ExplosionData,
+        DefaultParticles: engine.ParticleSystem,
+        DefaultAudioEvent: wwise_audio.WwiseEvent,
+        DefaultImpactData: ImpactData,
+        SignificanceEvent: GbxSignificanceEvent,
+        Force: float,
+    ): ...
 
 
 class RecentDamageTrackingComponent(engine.ActorComponent):
@@ -1910,11 +2393,11 @@ class RecentDamageTrackingComponent(engine.ActorComponent):
     InstigatedFeedbacks: unreal.WrappedArray[FeedbackData]
 
 
-
 class GbxSaveGame(engine.SaveGame): ...
 
 
-class SaveGameChannel(engine.Channel): ...
+class SaveGameChannel(engine.Channel):
+    SaveGameActor: Any
 
 
 class GbxSignificanceManager(significance_manager.SignificanceManager):
@@ -1922,11 +2405,9 @@ class GbxSignificanceManager(significance_manager.SignificanceManager):
     BucketInterps: unreal.WrappedArray[CachedInterp]
 
 
-
 class GbxSingletons(unreal.UObject):
     ExplosionImpactManager: AsyncExplosionImpactManager
     FeedbackManager: GbxFeedbackManager
-
 
 
 class StanceDataSelector(StanceDataProvider):
@@ -1934,27 +2415,45 @@ class StanceDataSelector(StanceDataProvider):
     DefaultStanceProvider: StanceDataProvider
 
 
-
 class StatusEffectGlobalsData(gbx_runtime.GbxDataAsset): ...
 
 
 class StatusEffectManagerComponent(engine.ActorComponent):
     InstanceStacks: unreal.WrappedArray[StatusEffectInstanceStack]
-    def RemoveStatusEffectInstance(self, Reference: StatusEffectInstanceReference, ReturnValue: bool) -> bool: ...
-    def RemoveStatusEffect(self, Spec: StatusEffectRemoveSpec, ReturnValue: bool) -> bool: ...
-    def QueryStatusEffect(self, Query: StatusEffectQuery, ReturnValue: StatusEffectQueryResult) -> StatusEffectQueryResult: ...
-    def AddStatusEffect(self, Spec: StatusEffectSpec, ReturnValue: StatusEffectInstanceReference) -> StatusEffectInstanceReference: ...
+
+    def RemoveStatusEffectInstance(
+        self, Reference: StatusEffectInstanceReference
+    ) -> bool: ...
+    def RemoveStatusEffect(self, Spec: StatusEffectRemoveSpec) -> bool: ...
+    def QueryStatusEffect(
+        self, Query: StatusEffectQuery
+    ) -> StatusEffectQueryResult: ...
+    def AddStatusEffect(
+        self, Spec: StatusEffectSpec
+    ) -> StatusEffectInstanceReference: ...
 
 
 class StatusEffectsStatics(engine.BlueprintFunctionLibrary):
 
-    def RemoveStatusEffectInstance(self, Target: engine.Actor, Reference: StatusEffectInstanceReference, ReturnValue: bool) -> bool: ...
-    def RemoveStatusEffect(self, Target: engine.Actor, RemoveSpec: StatusEffectRemoveSpec, ReturnValue: bool) -> bool: ...
-    def QueryStatusEffect(self, Target: engine.Actor, Query: StatusEffectQuery, ReturnValue: StatusEffectQueryResult) -> StatusEffectQueryResult: ...
-    def AddStatusEffect(self, Target: engine.Actor, Spec: StatusEffectSpec, ReturnValue: StatusEffectInstanceReference) -> StatusEffectInstanceReference: ...
+    def RemoveStatusEffectInstance(
+        self, Target: engine.Actor, Reference: StatusEffectInstanceReference
+    ) -> bool: ...
+    def RemoveStatusEffect(
+        self, Target: engine.Actor, RemoveSpec: StatusEffectRemoveSpec
+    ) -> bool: ...
+    def QueryStatusEffect(
+        self, Target: engine.Actor, Query: StatusEffectQuery
+    ) -> StatusEffectQueryResult: ...
+    def AddStatusEffect(
+        self, Target: engine.Actor, Spec: StatusEffectSpec
+    ) -> StatusEffectInstanceReference: ...
 
 
 class UseComponent(engine.ActorComponent):
+    UsableChanged: Any
+    ImpactDataChanged: Any
+    UsabilityChanged: Any
+    OnHoldUseStopped: Any
     ViewDistance: float
     InteractDistance: float
     LeaveInteractionDistance: float
@@ -1968,28 +2467,52 @@ class UseComponent(engine.ActorComponent):
     LatentUseStates: LatentUseState
     ReplicatedCostCache: UsableCostCache
     CanUseObjectsLock_Replicated: ResourceLock
+
     def StopUsingCurrentObject(self, UseType: EUsabilityType): ...
     def StartUsingCurrentObject(self, UseType: EUsabilityType): ...
-    def ServerUseObject(self, UsableObject: UsableComponent, UseType: EUsabilityType, bHeld: bool): ...
-    def ServerStopUsingObject(self, UsableObject: UsableComponent, UseType: EUsabilityType): ...
-    def ServerStartUsingObject(self, UsableObject: UsableComponent, UseType: EUsabilityType): ...
-    def OnUsableChanged__DelegateSignature(self, NewUsableComponent: UsableComponent, InUsabilityInfo: UsabilityInfo, NewUsableComponentImpactPoint: core_uobject.Vector, NewUsableComponentDistanceAway: float): ...
-    def OnUsabilityChanged__DelegateSignature(self, NewUsableComponent: UsableComponent, InUsabilityInfo: UsabilityInfo): ...
-    def OnUnableToAffordUsableObject__DelegateSignature(self, Usable: UsableComponent, UseType: EUsabilityType, bUseHeld: bool): ...
-    def OnImpactDataChanged__DelegateSignature(self, NewUsableComponent: UsableComponent, NewUsableComponentImpactPoint: core_uobject.Vector, NewUsableComponentDistanceAway: float): ...
+    def ServerUseObject(
+        self, UsableObject: UsableComponent, UseType: EUsabilityType, bHeld: bool
+    ): ...
+    def ServerStopUsingObject(
+        self, UsableObject: UsableComponent, UseType: EUsabilityType
+    ): ...
+    def ServerStartUsingObject(
+        self, UsableObject: UsableComponent, UseType: EUsabilityType
+    ): ...
+    def OnUsableChanged__DelegateSignature(
+        self,
+        NewUsableComponent: UsableComponent,
+        InUsabilityInfo: UsabilityInfo,
+        NewUsableComponentImpactPoint: core_uobject.Vector,
+        NewUsableComponentDistanceAway: float,
+    ): ...
+    def OnUsabilityChanged__DelegateSignature(
+        self, NewUsableComponent: UsableComponent, InUsabilityInfo: UsabilityInfo
+    ): ...
+    def OnUnableToAffordUsableObject__DelegateSignature(
+        self, Usable: UsableComponent, UseType: EUsabilityType, bUseHeld: bool
+    ): ...
+    def OnImpactDataChanged__DelegateSignature(
+        self,
+        NewUsableComponent: UsableComponent,
+        NewUsableComponentImpactPoint: core_uobject.Vector,
+        NewUsableComponentDistanceAway: float,
+    ): ...
     def OnHoldUseStopped__DelegateSignature(self): ...
-    def GetCurrentUsable(self, ReturnValue: UsableComponent) -> UsableComponent: ...
+    def GetCurrentUsable(self) -> UsableComponent: ...
     def ForceUsingObject(self, UsableObject: UsableComponent): ...
-    def ClientNotifyAttemptedUseCouldNotAfford(self, Usable: UsableComponent, UseType: EUsabilityType, bUseHeld: bool): ...
-    def CanUseCurrentUsable(self, Type: EUsabilityType, ReturnValue: bool) -> bool: ...
-    def CanInteractWithCurrentUsable(self, Type: EUsabilityType, ReturnValue: bool) -> bool: ...
+    def ClientNotifyAttemptedUseCouldNotAfford(
+        self, Usable: UsableComponent, UseType: EUsabilityType, bUseHeld: bool
+    ): ...
+    def CanUseCurrentUsable(self, Type: EUsabilityType) -> bool: ...
+    def CanInteractWithCurrentUsable(self, Type: EUsabilityType) -> bool: ...
 
 
 class LevelGroupData(gbx_runtime.GbxDataAsset):
     DisplayName: str
     SubHeader: str
     Description: str
-
+    ContainedLevels: unreal.WrappedArray[Any]
 
 
 class ActorPartSetData(gbx_runtime.GbxDataAsset):
@@ -1999,7 +2522,10 @@ class ActorPartSetData(gbx_runtime.GbxDataAsset):
     ActorPartLists: unreal.WrappedArray[ActorPartListData]
     OldActorPartLists: unreal.WrappedArray[ActorPartListData]
     Guid: core_uobject.Guid
-    def EnumeratePartListForPartType(self, PartType: int, OutPartList: unreal.WrappedArray[ActorPartData]): ...
+
+    def EnumeratePartListForPartType(
+        self, PartType: int, OutPartList: unreal.WrappedArray[ActorPartData]
+    ): ...
 
 
 class PrototypeActor(engine.Actor): ...
@@ -2014,7 +2540,6 @@ class UIStatData_Attribute(UIStatData_Numeric):
     StatsToReplace: unreal.WrappedArray[UIStatData]
 
 
-
 class UIStatFormulaEvaluator(unreal.UObject): ...
 
 
@@ -2023,14 +2548,14 @@ class GbxWeaponSlotData(engine.DataAsset):
     InitiallyEnabled: bool
 
 
-
 class LevelData(gbx_runtime.GbxDataAsset):
     DisplayName: str
     SubHeader: str
     Description: str
     LevelMapName: str
+    LinksToOtherLevel: unreal.WrappedArray[Any]
+    OwningLevelGroup: Any
     DLCExpansionData: online_subsystem_utils.DownloadableContentData
-
 
 
 class ActorAttributeContextResolver(AttributeContextResolver): ...
@@ -2070,13 +2595,11 @@ class AIChargeData(gbx_runtime.GbxDataAsset):
     HitReactionForce: float
 
 
-
 class AIDataProvider_AttributeData(aimodule.AIDataProvider):
     AttributeData: GbxAttributeData
     FloatValue: float
     IntValue: int
     BoolValue: bool
-
 
 
 class AIDataProvider_AttributeInitializationData(aimodule.AIDataProvider):
@@ -2086,13 +2609,11 @@ class AIDataProvider_AttributeInitializationData(aimodule.AIDataProvider):
     BoolValue: bool
 
 
-
 class AIDataProvider_AttributeInitializer(aimodule.AIDataProvider):
     AttributeInitializer: unreal.UClass
     FloatValue: float
     IntValue: int
     BoolValue: bool
-
 
 
 class AIDodgeComponent(engine.ActorComponent):
@@ -2102,6 +2623,7 @@ class AIDodgeComponent(engine.ActorComponent):
     DodgeRandom: AIDodgeBasicData
     DodgeZone: AIDodgeData
     GlobalCooldown: GbxParam
+    OnDodged: Any
     TeamComponent: TeamComponent
     ActionComponent: GbxActionComponent
     BlackboardComponent: aimodule.BlackboardComponent
@@ -2110,10 +2632,37 @@ class AIDodgeComponent(engine.ActorComponent):
     MovementComponent: GbxCharacterMovementComponent
     PendingDodge: AIDodgeInstance
     ActiveDodge: AIDodgeInstance
-    def TriggerZoneDodge(self, WorldContextObject: unreal.UObject, TargetActor: engine.Actor, ZoneLoc: core_uobject.Vector, ZoneVel: core_uobject.Vector, ActorRef: engine.Actor): ...
-    def TriggerGrenadeDodge(self, WorldContextObject: unreal.UObject, GrenadeLoc: core_uobject.Vector, Instigator: engine.Actor, ExtraDelay: float): ...
-    def TriggerDodge(self, Type: EAIDodgeType, SourceLoc: core_uobject.Vector, SourceActor: engine.Actor, ExtraDelay: float, bForced: bool, ReturnValue: bool) -> bool: ...
-    def TriggerBulletDodge(self, WorldContextObject: unreal.UObject, MuzzleLoc: core_uobject.Vector, BulletVel: core_uobject.Vector, Instigator: engine.Actor): ...
+
+    def TriggerZoneDodge(
+        self,
+        WorldContextObject: unreal.UObject,
+        TargetActor: engine.Actor,
+        ZoneLoc: core_uobject.Vector,
+        ZoneVel: core_uobject.Vector,
+        ActorRef: engine.Actor,
+    ): ...
+    def TriggerGrenadeDodge(
+        self,
+        WorldContextObject: unreal.UObject,
+        GrenadeLoc: core_uobject.Vector,
+        Instigator: engine.Actor,
+        ExtraDelay: float,
+    ): ...
+    def TriggerDodge(
+        self,
+        Type: EAIDodgeType,
+        SourceLoc: core_uobject.Vector,
+        SourceActor: engine.Actor,
+        ExtraDelay: float,
+        bForced: bool,
+    ) -> bool: ...
+    def TriggerBulletDodge(
+        self,
+        WorldContextObject: unreal.UObject,
+        MuzzleLoc: core_uobject.Vector,
+        BulletVel: core_uobject.Vector,
+        Instigator: engine.Actor,
+    ): ...
 
 
 class AimControlData(gbx_runtime.GbxDataAsset):
@@ -2134,10 +2683,18 @@ class AimControlData(gbx_runtime.GbxDataAsset):
     AxialDeadZoneRatio: float
 
 
-
 class AISense_Bullet(aimodule.AISense):
     BulletEvents: unreal.WrappedArray[AIBulletEvent]
-    def ReportBulletEvent(self, WorldContext: unreal.UObject, StartLoc: core_uobject.Vector, EndLoc: core_uobject.Vector, bFirstEvent: bool, Instigator: engine.Actor, Strength: float): ...
+
+    def ReportBulletEvent(
+        self,
+        WorldContext: unreal.UObject,
+        StartLoc: core_uobject.Vector,
+        EndLoc: core_uobject.Vector,
+        bFirstEvent: bool,
+        Instigator: engine.Actor,
+        Strength: float,
+    ): ...
 
 
 class AISense_GbxPrediction(aimodule.AISense): ...
@@ -2145,7 +2702,12 @@ class AISense_GbxPrediction(aimodule.AISense): ...
 
 class AISense_GbxSight(aimodule.AISense_Sight):
 
-    def ForceSightEvent(self, WorldContext: unreal.UObject, SeenActor: engine.Actor, LookingActor: engine.Actor): ...
+    def ForceSightEvent(
+        self,
+        WorldContext: unreal.UObject,
+        SeenActor: engine.Actor,
+        LookingActor: engine.Actor,
+    ): ...
 
 
 class AISenseConfig_Bullet(aimodule.AISenseConfig):
@@ -2154,10 +2716,8 @@ class AISenseConfig_Bullet(aimodule.AISenseConfig):
     DetectionByAffiliation: aimodule.AISenseAffiliationFilter
 
 
-
 class AISenseConfig_GbxPrediction(aimodule.AISenseConfig):
     DetectionByAffiliation: aimodule.AISenseAffiliationFilter
-
 
 
 class AnimNotify_CanInterruptAnim(engine.AnimNotify): ...
@@ -2165,7 +2725,6 @@ class AnimNotify_CanInterruptAnim(engine.AnimNotify): ...
 
 class AnimNotify_CauseDamage(engine.AnimNotify):
     DamageData: unreal.UClass
-
 
 
 class AnimNotify_Feedback(engine.AnimNotify):
@@ -2178,7 +2737,6 @@ class AnimNotify_Feedback(engine.AnimNotify):
     FeedbackScale: AttributeInitializationData
 
 
-
 class AnimNotify_Footstep(engine.AnimNotify):
     FootIndex: int
     Volume: float
@@ -2186,10 +2744,8 @@ class AnimNotify_Footstep(engine.AnimNotify):
     bRestrictToMatchingPlayerPerspective: bool
 
 
-
 class AnimNotify_GbxAction(engine.AnimNotify):
     CustomEventName: str
-
 
 
 class AnimNotify_HandPlant(engine.AnimNotify):
@@ -2197,7 +2753,6 @@ class AnimNotify_HandPlant(engine.AnimNotify):
     Volume: float
     Pitch: float
     bRestrictToMatchingPlayerPerspective: bool
-
 
 
 class AnimNotify_PlayJumpedImpact(engine.AnimNotify): ...
@@ -2208,11 +2763,9 @@ class AnimNotify_PlayLandedImpact(engine.AnimNotify):
     bAsIfFromJump: bool
 
 
-
 class AnimNotify_SetRagdollObjectHoldTransform(engine.AnimNotify):
     bEnable: bool
     Transform: core_uobject.Transform
-
 
 
 class AnimNotify_StretchBonesMarker(AnimNotify_GbxAction):
@@ -2223,11 +2776,9 @@ class AnimNotify_StretchBonesMarker(AnimNotify_GbxAction):
     XScale: float
 
 
-
 class AnimNotifyState_DeathOverride(engine.AnimNotifyState):
     DeathReactionTag: HitReactionTag
     DefaultReactionTagName: core_uobject.SoftObjectPath
-
 
 
 class AnimNotifyState_DisableLegIK(engine.AnimNotifyState): ...
@@ -2245,16 +2796,13 @@ class AnimNotifyState_Feedback(engine.AnimNotifyState):
     FeedbackScale: AttributeInitializationData
 
 
-
 class AnimNotifyState_GbxAction(engine.AnimNotifyState):
     CustomEventName: str
-
 
 
 class AnimNotifyState_RootMotionRotation(engine.AnimNotifyState):
     LockFootIkIndex: int
     bLockFootIK: bool
-
 
 
 class AnimNotifyState_SoftAlign(engine.AnimNotifyState):
@@ -2266,11 +2814,9 @@ class AnimNotifyState_SoftAlign(engine.AnimNotifyState):
     AlignSocketPartner: str
 
 
-
 class AnimNotifyState_StretchAction(engine.AnimNotifyState):
     bRotate: bool
     bTranslate: bool
-
 
 
 class AnimNotifyState_StretchBonesMarker(AnimNotifyState_GbxAction):
@@ -2283,27 +2829,26 @@ class AnimNotifyState_StretchBonesMarker(AnimNotifyState_GbxAction):
     XScale: float
 
 
-
 class AsyncExplosionImpactManager(unreal.UObject):
     AsyncRequests: unreal.WrappedArray[AsyncExplosionImpactRequest]
-
 
 
 class AttributeEffectMultiMutatorData(AttributeEffectMutatorData):
     Mutators: unreal.WrappedArray[AttributeEffectMutatorData]
 
 
-
 class AttributeInitializer(unreal.UObject):
     UsageMode: EAttributeInitializerUsageMode
-    def EvaluateBalanceFormula(self, Multiplier: float, Level: float, Power: float, Offset: float, ReturnValue: float) -> float: ...
-    def CalculateAttributeInitialValue(self, Context: unreal.UObject, ReturnValue: float) -> float: ...
+
+    def EvaluateBalanceFormula(
+        self, Multiplier: float, Level: float, Power: float, Offset: float
+    ) -> float: ...
+    def CalculateAttributeInitialValue(self, Context: unreal.UObject) -> float: ...
 
 
 class AttributeModifierTestContext(unreal.UObject):
     AttributeProperty: engine.GbxAttributeFloat
     FloatProperty: float
-
 
 
 class TestAttributePropertyValueResolver(AttributePropertyValueResolver): ...
@@ -2315,11 +2860,14 @@ class AttributePropertyValueResolverTestContext(unreal.UObject):
     FloatPropDynamicArray: unreal.WrappedArray[float]
     ObjectProp: AttributePropertyValueResolverTestContext
     ObjectPropStaticArray: AttributePropertyValueResolverTestContext
-    ObjectPropDynamicArray: unreal.WrappedArray[AttributePropertyValueResolverTestContext]
+    ObjectPropDynamicArray: unreal.WrappedArray[
+        AttributePropertyValueResolverTestContext
+    ]
     StructProp: AttributePropertyValueResolverTestStruct
     StructPropStaticArray: AttributePropertyValueResolverTestStruct
-    StructPropDynamicArray: unreal.WrappedArray[AttributePropertyValueResolverTestStruct]
-
+    StructPropDynamicArray: unreal.WrappedArray[
+        AttributePropertyValueResolverTestStruct
+    ]
 
 
 class BalanceFormulaAttributeValueResolver(AttributeValueResolver):
@@ -2327,10 +2875,8 @@ class BalanceFormulaAttributeValueResolver(AttributeValueResolver):
     AdditionalScalars: unreal.WrappedArray[AttributeInitializationData]
 
 
-
 class BalanceStateAttributeValueResolver(AttributeValueResolver):
     ValueToResolve: EBalanceValueType
-
 
 
 class BalanceTableAttributeValueResolver(DataTableFunctionAttributeValueResolver): ...
@@ -2340,7 +2886,6 @@ class BlackboardKeyAttributeContextResolver(AttributeContextResolver):
     BlackboardKey: GbxBlackboardKeySelector
 
 
-
 class BlackboardKeyType_GbxFlag(aimodule.BlackboardKeyType): ...
 
 
@@ -2348,40 +2893,144 @@ class BlackboardKeyType_Struct(aimodule.BlackboardKeyType):
     Type: core_uobject.ScriptStruct
 
 
-
 class BlackboardKeyType_TargetActorInfo(aimodule.BlackboardKeyType): ...
 
 
 class BoneModBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetBoneTranslation(self, BoneName: str, Translation: core_uobject.Vector, Target: unreal.UObject, InBlendTime: float, InBlendOption: engine.EAlphaBlendOption, InCustomBlendCurve: engine.CurveFloat): ...
-    def SetBoneScale3D(self, BoneName: str, Scale3D: core_uobject.Vector, Target: unreal.UObject, InBlendTime: float, InBlendOption: engine.EAlphaBlendOption, InCustomBlendCurve: engine.CurveFloat): ...
-    def SetBoneScale(self, BoneName: str, Scale: float, Target: unreal.UObject, InBlendTime: float, InBlendOption: engine.EAlphaBlendOption, InCustomBlendCurve: engine.CurveFloat): ...
-    def SetBoneRotation(self, BoneName: str, Rotation: core_uobject.Rotator, Target: unreal.UObject, InBlendTime: float, InBlendOption: engine.EAlphaBlendOption, InCustomBlendCurve: engine.CurveFloat): ...
-    def SetBoneModUseTranslation(self, BoneModName: str, bUseTranslation: bool, Target: unreal.UObject): ...
-    def SetBoneModUseScale(self, BoneModName: str, bUseScale: bool, Target: unreal.UObject): ...
-    def SetBoneModUseRotation(self, BoneModName: str, bUseRotation: bool, Target: unreal.UObject): ...
-    def SetBoneModTranslationSpace(self, BoneModName: str, TranslationSpace: int, Target: unreal.UObject): ...
-    def SetBoneModTranslation(self, BoneModName: str, Translation: core_uobject.Vector, Target: unreal.UObject): ...
-    def SetBoneModTransform(self, BoneModName: str, Transform: core_uobject.Transform, Target: unreal.UObject): ...
-    def SetBoneModScale3D(self, BoneModName: str, Scale: core_uobject.Vector, Target: unreal.UObject): ...
-    def SetBoneModScale(self, BoneModName: str, Scale: float, Target: unreal.UObject): ...
-    def SetBoneModRotationSpace(self, BoneModName: str, RotationSpace: int, Target: unreal.UObject): ...
-    def SetBoneModRotation(self, BoneModName: str, Rotation: core_uobject.Rotator, Target: unreal.UObject): ...
-    def SetBoneModReplaceTranslation(self, BoneModName: str, bReplaceTranslation: bool, Target: unreal.UObject): ...
-    def SetBoneModReplaceScale(self, BoneModName: str, bReplaceScale: bool, Target: unreal.UObject): ...
-    def SetBoneModReplaceRotation(self, BoneModName: str, bReplaceRotation: bool, Target: unreal.UObject): ...
-    def SetBoneModName(self, BoneModName: str, NewBoneModName: str, Target: unreal.UObject): ...
-    def SetBoneModifyProfileState(self, StateName: str, bActive: bool, Target: unreal.UObject, BlendTime: float): ...
-    def SetBoneModifyProfile(self, BoneModifyProfile: GbxBoneModifyProfile, Target: unreal.UObject): ...
-    def SetBoneModBoneName(self, BoneModName: str, BoneModBoneName: str, Target: unreal.UObject): ...
-    def SetBoneModBlendTime(self, BoneModName: str, BlendTime: float, Target: unreal.UObject): ...
-    def SetBoneModAlphaBlend(self, BoneModName: str, Blend: engine.AlphaBlend, Target: unreal.UObject): ...
-    def SetBoneModActive(self, BoneModName: str, bActive: bool, Target: unreal.UObject): ...
-    def SetBoneMod(self, InBoneMod: engine.BoneModInstance, BoneModToSet: str, Target: unreal.UObject, bBlendIn: bool): ...
-    def RemoveBoneMod(self, BoneModToRemove: str, Target: unreal.UObject, bBlendOut: bool): ...
-    def GetBoneMod(self, BoneModName: str, BoneMod: engine.BoneModInstance, Target: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def CreateBoneMod(self, InBoneModName: str, InBoneName: str, InTranslation: core_uobject.Vector, InRotation: core_uobject.Rotator, InScale: core_uobject.Vector, InBlendTime: float, Target: unreal.UObject, InBlendOption: engine.EAlphaBlendOption, InCustomBlendCurve: engine.CurveFloat, bInUseTranslation: bool, bInUseRotation: bool, bInUseScale: bool, bInReplaceTranslation: bool, bInReplaceRotation: bool, bInReplaceScale: bool, InTranslationSpace: int, InRotationSpace: int, bBlendIn: bool): ...
+    def SetBoneTranslation(
+        self,
+        BoneName: str,
+        Translation: core_uobject.Vector,
+        Target: unreal.UObject,
+        InBlendTime: float,
+        InBlendOption: engine.EAlphaBlendOption,
+        InCustomBlendCurve: engine.CurveFloat,
+    ): ...
+    def SetBoneScale3D(
+        self,
+        BoneName: str,
+        Scale3D: core_uobject.Vector,
+        Target: unreal.UObject,
+        InBlendTime: float,
+        InBlendOption: engine.EAlphaBlendOption,
+        InCustomBlendCurve: engine.CurveFloat,
+    ): ...
+    def SetBoneScale(
+        self,
+        BoneName: str,
+        Scale: float,
+        Target: unreal.UObject,
+        InBlendTime: float,
+        InBlendOption: engine.EAlphaBlendOption,
+        InCustomBlendCurve: engine.CurveFloat,
+    ): ...
+    def SetBoneRotation(
+        self,
+        BoneName: str,
+        Rotation: core_uobject.Rotator,
+        Target: unreal.UObject,
+        InBlendTime: float,
+        InBlendOption: engine.EAlphaBlendOption,
+        InCustomBlendCurve: engine.CurveFloat,
+    ): ...
+    def SetBoneModUseTranslation(
+        self, BoneModName: str, bUseTranslation: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModUseScale(
+        self, BoneModName: str, bUseScale: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModUseRotation(
+        self, BoneModName: str, bUseRotation: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModTranslationSpace(
+        self, BoneModName: str, TranslationSpace: int, Target: unreal.UObject
+    ): ...
+    def SetBoneModTranslation(
+        self, BoneModName: str, Translation: core_uobject.Vector, Target: unreal.UObject
+    ): ...
+    def SetBoneModTransform(
+        self,
+        BoneModName: str,
+        Transform: core_uobject.Transform,
+        Target: unreal.UObject,
+    ): ...
+    def SetBoneModScale3D(
+        self, BoneModName: str, Scale: core_uobject.Vector, Target: unreal.UObject
+    ): ...
+    def SetBoneModScale(
+        self, BoneModName: str, Scale: float, Target: unreal.UObject
+    ): ...
+    def SetBoneModRotationSpace(
+        self, BoneModName: str, RotationSpace: int, Target: unreal.UObject
+    ): ...
+    def SetBoneModRotation(
+        self, BoneModName: str, Rotation: core_uobject.Rotator, Target: unreal.UObject
+    ): ...
+    def SetBoneModReplaceTranslation(
+        self, BoneModName: str, bReplaceTranslation: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModReplaceScale(
+        self, BoneModName: str, bReplaceScale: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModReplaceRotation(
+        self, BoneModName: str, bReplaceRotation: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneModName(
+        self, BoneModName: str, NewBoneModName: str, Target: unreal.UObject
+    ): ...
+    def SetBoneModifyProfileState(
+        self, StateName: str, bActive: bool, Target: unreal.UObject, BlendTime: float
+    ): ...
+    def SetBoneModifyProfile(
+        self, BoneModifyProfile: GbxBoneModifyProfile, Target: unreal.UObject
+    ): ...
+    def SetBoneModBoneName(
+        self, BoneModName: str, BoneModBoneName: str, Target: unreal.UObject
+    ): ...
+    def SetBoneModBlendTime(
+        self, BoneModName: str, BlendTime: float, Target: unreal.UObject
+    ): ...
+    def SetBoneModAlphaBlend(
+        self, BoneModName: str, Blend: engine.AlphaBlend, Target: unreal.UObject
+    ): ...
+    def SetBoneModActive(
+        self, BoneModName: str, bActive: bool, Target: unreal.UObject
+    ): ...
+    def SetBoneMod(
+        self,
+        InBoneMod: engine.BoneModInstance,
+        BoneModToSet: str,
+        Target: unreal.UObject,
+        bBlendIn: bool,
+    ): ...
+    def RemoveBoneMod(
+        self, BoneModToRemove: str, Target: unreal.UObject, bBlendOut: bool
+    ): ...
+    def GetBoneMod(
+        self, BoneModName: str, BoneMod: engine.BoneModInstance, Target: unreal.UObject
+    ) -> bool: ...
+    def CreateBoneMod(
+        self,
+        InBoneModName: str,
+        InBoneName: str,
+        InTranslation: core_uobject.Vector,
+        InRotation: core_uobject.Rotator,
+        InScale: core_uobject.Vector,
+        InBlendTime: float,
+        Target: unreal.UObject,
+        InBlendOption: engine.EAlphaBlendOption,
+        InCustomBlendCurve: engine.CurveFloat,
+        bInUseTranslation: bool,
+        bInUseRotation: bool,
+        bInUseScale: bool,
+        bInReplaceTranslation: bool,
+        bInReplaceRotation: bool,
+        bInReplaceScale: bool,
+        InTranslationSpace: int,
+        InRotationSpace: int,
+        bBlendIn: bool,
+    ): ...
 
 
 class BoneModComponent(engine.SceneComponent):
@@ -2397,17 +3046,14 @@ class BoneModComponent(engine.SceneComponent):
     bStartActive: bool
 
 
-
 class BTDecorator_GbxCondition(aimodule.BTDecorator):
     Condition: gbx_runtime.GbxCondition
-
 
 
 class BTTask_PlayGbxAction(aimodule.BTTaskNode):
     ActionClassToPlay: unreal.UClass
     CachedActionComponent: GbxActionComponent
     CachedBTComponent: aimodule.BehaviorTreeComponent
-
 
 
 class CauseDamageContextSourceInterface(core_uobject.Interface): ...
@@ -2417,7 +3063,6 @@ class ChallengeConditionData(gbx_runtime.GbxDataAsset):
     Description: str
     StatId: GameStatData
     TargetValue: int
-
 
 
 class ChallengeLevelActorComponent(GbxAreaComponent):
@@ -2431,23 +3076,37 @@ class ChallengeLevelActorComponent(GbxAreaComponent):
     UnfogHeightWhenChallengeActive: float
     IconGuid: core_uobject.Guid
     bIsStationary: bool
+    OnPlayerChallengeActivated: Any
+    OnPlayerChallengeCompleted: Any
+    OnPlayerEnteredChallengeArea: Any
+    OnPlayerExitedChallengeArea: Any
     OwningLevelActorComponent: ChallengeLevelActorComponent
+
     def SetIsStationary(self, bInIsStationary: bool): ...
     def SetInWorldIconEnabled(self, bEnable: bool): ...
     def OnRep_IsStationary(self, bOldIsStationary: bool): ...
     def OnRep_InWorldIconEnabled(self, bOldEnabled: bool): ...
     def OnRep_ChallengeReference(self): ...
     def HandleAttachmentChanged(self): ...
-    def GetAssociatedActor(self, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def GetAssociatedActor(self) -> engine.Actor: ...
 
 
 class ChallengeLevelParentComponent(ChallengeLevelActorComponent):
     bHideIfAssociatedActors: bool
+    OnAllAssociatedActorsDestroyed: Any
     AssociatedActors: unreal.WrappedArray[ChallengeLevelActorComponent]
-    def RemoveAssociatedActorComponent(self, AssociatedComponent: ChallengeLevelActorComponent): ...
+
+    def RemoveAssociatedActorComponent(
+        self, AssociatedComponent: ChallengeLevelActorComponent
+    ): ...
     def RemoveAssociatedActor(self, AssociatedActor: engine.Actor): ...
     def ClearAssociatedActors(self): ...
-    def AddAssociatedActor(self, AssociatedActor: engine.Actor, ComponentClass: unreal.UClass, RelativeOffset: core_uobject.Vector): ...
+    def AddAssociatedActor(
+        self,
+        AssociatedActor: engine.Actor,
+        ComponentClass: unreal.UClass,
+        RelativeOffset: core_uobject.Vector,
+    ): ...
 
 
 class ChallengeObserverInterface(core_uobject.Interface): ...
@@ -2461,7 +3120,6 @@ class ChallengeRewardData(gbx_runtime.GbxDataAsset):
     CachedRewardIndex: int
 
 
-
 class ChallengeSystemSettings(unreal.UObject):
     MinimumGoalForChallengeNotification: float
     ChallengeCompletionThresholdNotification: unreal.WrappedArray[float]
@@ -2471,7 +3129,6 @@ class ChallengeSystemSettings(unreal.UObject):
     DefaultChallengeComponent: unreal.UClass
 
 
-
 class CharacterBestTargetAttributeContextResolver(AttributeContextResolver): ...
 
 
@@ -2479,13 +3136,18 @@ class CharacterMovementAttributeValueResolver(AttributeValueResolver):
     ValueToResolve: ECharacterMovementAttributeValueType
 
 
-
 class CinematicModeBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def PushCinematicMode(self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData): ...
-    def PopCinematicMode(self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData): ...
+    def PushCinematicMode(
+        self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData
+    ): ...
+    def PopCinematicMode(
+        self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData
+    ): ...
     def ClearCinematicMode(self, WorldContextObject: unreal.UObject): ...
-    def ClearAndSetCinematicMode(self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData): ...
+    def ClearAndSetCinematicMode(
+        self, WorldContextObject: unreal.UObject, InCinematicMode: CinematicModeData
+    ): ...
 
 
 class ClothManagerInterface(engine.Actor): ...
@@ -2500,7 +3162,6 @@ class ConditionalAttributeValueResolver(AttributeValueResolver):
     DefaultValue: AttributeInitializationData
     Scaler: AttributeInitializationData
     ConditionalValues: unreal.WrappedArray[AttributeConditionalValue]
-
 
 
 class ConditionalDamageModifier(gbx_runtime.GbxDataAsset):
@@ -2528,17 +3189,15 @@ class ConditionalDamageModifier(gbx_runtime.GbxDataAsset):
     bAppliesToInstigatorChildren: bool
 
 
-
 class ConditionalDamageCriticalModifier(ConditionalDamageModifier):
     bOnlyApplyIfHitRegionWasCritical: bool
     bUseDefaultCriticalHitMultiplier: bool
     AdditionalCriticalMultiplier: AttributeInitializationData
 
 
-
 class ConditionalDamageHitRegionModifier(ConditionalDamageModifier):
+    Priority: int
     OverrideHitRegion: HitRegionData
-
 
 
 class ConditionalDamageTypeModifier(ConditionalDamageModifier):
@@ -2551,28 +3210,45 @@ class ConditionalDamageTypeModifier(ConditionalDamageModifier):
     Priority: int
 
 
-
 class ConditionalDamageValueModifier(ConditionalDamageModifier):
     ModifierType: EConditionalDamageModifierType
     DamageValue: AttributeInitializationData
-    ConditionalDamageValues: unreal.WrappedArray[ConditionalDamageDamageConditionalValue]
+    ConditionalDamageValues: unreal.WrappedArray[
+        ConditionalDamageDamageConditionalValue
+    ]
     bModifyValueBasedOnDistance: bool
     ModifyValueBasedOnDistanceCurve: engine.RuntimeFloatCurve
     bDisallowFatalDamage: bool
-
 
 
 class ConstantAttributeValueResolver(AttributeValueResolver):
     Value: AttributeInitializationData
 
 
-
 class ControlledMoveFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def StopControlledMove(self, Actor: engine.Actor, ControlledMove: unreal.UClass, bZeroVelocity: bool, bInterrupted: bool): ...
-    def StartControlledMove(self, Actor: engine.Actor, ControlledMove: unreal.UClass, Instigator: engine.Actor, SpeedOverride: float, DurationOverride: float, LaunchAngleOverride: float, TargetActor: engine.Actor, TargetLocation: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def IsPerformingSpecificControlledMove(self, Actor: engine.Actor, ControlledMove: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def IsPerformingControlledMove(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
+    def StopControlledMove(
+        self,
+        Actor: engine.Actor,
+        ControlledMove: unreal.UClass,
+        bZeroVelocity: bool,
+        bInterrupted: bool,
+    ): ...
+    def StartControlledMove(
+        self,
+        Actor: engine.Actor,
+        ControlledMove: unreal.UClass,
+        Instigator: engine.Actor,
+        SpeedOverride: float,
+        DurationOverride: float,
+        LaunchAngleOverride: float,
+        TargetActor: engine.Actor,
+        TargetLocation: core_uobject.Vector,
+    ) -> bool: ...
+    def IsPerformingSpecificControlledMove(
+        self, Actor: engine.Actor, ControlledMove: unreal.UClass
+    ) -> bool: ...
+    def IsPerformingControlledMove(self, Actor: engine.Actor) -> bool: ...
 
 
 class ControllerAttributeContextResolver(AttributeContextResolver): ...
@@ -2580,7 +3256,9 @@ class ControllerAttributeContextResolver(AttributeContextResolver): ...
 
 class CoordinatedEffectBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def GetOriginalOverrideMaterialAtIndex(self, MeshComponent: engine.MeshComponent, Index: int, OutActualIndex: int, ReturnValue: engine.MaterialInterface) -> engine.MaterialInterface: ...
+    def GetOriginalOverrideMaterialAtIndex(
+        self, MeshComponent: engine.MeshComponent, Index: int, OutActualIndex: int
+    ) -> engine.MaterialInterface: ...
 
 
 class DamageableInterface(core_uobject.Interface): ...
@@ -2606,7 +3284,6 @@ class DamageAreaType(unreal.UObject):
     OverlapObjectTypes: unreal.WrappedArray[int]
 
 
-
 class DamageAreaType_BaseRound(DamageAreaType):
     Radius: AttributeInitializationData
     bComputeHitDirectionFromTarget: bool
@@ -2614,11 +3291,9 @@ class DamageAreaType_BaseRound(DamageAreaType):
     bExpandingRadiusIsHollow: bool
 
 
-
 class DamageAreaType_Sphere(DamageAreaType_BaseRound):
     bTreatAsRadiusDamage: bool
     bDamageFallsOff: bool
-
 
 
 class DamageAreaType_Cylinder(DamageAreaType_BaseRound):
@@ -2627,11 +3302,9 @@ class DamageAreaType_Cylinder(DamageAreaType_BaseRound):
     WedgeAngle: AttributeInitializationData
 
 
-
 class DamageAreaType_Cone(DamageAreaType):
     Length: AttributeInitializationData
     ConeAngle: AttributeInitializationData
-
 
 
 class DamageAreaType_Box(DamageAreaType):
@@ -2642,11 +3315,9 @@ class DamageAreaType_Box(DamageAreaType):
     bDamageFallsOff: bool
 
 
-
 class DamageAreaType_Capsule(DamageAreaType):
     HalfHeight: AttributeInitializationData
     Radius: AttributeInitializationData
-
 
 
 class DamageAsyncManager(unreal.UObject):
@@ -2655,30 +3326,75 @@ class DamageAsyncManager(unreal.UObject):
     MaxNumCauseDamagePerFrame: int
 
 
-
 class DamageCauserInterface(core_uobject.Interface): ...
 
 
 class DamageStatics(engine.BlueprintFunctionLibrary):
 
-    def StopCausingDamageToTarget(self, DamageCauser: engine.Actor, DamageTarget: engine.Actor, DamageData: unreal.UClass): ...
-    def StopCausingDamage(self, DamageCauser: engine.Actor, DamageData: unreal.UClass): ...
+    def StopCausingDamageToTarget(
+        self,
+        DamageCauser: engine.Actor,
+        DamageTarget: engine.Actor,
+        DamageData: unreal.UClass,
+    ): ...
+    def StopCausingDamage(
+        self, DamageCauser: engine.Actor, DamageData: unreal.UClass
+    ): ...
     def StopCausingAllDamage(self, DamageCauser: engine.Actor): ...
-    def MakePipelineDamageInput(self, DamageCauser: engine.Actor, DamageReceiver: engine.Actor, DamageType: unreal.UClass, DamageSource: unreal.UClass, HitInfo: engine.HitResult, HitLocation: core_uobject.Vector, HitDirection: core_uobject.Vector, HitForceDirection: core_uobject.Vector, HitForceMagnitude: ForceSelection, ReturnValue: PipelineDamageInput) -> PipelineDamageInput: ...
-    def GetSummary_ForceSelection(self, ForceSelection: ForceSelection, ReturnValue: str) -> str: ...
-    def GetDamageTypeFromClass(self, DamageTypeClass: unreal.UClass, ReturnValue: GbxDamageType) -> GbxDamageType: ...
-    def GetDamageSourceFromClass(self, DamageSourceClass: unreal.UClass, ReturnValue: DamageSource) -> DamageSource: ...
-    def Conv_ForceSelectionToFloat(self, ForceSelection: ForceSelection, ReturnValue: float) -> float: ...
-    def Conv_FloatToForceSelection(self, ForceSelection: float, ReturnValue: ForceSelection) -> ForceSelection: ...
-    def ApplyDamageInRadius(self, WorldContextObject: unreal.UObject, BaseDamage: float, Origin: core_uobject.Vector, Radius: float, DamageType: unreal.UClass, DamageSource: unreal.UClass, IgnoreActors: unreal.WrappedArray[engine.Actor], DamageCauser: engine.Actor, EventInstigator: engine.Controller, BaseImpactForce: ForceSelection, DamagePreventionChannel: int, bDamageFalloff: bool, DamageModifierComponent: DamageModifierComponent, InstigatorFeedback: FeedbackData, bUseInstigatorRadiusDamageScale: bool): ...
+    def MakePipelineDamageInput(
+        self,
+        DamageCauser: engine.Actor,
+        DamageReceiver: engine.Actor,
+        DamageType: unreal.UClass,
+        DamageSource: unreal.UClass,
+        HitInfo: engine.HitResult,
+        HitLocation: core_uobject.Vector,
+        HitDirection: core_uobject.Vector,
+        HitForceDirection: core_uobject.Vector,
+        HitForceMagnitude: ForceSelection,
+    ) -> PipelineDamageInput: ...
+    def GetSummary_ForceSelection(self, ForceSelection: ForceSelection) -> str: ...
+    def GetDamageTypeFromClass(
+        self, DamageTypeClass: unreal.UClass
+    ) -> GbxDamageType: ...
+    def GetDamageSourceFromClass(
+        self, DamageSourceClass: unreal.UClass
+    ) -> DamageSource: ...
+    def Conv_ForceSelectionToFloat(self, ForceSelection: ForceSelection) -> float: ...
+    def Conv_FloatToForceSelection(self, ForceSelection: float) -> ForceSelection: ...
+    def ApplyDamageInRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        BaseDamage: float,
+        Origin: core_uobject.Vector,
+        Radius: float,
+        DamageType: unreal.UClass,
+        DamageSource: unreal.UClass,
+        IgnoreActors: unreal.WrappedArray[engine.Actor],
+        DamageCauser: engine.Actor,
+        EventInstigator: engine.Controller,
+        BaseImpactForce: ForceSelection,
+        DamagePreventionChannel: int,
+        bDamageFalloff: bool,
+        DamageModifierComponent: DamageModifierComponent,
+        InstigatorFeedback: FeedbackData,
+        bUseInstigatorRadiusDamageScale: bool,
+    ): ...
     def ApplyDamageEx(self, PipelineInput: PipelineDamageInput, BaseDamage: float): ...
-    def ApplyDamage(self, DamageReceiver: engine.Actor, BaseDamage: float, DamageType: unreal.UClass, DamageSource: unreal.UClass, EventInstigator: engine.Controller, DamageCauser: engine.Actor): ...
+    def ApplyDamage(
+        self,
+        DamageReceiver: engine.Actor,
+        BaseDamage: float,
+        DamageType: unreal.UClass,
+        DamageSource: unreal.UClass,
+        EventInstigator: engine.Controller,
+        DamageCauser: engine.Actor,
+    ): ...
 
 
 class DeathData(gbx_runtime.GbxDataAsset):
     DiedStats: unreal.WrappedArray[GameStatData]
     DissolveCorpseDelayBeforeDestroy: float
-
 
 
 class Decorator(engine.Actor): ...
@@ -2691,7 +3407,6 @@ class DrunkenBaseMovementComponent(engine.ActorComponent):
     RandomNumberSeed: int
 
 
-
 class DrunkenRandomMovementComponent(DrunkenBaseMovementComponent):
     PathCorrectionInterval: float
     TurnSpeed: float
@@ -2702,14 +3417,12 @@ class DrunkenRandomMovementComponent(DrunkenBaseMovementComponent):
     bFixDrunkenMovementAcceleration: bool
 
 
-
 class DrunkenWaveMovementComponent(DrunkenBaseMovementComponent):
     Waveforms: unreal.WrappedArray[Vector2DWaveform]
     GlobalWaveformScale: float
     MaxRandomWaveOffsetTime: float
     bGravityAffectsDrunkenness: bool
     DrunkenGravityScalar: float
-
 
 
 class DynamicPhysicalAnimationComponent(engine.ActorComponent):
@@ -2720,18 +3433,37 @@ class DynamicPhysicalAnimationComponent(engine.ActorComponent):
     SkeletalMeshComponent: engine.SkeletalMeshComponent
     PhysicsAsset: engine.PhysicsAsset
     bHasPhysicallyAnimatingBones: bool
+
     def SetStrengthMultiplier(self, NewValue: float): ...
-    def SetSkeletalMeshComponent(self, NewSkeletalMeshComponent: engine.SkeletalMeshComponent): ...
-    def SetRootMotionControl(self, MotionControl: EPhysicalAnimationRootMotionControl): ...
+    def SetSkeletalMeshComponent(
+        self, NewSkeletalMeshComponent: engine.SkeletalMeshComponent
+    ): ...
+    def SetRootMotionControl(
+        self, MotionControl: EPhysicalAnimationRootMotionControl
+    ): ...
     def SetHasAnimationPlaying(self, bPlaying: bool): ...
     def SetEnableRagdoll(self, bEnable: bool): ...
     def SetEnablePhysicalAnimation(self, bEnable: bool, BodyName: str): ...
     def SetActiveProfile(self, Profile: PhysicalAnimationProfileAsset): ...
-    def OnRigidBodyOverlap(self, HitComponent: engine.PrimitiveComponent, OtherActor: engine.Actor, OtherComp: engine.PrimitiveComponent, NormalImpulse: core_uobject.Vector, Hit: engine.HitResult): ...
-    def GetStrengthMultiplier(self, ReturnValue: float) -> float: ...
-    def GetRootMotionControl(self, ReturnValue: EPhysicalAnimationRootMotionControl) -> EPhysicalAnimationRootMotionControl: ...
+    def OnRigidBodyOverlap(
+        self,
+        HitComponent: engine.PrimitiveComponent,
+        OtherActor: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        NormalImpulse: core_uobject.Vector,
+        Hit: engine.HitResult,
+    ): ...
+    def GetStrengthMultiplier(self) -> float: ...
+    def GetRootMotionControl(self) -> EPhysicalAnimationRootMotionControl: ...
     def DetachBodyFromAllExternalRigidBodies(self, BodyName: str): ...
-    def AttachBodyTo(self, BodyName: str, AttachToComponent: engine.PrimitiveComponent, AttachToBodyName: str, VelocitySpaceBlend: float, BreakForce: float): ...
+    def AttachBodyTo(
+        self,
+        BodyName: str,
+        AttachToComponent: engine.PrimitiveComponent,
+        AttachToBodyName: str,
+        VelocitySpaceBlend: float,
+        BreakForce: float,
+    ): ...
 
 
 class EnvQueryContext_AimStart(aimodule.EnvQueryContext): ...
@@ -2780,8 +3512,8 @@ class EnvQueryGenerator_TargetActorInfo(aimodule.EnvQueryGenerator):
     bAllowNeutrals: bool
     TagQuery: ActorTagCompositeQuery
     bUseAllowedTypes: bool
+    AllowedTypes: unreal.WrappedArray[Any]
     AllowedTypesCache: unreal.WrappedArray[unreal.UClass]
-
 
 
 class EnvQueryItemType_Targetable(aimodule.EnvQueryItemType_Actor): ...
@@ -2798,12 +3530,32 @@ class EnvQueryContext_InputTargetMoveDir(EnvQueryContext_EnvQueryParam): ...
 
 class EnvQueryParamsExt(engine.BlueprintFunctionLibrary):
 
-    def RunEnvQueryForBestLocation(self, QueryOwner: unreal.UObject, QueryParams: EnvQueryParams, ResultLocation: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def RunEnvQueryForBestActor(self, QueryOwner: unreal.UObject, QueryParams: EnvQueryParams, ResultActor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def RunEnvQueryForAllLocations(self, QueryOwner: unreal.UObject, QueryParams: EnvQueryParams, ResultLocations: unreal.WrappedArray[core_uobject.Vector], ReturnValue: bool) -> bool: ...
-    def RunEnvQueryForAllActors(self, QueryOwner: unreal.UObject, QueryParams: EnvQueryParams, ResultActors: unreal.WrappedArray[engine.Actor], ReturnValue: bool) -> bool: ...
-    def HasQuery(self, QueryParams: EnvQueryParams, ReturnValue: bool) -> bool: ...
-    def GetDescription(self, QueryParams: EnvQueryParams, ReturnValue: str) -> str: ...
+    def RunEnvQueryForBestLocation(
+        self,
+        QueryOwner: unreal.UObject,
+        QueryParams: EnvQueryParams,
+        ResultLocation: core_uobject.Vector,
+    ) -> bool: ...
+    def RunEnvQueryForBestActor(
+        self,
+        QueryOwner: unreal.UObject,
+        QueryParams: EnvQueryParams,
+        ResultActor: engine.Actor,
+    ) -> bool: ...
+    def RunEnvQueryForAllLocations(
+        self,
+        QueryOwner: unreal.UObject,
+        QueryParams: EnvQueryParams,
+        ResultLocations: unreal.WrappedArray[core_uobject.Vector],
+    ) -> bool: ...
+    def RunEnvQueryForAllActors(
+        self,
+        QueryOwner: unreal.UObject,
+        QueryParams: EnvQueryParams,
+        ResultActors: unreal.WrappedArray[engine.Actor],
+    ) -> bool: ...
+    def HasQuery(self, QueryParams: EnvQueryParams) -> bool: ...
+    def GetDescription(self, QueryParams: EnvQueryParams) -> str: ...
 
 
 class EnvQueryParamsProvider(core_uobject.Interface): ...
@@ -2813,10 +3565,8 @@ class EnvQueryTest_ProjectilesHomingTowardsTarget(aimodule.EnvQueryTest):
     bMustBeActivelyHoming: bool
 
 
-
 class EnvQueryTestAsset(gbx_runtime.GbxDataAsset):
     EnvQueryTest: aimodule.EnvQueryTest
-
 
 
 class EQSProxyInterface(core_uobject.Interface): ...
@@ -2824,29 +3574,48 @@ class EQSProxyInterface(core_uobject.Interface): ...
 
 class ExplosionBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def PlayExplosion(self, ExplosionData: ExplosionData, Size: float, ExplosionLocation: core_uobject.Vector, Context: unreal.UObject, DamageType: unreal.UClass, ReturnValue: engine.ParticleSystemComponent) -> engine.ParticleSystemComponent: ...
+    def PlayExplosion(
+        self,
+        ExplosionData: ExplosionData,
+        Size: float,
+        ExplosionLocation: core_uobject.Vector,
+        Context: unreal.UObject,
+        DamageType: unreal.UClass,
+    ) -> engine.ParticleSystemComponent: ...
 
 
 class DamageInfoFunctionLibrary(engine.BlueprintFunctionLibrary):
 
     def SetImpactForce(self, DamageInfo: DamageInfo, InImpactForce: float): ...
     def SetDamageType(self, DamageInfo: DamageInfo, InDamageType: unreal.UClass): ...
-    def SetDamageSource(self, DamageInfo: DamageInfo, InDamageSource: unreal.UClass): ...
+    def SetDamageSource(
+        self, DamageInfo: DamageInfo, InDamageSource: unreal.UClass
+    ): ...
     def SetDamageRadius(self, DamageInfo: DamageInfo, InDamageRadius: float): ...
-    def SetDamageModifierComponent(self, DamageInfo: DamageInfo, InModifierComponent: DamageModifierComponent): ...
+    def SetDamageModifierComponent(
+        self, DamageInfo: DamageInfo, InModifierComponent: DamageModifierComponent
+    ): ...
     def SetDamageCauser(self, DamageInfo: DamageInfo, InDamageCauser: engine.Actor): ...
     def SetDamage(self, DamageInfo: DamageInfo, InDamage: float): ...
-    def SetCriticalHitDamageOverrides(self, DamageInfo: DamageInfo, Overrides: CriticalHitDamageOverrides): ...
-    def SetApplyCriticalHitModsToAoEDamage(self, DamageInfo: DamageInfo, bApplyCriticalHitModsToAoEDamage: bool): ...
-    def GetImpactForce(self, DamageInfo: DamageInfo, ReturnValue: float) -> float: ...
-    def GetDamageType(self, DamageInfo: DamageInfo, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetDamageSource(self, DamageInfo: DamageInfo, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetDamageRadius(self, DamageInfo: DamageInfo, ReturnValue: float) -> float: ...
-    def GetDamageModifierComponent(self, DamageInfo: DamageInfo, ReturnValue: DamageModifierComponent) -> DamageModifierComponent: ...
-    def GetDamageCauser(self, DamageInfo: DamageInfo, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetDamage(self, DamageInfo: DamageInfo, ReturnValue: float) -> float: ...
-    def GetCriticalHitDamageOverrides(self, DamageInfo: DamageInfo, ReturnValue: CriticalHitDamageOverrides) -> CriticalHitDamageOverrides: ...
-    def GetApplyCriticalHitModsToAoEDamage(self, DamageInfo: DamageInfo, ReturnValue: bool) -> bool: ...
+    def SetCriticalHitDamageOverrides(
+        self, DamageInfo: DamageInfo, Overrides: CriticalHitDamageOverrides
+    ): ...
+    def SetApplyCriticalHitModsToAoEDamage(
+        self, DamageInfo: DamageInfo, bApplyCriticalHitModsToAoEDamage: bool
+    ): ...
+    def GetImpactForce(self, DamageInfo: DamageInfo) -> float: ...
+    def GetDamageType(self, DamageInfo: DamageInfo) -> unreal.UClass: ...
+    def GetDamageSource(self, DamageInfo: DamageInfo) -> unreal.UClass: ...
+    def GetDamageRadius(self, DamageInfo: DamageInfo) -> float: ...
+    def GetDamageModifierComponent(
+        self, DamageInfo: DamageInfo
+    ) -> DamageModifierComponent: ...
+    def GetDamageCauser(self, DamageInfo: DamageInfo) -> engine.Actor: ...
+    def GetDamage(self, DamageInfo: DamageInfo) -> float: ...
+    def GetCriticalHitDamageOverrides(
+        self, DamageInfo: DamageInfo
+    ) -> CriticalHitDamageOverrides: ...
+    def GetApplyCriticalHitModsToAoEDamage(self, DamageInfo: DamageInfo) -> bool: ...
 
 
 class ExplosionComponent(engine.ActorComponent):
@@ -2862,6 +3631,7 @@ class ExplosionComponent(engine.ActorComponent):
     bCauseExplosionDamage: bool
     bOverrideLocation: bool
     LocationOverride: core_uobject.Vector
+
     def SetExplosionLocation(self, NewLocation: core_uobject.Vector): ...
     def Explode(self, DamageInfo: DamageInfo): ...
 
@@ -2882,12 +3652,16 @@ class ExplosionData(gbx_runtime.GbxDataAsset):
     ImpactOverride: ImpactData
     FeedbackFalloffMinDistanceScalar: float
     FeedbackFalloffMaxDistanceScalar: float
-    def SelectExplosion(self, Size: float, DamageType: unreal.UClass, ReturnValue: ExplosionSizeProperties) -> ExplosionSizeProperties: ...
+
+    def SelectExplosion(
+        self, Size: float, DamageType: unreal.UClass
+    ) -> ExplosionSizeProperties: ...
 
 
 class ExplosionSizeSelectionData(gbx_runtime.GbxDataAsset):
     SizeProperties: unreal.WrappedArray[ExplosionSizeProperties]
-    def GetExplosionPropertiesBySize(self, Size: float, ReturnValue: ExplosionSizeProperties) -> ExplosionSizeProperties: ...
+
+    def GetExplosionPropertiesBySize(self, Size: float) -> ExplosionSizeProperties: ...
 
 
 class EyesOfDeathComponent(engine.PrimitiveComponent): ...
@@ -2945,26 +3719,108 @@ class FeedbackData(gbx_runtime.GbxDataAsset):
     RadialBlurWorldSpaceCenter: core_uobject.Vector
     RadialBlurMaxDistance: float
     LoopingShakes: unreal.WrappedArray[LoopingShakeInfo]
-    def StopFeedbackForAll(self, FeedbackData: FeedbackData, WorldContextObject: unreal.UObject): ...
-    def StopFeedback(self, FeedbackData: FeedbackData, Controller: engine.PlayerController): ...
-    def StopDefaultFeedbackForAll(self, Feedback: FeedbackTableRowHandle, WorldContextObject: unreal.UObject): ...
-    def StopDefaultFeedback(self, Feedback: FeedbackTableRowHandle, Controller: engine.PlayerController): ...
-    def PerformFeedbackForAllAtLocation(self, FeedbackData: FeedbackData, SourceLocation: core_uobject.Vector, RangedDistanceOverrides: RangedDistanceOverrides, bLoop: bool, WorldContextObject: unreal.UObject, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformFeedbackForAll(self, FeedbackData: FeedbackData, Scale: float, bLoop: bool, WorldContextObject: unreal.UObject, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformFeedbackAtLocation(self, FeedbackData: FeedbackData, Controller: engine.PlayerController, SourceLocation: core_uobject.Vector, RangedDistanceOverrides: RangedDistanceOverrides, bLoop: bool, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformFeedback(self, FeedbackData: FeedbackData, Controller: engine.PlayerController, Scale: float, bLoop: bool, SourceContext: unreal.UObject): ...
-    def PerformDefaultFeedbackForAllAtLocation(self, Feedback: FeedbackTableRowHandle, SourceLocation: core_uobject.Vector, RangedDistanceOverrides: RangedDistanceOverrides, bLoop: bool, WorldContextObject: unreal.UObject, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformDefaultFeedbackForAll(self, Feedback: FeedbackTableRowHandle, Scale: float, bLoop: bool, WorldContextObject: unreal.UObject, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformDefaultFeedbackAtLocation(self, Feedback: FeedbackTableRowHandle, Controller: engine.PlayerController, SourceLocation: core_uobject.Vector, RangedDistanceOverrides: RangedDistanceOverrides, bLoop: bool, SourceContext: unreal.UObject, ControllerToIgnore: engine.PlayerController, OverrideControllerFeedback: FeedbackData): ...
-    def PerformDefaultFeedback(self, Feedback: FeedbackTableRowHandle, Controller: engine.PlayerController, Scale: float, bLoop: bool, SourceContext: unreal.UObject): ...
-    def GetFeedbackDuration(self, FeedbackData: FeedbackData, ReturnValue: float) -> float: ...
-    def GetFeedbackDataRange(self, FeedbackData: FeedbackData, MinRange: float, MaxRange: float): ...
+
+    def StopFeedbackForAll(
+        self, FeedbackData: FeedbackData, WorldContextObject: unreal.UObject
+    ): ...
+    def StopFeedback(
+        self, FeedbackData: FeedbackData, Controller: engine.PlayerController
+    ): ...
+    def StopDefaultFeedbackForAll(
+        self, Feedback: FeedbackTableRowHandle, WorldContextObject: unreal.UObject
+    ): ...
+    def StopDefaultFeedback(
+        self, Feedback: FeedbackTableRowHandle, Controller: engine.PlayerController
+    ): ...
+    def PerformFeedbackForAllAtLocation(
+        self,
+        FeedbackData: FeedbackData,
+        SourceLocation: core_uobject.Vector,
+        RangedDistanceOverrides: RangedDistanceOverrides,
+        bLoop: bool,
+        WorldContextObject: unreal.UObject,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformFeedbackForAll(
+        self,
+        FeedbackData: FeedbackData,
+        Scale: float,
+        bLoop: bool,
+        WorldContextObject: unreal.UObject,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformFeedbackAtLocation(
+        self,
+        FeedbackData: FeedbackData,
+        Controller: engine.PlayerController,
+        SourceLocation: core_uobject.Vector,
+        RangedDistanceOverrides: RangedDistanceOverrides,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformFeedback(
+        self,
+        FeedbackData: FeedbackData,
+        Controller: engine.PlayerController,
+        Scale: float,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+    ): ...
+    def PerformDefaultFeedbackForAllAtLocation(
+        self,
+        Feedback: FeedbackTableRowHandle,
+        SourceLocation: core_uobject.Vector,
+        RangedDistanceOverrides: RangedDistanceOverrides,
+        bLoop: bool,
+        WorldContextObject: unreal.UObject,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformDefaultFeedbackForAll(
+        self,
+        Feedback: FeedbackTableRowHandle,
+        Scale: float,
+        bLoop: bool,
+        WorldContextObject: unreal.UObject,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformDefaultFeedbackAtLocation(
+        self,
+        Feedback: FeedbackTableRowHandle,
+        Controller: engine.PlayerController,
+        SourceLocation: core_uobject.Vector,
+        RangedDistanceOverrides: RangedDistanceOverrides,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+        ControllerToIgnore: engine.PlayerController,
+        OverrideControllerFeedback: FeedbackData,
+    ): ...
+    def PerformDefaultFeedback(
+        self,
+        Feedback: FeedbackTableRowHandle,
+        Controller: engine.PlayerController,
+        Scale: float,
+        bLoop: bool,
+        SourceContext: unreal.UObject,
+    ): ...
+    def GetFeedbackDuration(self, FeedbackData: FeedbackData) -> float: ...
+    def GetFeedbackDataRange(
+        self, FeedbackData: FeedbackData, MinRange: float, MaxRange: float
+    ): ...
 
 
 class FirstPersonConfigurationData(engine.Actor):
     bAutoFillComponentVariables: bool
     Arms: GbxSkeletalMeshComponent
-
 
 
 class FXVolumeManager(unreal.UObject):
@@ -2978,8 +3834,23 @@ class FXVolume(engine.Volume):
     ParticleDepth: float
     TagName: str
     bDepthPriorityWorld: bool
-    def OnActorLeftVolume(self, OverlappedComponent: engine.PrimitiveComponent, Other: engine.Actor, OtherComp: engine.PrimitiveComponent, OtherBodyIndex: int): ...
-    def OnActorEnteredVolume(self, OverlappedComp: engine.PrimitiveComponent, Other: engine.Actor, OtherComp: engine.PrimitiveComponent, OtherBodyIndex: int, bFromSweep: bool, OverlapInfo: engine.HitResult): ...
+
+    def OnActorLeftVolume(
+        self,
+        OverlappedComponent: engine.PrimitiveComponent,
+        Other: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        OtherBodyIndex: int,
+    ): ...
+    def OnActorEnteredVolume(
+        self,
+        OverlappedComp: engine.PrimitiveComponent,
+        Other: engine.Actor,
+        OtherComp: engine.PrimitiveComponent,
+        OtherBodyIndex: int,
+        bFromSweep: bool,
+        OverlapInfo: engine.HitResult,
+    ): ...
 
 
 class GameplayTagBasedAttributeValueResolver(AttributeValueResolver):
@@ -2987,21 +3858,46 @@ class GameplayTagBasedAttributeValueResolver(AttributeValueResolver):
     ValueIfNoTagIsFound: AttributeInitializationData
 
 
-
 class GameplayTagContainerComponent(engine.ActorComponent):
     TagContainer: gameplay_tags.GameplayTagContainer
-    def GetGameplayTagContainerFromActor(self, Actor: engine.Actor, Branches: EContainsTagComponent, ReturnValue: GameplayTagContainerComponent) -> GameplayTagContainerComponent: ...
+
+    def GetGameplayTagContainerFromActor(
+        self, Actor: engine.Actor, Branches: EContainsTagComponent
+    ) -> GameplayTagContainerComponent: ...
 
 
 class GameplayTask_RunEnvQuery(gameplay_tasks.GameplayTask):
+    Success: Any
+    Failure: Any
 
-    def RunEnvQueryOnLocation(self, QueryOwner: engine.Actor, QueryParams: EnvQueryParams, Location: core_uobject.Vector, ReturnValue: GameplayTask_RunEnvQuery) -> GameplayTask_RunEnvQuery: ...
-    def RunEnvQueryOnActor(self, QueryOwner: engine.Actor, QueryParams: EnvQueryParams, Actor: engine.Actor, ReturnValue: GameplayTask_RunEnvQuery) -> GameplayTask_RunEnvQuery: ...
-    def RunEnvQuery(self, QueryOwner: engine.Actor, QueryParams: EnvQueryParams, ReturnValue: GameplayTask_RunEnvQuery) -> GameplayTask_RunEnvQuery: ...
-    def GetResultLocations(self, QueryResult: aimodule.EnvQueryResult, ResultLocations: unreal.WrappedArray[core_uobject.Vector], ReturnValue: bool) -> bool: ...
-    def GetResultLocation(self, QueryResult: aimodule.EnvQueryResult, ResultLocation: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def GetResultActors(self, QueryResult: aimodule.EnvQueryResult, ResultActors: unreal.WrappedArray[engine.Actor], ReturnValue: bool) -> bool: ...
-    def GetResultActor(self, QueryResult: aimodule.EnvQueryResult, ResultActor: engine.Actor, ReturnValue: bool) -> bool: ...
+    def RunEnvQueryOnLocation(
+        self,
+        QueryOwner: engine.Actor,
+        QueryParams: EnvQueryParams,
+        Location: core_uobject.Vector,
+    ) -> GameplayTask_RunEnvQuery: ...
+    def RunEnvQueryOnActor(
+        self, QueryOwner: engine.Actor, QueryParams: EnvQueryParams, Actor: engine.Actor
+    ) -> GameplayTask_RunEnvQuery: ...
+    def RunEnvQuery(
+        self, QueryOwner: engine.Actor, QueryParams: EnvQueryParams
+    ) -> GameplayTask_RunEnvQuery: ...
+    def GetResultLocations(
+        self,
+        QueryResult: aimodule.EnvQueryResult,
+        ResultLocations: unreal.WrappedArray[core_uobject.Vector],
+    ) -> bool: ...
+    def GetResultLocation(
+        self, QueryResult: aimodule.EnvQueryResult, ResultLocation: core_uobject.Vector
+    ) -> bool: ...
+    def GetResultActors(
+        self,
+        QueryResult: aimodule.EnvQueryResult,
+        ResultActors: unreal.WrappedArray[engine.Actor],
+    ) -> bool: ...
+    def GetResultActor(
+        self, QueryResult: aimodule.EnvQueryResult, ResultActor: engine.Actor
+    ) -> bool: ...
 
 
 class GameResourceData(gbx_runtime.GbxDataAsset):
@@ -3011,24 +3907,27 @@ class GameResourceData(gbx_runtime.GbxDataAsset):
     DefaultResourcePoolData: GameResourcePoolData
 
 
-
 class GameResourcePoolAttributePropertyValueResolver(AttributePropertyValueResolver):
     Resource: GameResourceData
 
 
+class GameResourcePoolClampedMaxValueResolver(
+    GameResourcePoolAttributePropertyValueResolver
+): ...
 
-class GameResourcePoolClampedMaxValueResolver(GameResourcePoolAttributePropertyValueResolver): ...
 
-
-class GameResourcePoolClampedValueResolver(GameResourcePoolAttributePropertyValueResolver): ...
+class GameResourcePoolClampedValueResolver(
+    GameResourcePoolAttributePropertyValueResolver
+): ...
 
 
 class GameResourcePoolCurrentValueResolver(AttributeValueResolver):
     Resource: GameResourceData
 
 
-
-class GameResourcePoolCurrentValueNoPauseOnHealResolver(GameResourcePoolCurrentValueResolver): ...
+class GameResourcePoolCurrentValueNoPauseOnHealResolver(
+    GameResourcePoolCurrentValueResolver
+): ...
 
 
 class GameResourcePoolData(gbx_runtime.GbxDataAsset):
@@ -3054,42 +3953,92 @@ class GameResourcePoolData(gbx_runtime.GbxDataAsset):
     ReplicationType: int
 
 
-
 class GameResourcePoolManagerComponent(engine.ActorComponent):
     ResourcePools: unreal.WrappedArray[GameResourcePool]
     PendingResourcePools: unreal.WrappedArray[GameResourcePool]
     ReplicatedPoolData: GameResourcePoolNet
     InitialResourcePools: unreal.WrappedArray[GameResourcePoolData]
     ResourceEvents: unreal.WrappedArray[GameResourceUserEvent]
+
+    def RemoveResourcePoolDelegate(
+        self,
+        InResourceData: GameResourceData,
+        DelegatePropertyName: str,
+        ScriptDelegate: Any,
+    ): ...
     def RecalculateAttributeInitializedPoolProperties(self): ...
     def OnOwnerExperienceLevelChanged(self, OldExperienceLevel: int): ...
-    def GetResourcePoolByResource(self, Resource: GameResourceData, ReturnValue: GameResourcePoolReference) -> GameResourcePoolReference: ...
-    def CreatePool(self, PoolData: GameResourcePoolData, bReinitializeExistingPool: bool, ReturnValue: GameResourcePoolReference) -> GameResourcePoolReference: ...
-    def ClearResourcePoolDelegate(self, InResourceData: GameResourceData, DelegatePropertyName: str): ...
+    def GetResourcePoolByResource(
+        self, Resource: GameResourceData
+    ) -> GameResourcePoolReference: ...
+    def CreatePool(
+        self, PoolData: GameResourcePoolData, bReinitializeExistingPool: bool
+    ) -> GameResourcePoolReference: ...
+    def ClearResourcePoolDelegate(
+        self, InResourceData: GameResourceData, DelegatePropertyName: str
+    ): ...
+    def AddResourcePoolDelegate(
+        self,
+        InResourceData: GameResourceData,
+        DelegatePropertyName: str,
+        ScriptDelegate: Any,
+    ): ...
 
 
 class GameResourcePoolFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetResourcePoolValue(self, InPool: GameResourcePoolReference, InValue: float): ...
-    def ResetResourcePoolRegenDelayByGameResourceData(self, Actor: engine.Actor, Resource: GameResourceData): ...
+    def SetResourcePoolValue(
+        self, InPool: GameResourcePoolReference, InValue: float
+    ): ...
+    def ResetResourcePoolRegenDelayByGameResourceData(
+        self, Actor: engine.Actor, Resource: GameResourceData
+    ): ...
     def ResetResourcePoolRegenDelay(self, InPool: GameResourcePoolReference): ...
-    def RefillResourcePoolByPercentage(self, InPool: GameResourcePoolReference, Percentage: float, MaxPercentage: float): ...
-    def IsResourcePoolInState(self, InPool: GameResourcePoolReference, InState: EGameResourcePoolState, ReturnValue: bool) -> bool: ...
-    def GetDelegatePrefixForResourceEvent(self, InResourceUserEvent: GameResourceUserEvent, ReturnValue: str) -> str: ...
-    def EqualEqual_ResourcePoolReference(self, A: GameResourcePoolReference, B: GameResourcePoolReference, ReturnValue: bool) -> bool: ...
-    def EqualEqual_ResourcePoolData(self, ResourcePoolReference: GameResourcePoolReference, ResourcePoolData: GameResourcePoolData, ReturnValue: bool) -> bool: ...
-    def EqualEqual_ResourceData(self, ResourcePoolReference: GameResourcePoolReference, ResourceData: GameResourceData, ReturnValue: bool) -> bool: ...
-    def DrainResourcePoolByPercentage(self, InPool: GameResourcePoolReference, Percentage: float, MinPercentage: float): ...
+    def RefillResourcePoolByPercentage(
+        self, InPool: GameResourcePoolReference, Percentage: float, MaxPercentage: float
+    ): ...
+    def IsResourcePoolInState(
+        self, InPool: GameResourcePoolReference, InState: EGameResourcePoolState
+    ) -> bool: ...
+    def GetDelegatePrefixForResourceEvent(
+        self, InResourceUserEvent: GameResourceUserEvent
+    ) -> str: ...
+    def EqualEqual_ResourcePoolReference(
+        self, A: GameResourcePoolReference, B: GameResourcePoolReference
+    ) -> bool: ...
+    def EqualEqual_ResourcePoolData(
+        self,
+        ResourcePoolReference: GameResourcePoolReference,
+        ResourcePoolData: GameResourcePoolData,
+    ) -> bool: ...
+    def EqualEqual_ResourceData(
+        self,
+        ResourcePoolReference: GameResourcePoolReference,
+        ResourceData: GameResourceData,
+    ) -> bool: ...
+    def DrainResourcePoolByPercentage(
+        self, InPool: GameResourcePoolReference, Percentage: float, MinPercentage: float
+    ): ...
     def DeleteResourcePool(self, InPool: GameResourcePoolReference): ...
-    def ClearResourcePoolRegenDelayByGameResourceData(self, Actor: engine.Actor, Resource: GameResourceData): ...
+    def ClearResourcePoolRegenDelayByGameResourceData(
+        self, Actor: engine.Actor, Resource: GameResourceData
+    ): ...
     def ClearResourcePoolRegenDelay(self, InPool: GameResourcePoolReference): ...
-    def BreakResourcePoolReference(self, InPool: GameResourcePoolReference, bValid: bool, CurrentValue: float, MinValue: float, MaxValue: float): ...
-    def AdjustResourcePoolValue(self, InPool: GameResourcePoolReference, InValue: float): ...
+    def BreakResourcePoolReference(
+        self,
+        InPool: GameResourcePoolReference,
+        bValid: bool,
+        CurrentValue: float,
+        MinValue: float,
+        MaxValue: float,
+    ): ...
+    def AdjustResourcePoolValue(
+        self, InPool: GameResourcePoolReference, InValue: float
+    ): ...
 
 
 class GameStatChannel(engine.Channel):
     GameStatsComponent: GameStatsComponent
-
 
 
 class GameStatData(gbx_runtime.GbxDataAsset):
@@ -3103,7 +4052,6 @@ class GameStatData(gbx_runtime.GbxDataAsset):
     bPartyStat: bool
 
 
-
 class GameStateAttributeContextResolver(AttributeContextResolver): ...
 
 
@@ -3111,21 +4059,27 @@ class GameStatList(gbx_runtime.GbxDataAsset):
     GameStats: unreal.WrappedArray[GameStatData]
 
 
-
 class GameStatsComponent(engine.ActorComponent):
     GameStats: unreal.WrappedArray[GameStat]
     GameStatChannel: GameStatChannel
+
     def UpdateStat(self, GameStat: GameStatData, NewValue: int): ...
     def IncrementStat(self, GameStat: GameStatData, Amount: int): ...
-    def GetStatValue(self, GameStat: GameStatData, ReturnValue: int) -> int: ...
-    def GetGameStats(self, ReturnValue: unreal.WrappedArray[GameStat]) -> unreal.WrappedArray[GameStat]: ...
+    def GetStatValue(self, GameStat: GameStatData) -> int: ...
+    def GetGameStats(self) -> unreal.WrappedArray[GameStat]: ...
 
 
 class GameStatsManager(engine.Actor):
 
-    def UpdateStat(self, StatContext: engine.Actor, GameStat: GameStatData, NewValue: int): ...
-    def IncrementStat(self, StatContext: engine.Actor, GameStat: GameStatData, IncrementAmount: int): ...
-    def GetStatValue(self, StatContext: engine.Actor, GameStat: GameStatData, ReturnValue: int) -> int: ...
+    def UpdateStat(
+        self, StatContext: engine.Actor, GameStat: GameStatData, NewValue: int
+    ): ...
+    def IncrementStat(
+        self, StatContext: engine.Actor, GameStat: GameStatData, IncrementAmount: int
+    ): ...
+    def GetStatValue(
+        self, StatContext: engine.Actor, GameStat: GameStatData
+    ) -> int: ...
 
 
 class GbxAction_AICharge(GbxAction_SimpleAnim):
@@ -3142,6 +4096,7 @@ class GbxAction_AICharge(GbxAction_SimpleAnim):
     HitWallAnims: unreal.WrappedArray[AnimMeshList]
     ReachCliffAnims: unreal.WrappedArray[AnimMeshList]
     StopForFriendlyAnims: unreal.WrappedArray[AnimMeshList]
+
     def OnStrike(self, Actor: engine.Actor): ...
     def OnStopForFriendly(self, Actor: engine.Actor): ...
     def OnReachCliff(self, Actor: engine.Actor): ...
@@ -3154,18 +4109,15 @@ class GbxAction_BlueprintBase(GbxAction):
     bAutoCompleted: bool
 
 
-
 class GbxAction_ConditionContainer(GbxAction):
     ActionSelectionMethod: EActionSelectionMethod
     ConditionList: unreal.WrappedArray[ConditionActionPair]
-
 
 
 class GbxAction_DirectionContainer(GbxAction):
     DirectionList: unreal.WrappedArray[DirectionActionData]
     DirectionData: RelativeDirectionData
     Plane: EDirectionPlane
-
 
 
 class GbxAction_DodgePicker(GbxAction):
@@ -3177,7 +4129,6 @@ class GbxAction_DodgePicker(GbxAction):
     MovingRight: unreal.UClass
     MovingRightBackward: unreal.UClass
     MovingRightForward: unreal.UClass
-
 
 
 class GbxAction_DropshipSpawn(GbxAction_SimpleAnim):
@@ -3195,10 +4146,8 @@ class GbxAction_DropshipSpawn(GbxAction_SimpleAnim):
     AnimRecovery: engine.AnimSequenceBase
 
 
-
 class GbxAction_KeyedContainer(GbxAction):
     ActionKey: gameplay_tags.GameplayTag
-
 
 
 class GbxAction_Launch(GbxAction_SimpleAnim):
@@ -3217,7 +4166,6 @@ class GbxAction_Launch(GbxAction_SimpleAnim):
     RecoveryAnim: AnimActionDef
 
 
-
 class MotionMatchedAnimationTable(GbxAnimTable):
     RootMotionBone: str
     RootMotionBoneUpAxis: int
@@ -3234,7 +4182,6 @@ class MotionMatchedAnimationTable(GbxAnimTable):
     DynamicToKinematicTransition: EDynamicToKinematicTransition
     BlendToRecoveryTime: float
     MaxAllowedDeviation: float
-
 
 
 class GbxAction_Ragdoll(GbxAction_SimpleAnim):
@@ -3265,10 +4212,8 @@ class GbxAction_Ragdoll(GbxAction_SimpleAnim):
     GetupBlendOutTime: float
 
 
-
 class GbxAction_RandomContainer(GbxAction):
     ActionList: unreal.WrappedArray[RandomActionPair]
-
 
 
 class GbxAction_StretchBones(GbxAction_SimpleAnim):
@@ -3286,25 +4231,61 @@ class GbxAction_StretchBones(GbxAction_SimpleAnim):
     MaxPredictionDistance: float
 
 
-
 class StretchBonesBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetStretchBonesTarget(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], TargetActor: engine.Actor, TargetPosition: core_uobject.Vector, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
-    def SetStretchBonesDistance(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], Distance: float, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetStretchBonesTarget(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        TargetActor: engine.Actor,
+        TargetPosition: core_uobject.Vector,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetStretchBonesDistance(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        Distance: float,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
 
 
 class GbxActionBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def StopLoopingActionClass(self, ActionClass: unreal.UClass, Target: engine.Actor): ...
+    def StopLoopingActionClass(
+        self, ActionClass: unreal.UClass, Target: engine.Actor
+    ): ...
     def StopActionSlot(self, ActionSlotName: str, Target: engine.Actor): ...
     def StopActions(self, Target: engine.Actor): ...
     def StopActionClass(self, ActionClass: unreal.UClass, Target: engine.Actor): ...
-    def SetObjectGbxActionRegister(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], RegisterKey: str, Value: unreal.UObject, bReplicates: bool, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
-    def SetNameGbxActionRegister(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], RegisterKey: str, Value: str, bReplicates: bool, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
-    def SetIntGbxActionRegister(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], RegisterKey: str, Value: int, bReplicates: bool, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
-    def SetFloatGbxActionRegister(self, GbxActionRegisters: unreal.WrappedArray[GbxActionRegister], RegisterKey: str, Value: float, bReplicates: bool, ReturnValue: unreal.WrappedArray[GbxActionRegister]) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetObjectGbxActionRegister(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        RegisterKey: str,
+        Value: unreal.UObject,
+        bReplicates: bool,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetNameGbxActionRegister(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        RegisterKey: str,
+        Value: str,
+        bReplicates: bool,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetIntGbxActionRegister(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        RegisterKey: str,
+        Value: int,
+        bReplicates: bool,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
+    def SetFloatGbxActionRegister(
+        self,
+        GbxActionRegisters: unreal.WrappedArray[GbxActionRegister],
+        RegisterKey: str,
+        Value: float,
+        bReplicates: bool,
+    ) -> unreal.WrappedArray[GbxActionRegister]: ...
     def K2_UpdateActionPlayRate(self, Action: GbxAction, PlayRate: float): ...
-    def K2_UpdateActionDirection(self, Action: GbxAction, Direction: core_uobject.Vector): ...
+    def K2_UpdateActionDirection(
+        self, Action: GbxAction, Direction: core_uobject.Vector
+    ): ...
     def K2_StopActionObj(self, Action: GbxAction, Target: engine.Actor): ...
     def K2_ShowGbxActionScreenLogs(self, bShowLogsOnScreen: bool): ...
     def K2_Resume(self, Action: GbxAction): ...
@@ -3313,11 +4294,15 @@ class GbxActionBlueprintLibrary(engine.BlueprintFunctionLibrary):
     def K2_ProceedToNextSection(self, Action: GbxAction): ...
     def K2_Pause(self, Action: GbxAction): ...
     def K2_JumpToNextSection(self, Action: GbxAction): ...
-    def K2_GetTimeRemaining(self, Target: GbxAction, ReturnValue: float) -> float: ...
-    def K2_GetMaxCurrentTime(self, Action: GbxAction, ReturnValue: float) -> float: ...
-    def K2_GetActionByClass(self, ActionClass: unreal.UClass, Target: engine.Actor, ReturnValue: GbxAction) -> GbxAction: ...
-    def GetSummary_AnimActionDef(self, AnimActionDef: AnimActionDef, ReturnValue: str) -> str: ...
-    def GetKeyedActionClass(self, ActionKey: gameplay_tags.GameplayTag, Target: engine.Actor, ReturnValue: unreal.UClass) -> unreal.UClass: ...
+    def K2_GetTimeRemaining(self, Target: GbxAction) -> float: ...
+    def K2_GetMaxCurrentTime(self, Action: GbxAction) -> float: ...
+    def K2_GetActionByClass(
+        self, ActionClass: unreal.UClass, Target: engine.Actor
+    ) -> GbxAction: ...
+    def GetSummary_AnimActionDef(self, AnimActionDef: AnimActionDef) -> str: ...
+    def GetKeyedActionClass(
+        self, ActionKey: gameplay_tags.GameplayTag, Target: engine.Actor
+    ) -> unreal.UClass: ...
 
 
 class GbxActionComponent(engine.ActorComponent):
@@ -3326,23 +4311,28 @@ class GbxActionComponent(engine.ActorComponent):
     SpawnKeyedActionList: unreal.WrappedArray[DataActionPair_Spawn]
     SpawnMeshKeyedActionList: unreal.WrappedArray[DataActionPair_SpawnMesh]
     SmartObjectKeyedActionList: unreal.WrappedArray[DataActionPair_SmartObject]
+    OnActionStarted: Any
+    OnActionStopped: Any
+
     def UpdateActionRemoteServer(self, ActionData: ActionState_Base): ...
     def StopOnRemoteServer(self, ManagerRepId: int, EndState: EGbxActionEndState): ...
     def StopLoopingActionClass(self, ActionClass: unreal.UClass): ...
     def StopActionSlot(self, ActionSlotName: str): ...
     def StopActions(self): ...
     def StopActionClass(self, ActionClass: unreal.UClass): ...
-    def PlayOnRemoteServer(self, ActionClass: unreal.UClass, ActionData: ActionState_Base): ...
+    def PlayOnRemoteServer(
+        self, ActionClass: unreal.UClass, ActionData: ActionState_Base
+    ): ...
     def OnComponentUnregistered(self, ActorComponent: engine.ActorComponent): ...
     def OnComponentDetached(self, SceneComponent: engine.SceneComponent): ...
     def OnComponentAttached(self, SceneComponent: engine.SceneComponent): ...
     def NotifyInterruptRequest(self): ...
-    def K2_Play(self, ActionClass: unreal.UClass, ReturnValue: GbxAction) -> GbxAction: ...
-    def K2_IsPlayingObj(self, Action: GbxAction, ReturnValue: bool) -> bool: ...
-    def K2_GetActionBySlot(self, ActionSlotName: str, ReturnValue: GbxAction) -> GbxAction: ...
-    def K2_GetActionByClass(self, ActionClass: unreal.UClass, ReturnValue: GbxAction) -> GbxAction: ...
-    def IsPlayingSlot(self, ActionSlotName: str, ReturnValue: bool) -> bool: ...
-    def IsPlayingClass(self, ActionClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+    def K2_Play(self, ActionClass: unreal.UClass) -> GbxAction: ...
+    def K2_IsPlayingObj(self, Action: GbxAction) -> bool: ...
+    def K2_GetActionBySlot(self, ActionSlotName: str) -> GbxAction: ...
+    def K2_GetActionByClass(self, ActionClass: unreal.UClass) -> GbxAction: ...
+    def IsPlayingSlot(self, ActionSlotName: str) -> bool: ...
+    def IsPlayingClass(self, ActionClass: unreal.UClass) -> bool: ...
 
 
 class GbxActionDataAsset(gbx_runtime.GbxDataAsset): ...
@@ -3350,7 +4340,6 @@ class GbxActionDataAsset(gbx_runtime.GbxDataAsset): ...
 
 class GbxActionManager(engine.Actor):
     ActionRepWrapper: ActionStateNet
-
 
 
 class GbxAnimBlueprintProfile(gbx_runtime.GbxDataAsset):
@@ -3410,9 +4399,11 @@ class GbxAnimBlueprintProfile(gbx_runtime.GbxDataAsset):
     TeethOffsetOverride: core_uobject.Vector
     bUseTeethOffsetOverride: bool
     UpperTeethBoneRef: engine.BoneReference
+    BoneTagToBoneOverrideNameMap: Any
     bUseUpperTeethBoneRefOverride: bool
     DefaultIdleLoopAnimation: engine.AnimSequence
     SlotName: str
+
     def RebuildBoneLists(self): ...
     def AnimBlueprintImportFunction(self, ImportType: EAnimBPProfileImport): ...
 
@@ -3423,81 +4414,190 @@ class GbxAnimStateMachineDefinition(gbx_runtime.GbxDataAsset):
     StateGroups: unreal.WrappedArray[AnimStateGroup]
 
 
-
 class GbxAnimStateManager_Falling(engine.GbxAnimStateManager):
     GbxCharAnimInst: GbxCharacterAnimInstance
     GbxCharMoveComponent: GbxCharacterMovementComponent
-
 
 
 class GbxAnimStateManager_RootMotion(engine.GbxAnimStateManager):
     GbxCharMoveComponent: GbxCharacterMovementComponent
 
 
-
 class GbxAttributeData(gbx_runtime.GbxDataAsset):
     ContextResolver: AttributeContextResolver
     ValueResolver: AttributeValueResolver
-    def CanSetBaseValue(self, ReturnValue: bool) -> bool: ...
-    def CanBindToOnChangedEvent(self, ReturnValue: bool) -> bool: ...
-    def CanAddModifiers(self, ReturnValue: bool) -> bool: ...
-    def CanAddAndRemoveModifiers(self, ReturnValue: bool) -> bool: ...
+
+    def CanSetBaseValue(self) -> bool: ...
+    def CanBindToOnChangedEvent(self) -> bool: ...
+    def CanAddModifiers(self) -> bool: ...
+    def CanAddAndRemoveModifiers(self) -> bool: ...
 
 
 class GbxAttributeFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def UnbindFromOnAttributeChanged(self, BindingHandle: GbxAttributeDelegateBindingHandle): ...
-    def UnbindAllEventsFromOnIntegerAttributeChanged(self, Attribute: engine.GbxAttributeInteger): ...
-    def UnbindAllEventsFromOnFloatAttributeChanged(self, Attribute: engine.GbxAttributeFloat): ...
-    def RemoveMultipleAttributeModifiers(self, ModifierHandles: unreal.WrappedArray[GbxAttributeModifierHandle]): ...
-    def RemoveModifierFromGbxAttribute(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, ModifierHandle: GbxAttributeModifierHandle, ModifierActionResult: EGbxAttributeModifierActionExecOutput): ...
-    def RemoveAttributeModifier(self, ModifierHandle: GbxAttributeModifierHandle, ReturnValue: bool) -> bool: ...
-    def RefreshBindingToOnAttributeChangedEvent(self, BindingHandle: GbxAttributeDelegateBindingHandle, ContextSource: unreal.UObject, ReturnValue: GbxAttributeDelegateBindingHandle) -> GbxAttributeDelegateBindingHandle: ...
-    def MakeGbxAttributeInteger(self, BaseValue: int, ReturnValue: engine.GbxAttributeInteger) -> engine.GbxAttributeInteger: ...
-    def MakeGbxAttributeFloat(self, BaseValue: float, ReturnValue: engine.GbxAttributeFloat) -> engine.GbxAttributeFloat: ...
-    def GetValueOfAttributeAsInteger(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, DefaultValue: int, ReturnValue: int) -> int: ...
-    def GetValueOfAttributeAsBoolean(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, DefaultValue: bool, ReturnValue: bool) -> bool: ...
-    def GetValueOfAttribute(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, DefaultValue: float, ReturnValue: float) -> float: ...
-    def GetValueFromAttributeDefinedRow(self, RowHandle: engine.DataTableRowHandle, ContextSource: unreal.UObject, ReturnValue: float) -> float: ...
-    def EvaluateAttributeInitializer(self, Initializer: unreal.UClass, ContextSource: unreal.UObject, ReturnValue: float) -> float: ...
-    def EvaluateAttributeInitializationData(self, InitializationData: AttributeInitializationData, ContextSource: unreal.UObject, ReturnValue: float) -> float: ...
-    def EqualEqual_GbxAttributeIntegerValue(self, A: engine.GbxAttributeInteger, B: int, ReturnValue: bool) -> bool: ...
-    def EqualEqual_GbxAttributeInteger(self, A: engine.GbxAttributeInteger, B: engine.GbxAttributeInteger, ReturnValue: bool) -> bool: ...
-    def EqualEqual_GbxAttributeFloatValue(self, A: engine.GbxAttributeFloat, B: float, ReturnValue: bool) -> bool: ...
-    def EqualEqual_GbxAttributeFloat(self, A: engine.GbxAttributeFloat, B: engine.GbxAttributeFloat, ReturnValue: bool) -> bool: ...
-    def Conv_GbxAttributeModifierHandleToString(self, Attribute: GbxAttributeModifierHandle, ReturnValue: str) -> str: ...
-    def Conv_GbxAttributeIntegerToString(self, Attribute: engine.GbxAttributeInteger, ReturnValue: str) -> str: ...
-    def Conv_GbxAttributeIntegerToInteger(self, Attribute: engine.GbxAttributeInteger, ReturnValue: int) -> int: ...
-    def Conv_GbxAttributeFloatToString(self, Attribute: engine.GbxAttributeFloat, ReturnValue: str) -> str: ...
-    def Conv_GbxAttributeFloatToFloat(self, Attribute: engine.GbxAttributeFloat, ReturnValue: float) -> float: ...
-    def Conv_AttributeInitializationDataToString(self, InitData: AttributeInitializationData, ReturnValue: str) -> str: ...
-    def BreakGbxAttributeInteger(self, Attribute: engine.GbxAttributeInteger, Value: int, BaseValue: int): ...
-    def BreakGbxAttributeFloat(self, Attribute: engine.GbxAttributeFloat, Value: float, BaseValue: float): ...
-    def ApplyMultipleAttributeEffects(self, Effects: unreal.WrappedArray[AttributeEffectData], ModifierValueContext: unreal.UObject, AttributeToModifyContextSource: unreal.UObject, ReturnValue: unreal.WrappedArray[GbxAttributeModifierHandle]) -> unreal.WrappedArray[GbxAttributeModifierHandle]: ...
-    def ApplyMultipleAttributeBaseValueData(self, BaseValueData: unreal.WrappedArray[AttributeBaseValueData], AttributeToSetContextSource: unreal.UObject, ValueContext: unreal.UObject): ...
-    def ApplyAttributeEffect(self, Effect: AttributeEffectData, ModifierValueContext: unreal.UObject, AttributeToModifyContextSource: unreal.UObject, ModifierActionResult: EGbxAttributeModifierActionExecOutput, ReturnValue: GbxAttributeModifierHandle) -> GbxAttributeModifierHandle: ...
-    def ApplyAttributeBaseValueData(self, BaseValueData: AttributeBaseValueData, AttributeToSetContextSource: unreal.UObject, ValueContext: unreal.UObject, ModifierActionResult: EGbxAttributeModifierActionExecOutput): ...
-    def AddModifierToGbxAttribute(self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, ModifierType: engine.EGbxAttributeModifierType, ModifierValue: float, ModifierActionResult: EGbxAttributeModifierActionExecOutput, ReturnValue: GbxAttributeModifierHandle) -> GbxAttributeModifierHandle: ...
+    def UnbindFromOnAttributeChanged(
+        self, BindingHandle: GbxAttributeDelegateBindingHandle
+    ): ...
+    def UnbindEventFromOnIntegerAttributeChanged(
+        self, Attribute: engine.GbxAttributeInteger, Delegate: Any
+    ): ...
+    def UnbindEventFromOnFloatAttributeChanged(
+        self, Attribute: engine.GbxAttributeFloat, Delegate: Any
+    ): ...
+    def UnbindAllEventsFromOnIntegerAttributeChanged(
+        self, Attribute: engine.GbxAttributeInteger
+    ): ...
+    def UnbindAllEventsFromOnFloatAttributeChanged(
+        self, Attribute: engine.GbxAttributeFloat
+    ): ...
+    def RemoveMultipleAttributeModifiers(
+        self, ModifierHandles: unreal.WrappedArray[GbxAttributeModifierHandle]
+    ): ...
+    def RemoveModifierFromGbxAttribute(
+        self,
+        Attribute: GbxAttributeData,
+        ContextSource: unreal.UObject,
+        ModifierHandle: GbxAttributeModifierHandle,
+        ModifierActionResult: EGbxAttributeModifierActionExecOutput,
+    ): ...
+    def RemoveAttributeModifier(
+        self, ModifierHandle: GbxAttributeModifierHandle
+    ) -> bool: ...
+    def RefreshBindingToOnAttributeChangedEvent(
+        self,
+        BindingHandle: GbxAttributeDelegateBindingHandle,
+        ContextSource: unreal.UObject,
+    ) -> GbxAttributeDelegateBindingHandle: ...
+    def MakeGbxAttributeInteger(self, BaseValue: int) -> engine.GbxAttributeInteger: ...
+    def MakeGbxAttributeFloat(self, BaseValue: float) -> engine.GbxAttributeFloat: ...
+    def GetValueOfAttributeAsInteger(
+        self,
+        Attribute: GbxAttributeData,
+        ContextSource: unreal.UObject,
+        DefaultValue: int,
+    ) -> int: ...
+    def GetValueOfAttributeAsBoolean(
+        self,
+        Attribute: GbxAttributeData,
+        ContextSource: unreal.UObject,
+        DefaultValue: bool,
+    ) -> bool: ...
+    def GetValueOfAttribute(
+        self,
+        Attribute: GbxAttributeData,
+        ContextSource: unreal.UObject,
+        DefaultValue: float,
+    ) -> float: ...
+    def GetValueFromAttributeDefinedRow(
+        self, RowHandle: engine.DataTableRowHandle, ContextSource: unreal.UObject
+    ) -> float: ...
+    def EvaluateAttributeInitializer(
+        self, Initializer: unreal.UClass, ContextSource: unreal.UObject
+    ) -> float: ...
+    def EvaluateAttributeInitializationData(
+        self,
+        InitializationData: AttributeInitializationData,
+        ContextSource: unreal.UObject,
+    ) -> float: ...
+    def EqualEqual_GbxAttributeIntegerValue(
+        self, A: engine.GbxAttributeInteger, B: int
+    ) -> bool: ...
+    def EqualEqual_GbxAttributeInteger(
+        self, A: engine.GbxAttributeInteger, B: engine.GbxAttributeInteger
+    ) -> bool: ...
+    def EqualEqual_GbxAttributeFloatValue(
+        self, A: engine.GbxAttributeFloat, B: float
+    ) -> bool: ...
+    def EqualEqual_GbxAttributeFloat(
+        self, A: engine.GbxAttributeFloat, B: engine.GbxAttributeFloat
+    ) -> bool: ...
+    def Conv_GbxAttributeModifierHandleToString(
+        self, Attribute: GbxAttributeModifierHandle
+    ) -> str: ...
+    def Conv_GbxAttributeIntegerToString(
+        self, Attribute: engine.GbxAttributeInteger
+    ) -> str: ...
+    def Conv_GbxAttributeIntegerToInteger(
+        self, Attribute: engine.GbxAttributeInteger
+    ) -> int: ...
+    def Conv_GbxAttributeFloatToString(
+        self, Attribute: engine.GbxAttributeFloat
+    ) -> str: ...
+    def Conv_GbxAttributeFloatToFloat(
+        self, Attribute: engine.GbxAttributeFloat
+    ) -> float: ...
+    def Conv_AttributeInitializationDataToString(
+        self, InitData: AttributeInitializationData
+    ) -> str: ...
+    def BreakGbxAttributeInteger(
+        self, Attribute: engine.GbxAttributeInteger, Value: int, BaseValue: int
+    ): ...
+    def BreakGbxAttributeFloat(
+        self, Attribute: engine.GbxAttributeFloat, Value: float, BaseValue: float
+    ): ...
+    def BindEventToOnIntegerAttributeChanged(
+        self, Attribute: engine.GbxAttributeInteger, Delegate: Any
+    ): ...
+    def BindEventToOnFloatAttributeChanged(
+        self, Attribute: engine.GbxAttributeFloat, Delegate: Any
+    ): ...
+    def BindEventToOnAttributeChanged(
+        self, Attribute: GbxAttributeData, ContextSource: unreal.UObject, Delegate: Any
+    ) -> GbxAttributeDelegateBindingHandle: ...
+    def ApplyMultipleAttributeEffects(
+        self,
+        Effects: unreal.WrappedArray[AttributeEffectData],
+        ModifierValueContext: unreal.UObject,
+        AttributeToModifyContextSource: unreal.UObject,
+    ) -> unreal.WrappedArray[GbxAttributeModifierHandle]: ...
+    def ApplyMultipleAttributeBaseValueData(
+        self,
+        BaseValueData: unreal.WrappedArray[AttributeBaseValueData],
+        AttributeToSetContextSource: unreal.UObject,
+        ValueContext: unreal.UObject,
+    ): ...
+    def ApplyAttributeEffect(
+        self,
+        Effect: AttributeEffectData,
+        ModifierValueContext: unreal.UObject,
+        AttributeToModifyContextSource: unreal.UObject,
+        ModifierActionResult: EGbxAttributeModifierActionExecOutput,
+    ) -> GbxAttributeModifierHandle: ...
+    def ApplyAttributeBaseValueData(
+        self,
+        BaseValueData: AttributeBaseValueData,
+        AttributeToSetContextSource: unreal.UObject,
+        ValueContext: unreal.UObject,
+        ModifierActionResult: EGbxAttributeModifierActionExecOutput,
+    ): ...
+    def AddModifierToGbxAttribute(
+        self,
+        Attribute: GbxAttributeData,
+        ContextSource: unreal.UObject,
+        ModifierType: engine.EGbxAttributeModifierType,
+        ModifierValue: float,
+        ModifierActionResult: EGbxAttributeModifierActionExecOutput,
+    ) -> GbxAttributeModifierHandle: ...
 
 
 class GbxAttributesComponent(engine.ActorComponent):
     AttributeSets: unreal.WrappedArray[GbxAttributeSet]
-    def IsAttributeSetClassUnrelatedToExistingSet(self, AttributeSetClass: unreal.UClass, ReturnValue: bool) -> bool: ...
+
+    def IsAttributeSetClassUnrelatedToExistingSet(
+        self, AttributeSetClass: unreal.UClass
+    ) -> bool: ...
 
 
 class GbxAttributeSet(unreal.UObject):
     ContextResolver: AttributeContextResolver
 
 
-
 class GbxAttributeSetBlueprint(engine.Blueprint):
     PropertyToAttributeMapping: unreal.WrappedArray[PropertyToAttributeMapping]
 
 
-
 class GbxAttributeSetContextResolver(AttributeContextResolver):
     AttributeSetClass: unreal.UClass
-
 
 
 class GbxAttributeSetValueResolver(AttributePropertyValueResolver): ...
@@ -3505,32 +4605,147 @@ class GbxAttributeSetValueResolver(AttributePropertyValueResolver): ...
 
 class GbxBlackboardKeySelectorExt(engine.BlueprintFunctionLibrary):
 
-    def SetValueAsVector(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: core_uobject.Vector): ...
-    def SetValueAsTargetActorInfo(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: TargetActorInfo): ...
-    def SetValueAsString(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: str): ...
-    def SetValueAsRotator(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: core_uobject.Rotator): ...
-    def SetValueAsObject(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: unreal.UObject): ...
-    def SetValueAsName(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: str): ...
-    def SetValueAsInt(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: int): ...
-    def SetValueAsFloat(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: float): ...
-    def SetValueAsFlag(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: bool, Duration: float): ...
-    def SetValueAsEnum(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: int): ...
-    def SetValueAsClass(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: unreal.UClass): ...
-    def SetValueAsBool(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, Value: bool): ...
-    def GetValueAsVector(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetValueAsTargetActorInfo(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: TargetActorInfo) -> TargetActorInfo: ...
-    def GetValueAsString(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: str) -> str: ...
-    def GetValueAsRotator(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
-    def GetValueAsObject(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def GetValueAsName(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: str) -> str: ...
-    def GetValueAsInt(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: int) -> int: ...
-    def GetValueAsFloat(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: float) -> float: ...
-    def GetValueAsEnum(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: int) -> int: ...
-    def GetValueAsClass(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: unreal.UClass) -> unreal.UClass: ...
-    def GetValueAsBool(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: bool) -> bool: ...
-    def GetValueAsActor(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetPropertyDescription(self, BBKey: GbxBlackboardKeySelector, Property: core_uobject.Property, ReturnValue: str) -> str: ...
-    def ClearValue(self, Key: GbxBlackboardKeySelector, BlackboardComponent: aimodule.BlackboardComponent): ...
+    def SetValueAsVector(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: core_uobject.Vector,
+    ): ...
+    def SetValueAsTargetActorInfo(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: TargetActorInfo,
+    ): ...
+    def SetValueAsString(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: str,
+    ): ...
+    def SetValueAsRotator(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: core_uobject.Rotator,
+    ): ...
+    def SetValueAsObject(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: unreal.UObject,
+    ): ...
+    def SetValueAsName(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: str,
+    ): ...
+    def SetValueAsInt(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: int,
+    ): ...
+    def SetValueAsFloat(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: float,
+    ): ...
+    def SetValueAsFlag(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: bool,
+        Duration: float,
+    ): ...
+    def SetValueAsEnum(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: int,
+    ): ...
+    def SetValueAsClass(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: unreal.UClass,
+    ): ...
+    def SetValueAsBool(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+        Value: bool,
+    ): ...
+    def GetValueAsVector(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> core_uobject.Vector: ...
+    def GetValueAsTargetActorInfo(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> TargetActorInfo: ...
+    def GetValueAsString(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> str: ...
+    def GetValueAsRotator(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> core_uobject.Rotator: ...
+    def GetValueAsObject(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> unreal.UObject: ...
+    def GetValueAsName(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> str: ...
+    def GetValueAsInt(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> int: ...
+    def GetValueAsFloat(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> float: ...
+    def GetValueAsEnum(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> int: ...
+    def GetValueAsClass(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> unreal.UClass: ...
+    def GetValueAsBool(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> bool: ...
+    def GetValueAsActor(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ) -> engine.Actor: ...
+    def GetPropertyDescription(
+        self, BBKey: GbxBlackboardKeySelector, Property: core_uobject.Property
+    ) -> str: ...
+    def ClearValue(
+        self,
+        Key: GbxBlackboardKeySelector,
+        BlackboardComponent: aimodule.BlackboardComponent,
+    ): ...
 
 
 class GbxBoneModifyProfile(gbx_runtime.GbxDataAsset):
@@ -3544,7 +4759,6 @@ class GbxBoneModifyProfile(gbx_runtime.GbxDataAsset):
     BoneModStates: unreal.WrappedArray[BoneModifyState]
 
 
-
 class GbxCameraShake(engine.CameraShake): ...
 
 
@@ -3553,21 +4767,20 @@ class GbxCondition_ActorIsOfClass(gbx_runtime.GbxCondition):
     bCheckAbsolute: bool
 
 
-
 class GbxCondition_AttackedRecently(gbx_runtime.GbxCondition):
     AttackedWithin: GbxParam
 
 
-
 class GbxCondition_Blueprint(gbx_runtime.GbxCondition):
 
-    def EvaluateCondition(self, Context: unreal.UObject, OptionalContext: unreal.UObject, ReturnValue: bool) -> bool: ...
+    def EvaluateCondition(
+        self, Context: unreal.UObject, OptionalContext: unreal.UObject
+    ) -> bool: ...
 
 
 class GbxCondition_CharacterMass(gbx_runtime.GbxCondition):
     ComparisonTest: EMassComparison
     Mass: MassSelection
-
 
 
 class GbxCondition_Comparison(gbx_runtime.GbxCondition):
@@ -3576,32 +4789,26 @@ class GbxCondition_Comparison(gbx_runtime.GbxCondition):
     OperandB: AttributeInitializationData
 
 
-
 class GbxCondition_Compound(gbx_runtime.GbxCondition):
     Condition1: gbx_runtime.GbxCondition
     Operator: ECompoundConditionOperatorType
     Condition2: gbx_runtime.GbxCondition
 
 
-
 class GbxCondition_Flag(gbx_runtime.GbxCondition):
     FlagEval: GbxFlagEval
-
 
 
 class GbxCondition_HasActorTags(gbx_runtime.GbxCondition):
     ActorTagQuery: ActorTagCompositeQuery
 
 
-
 class GbxCondition_HasGameplayTags(gbx_runtime.GbxCondition):
     GameplayTags: gameplay_tags.GameplayTagContainer
 
 
-
 class GbxCondition_HasInstigatedStatusEffect(gbx_runtime.GbxCondition):
     StatusEffectData: StatusEffectData
-
 
 
 class GbxCondition_IsBlackboardTarget(gbx_runtime.GbxCondition): ...
@@ -3612,7 +4819,6 @@ class GbxCondition_IsLowOnHealth(gbx_runtime.GbxCondition):
     bEvaluateOnContextOwner: bool
 
 
-
 class GbxCondition_IsPlayerController(gbx_runtime.GbxCondition): ...
 
 
@@ -3620,17 +4826,16 @@ class GbxCondition_IsTargetAimedAtMe(gbx_runtime.GbxCondition):
     AngleThreshold: GbxParam
 
 
-
 class GbxCondition_IsTrue(gbx_runtime.GbxCondition):
     bIsTrue: bool
-
 
 
 class GbxCondition_List(gbx_runtime.GbxCondition):
     Operator: ECompoundConditionOperatorType
     Conditions: unreal.WrappedArray[gbx_runtime.GbxCondition]
-    def RequiresNativeClass(self, ReturnValue: bool) -> bool: ...
-    def GetRequiredInterface(self, ReturnValue: unreal.UClass) -> unreal.UClass: ...
+
+    def RequiresNativeClass(self) -> bool: ...
+    def GetRequiredInterface(self) -> unreal.UClass: ...
 
 
 class GbxCondition_SensedRecently(gbx_runtime.GbxCondition):
@@ -3639,17 +4844,14 @@ class GbxCondition_SensedRecently(gbx_runtime.GbxCondition):
     bAnyTarget: bool
 
 
-
 class GbxCondition_TeamAttitude(gbx_runtime.GbxCondition):
     bHostile: bool
     bNeutral: bool
     bFriendly: bool
 
 
-
 class GbxCondition_TeamCheck(gbx_runtime.GbxCondition):
     InputTeam: Team
-
 
 
 class GbxCustomizationInterface(core_uobject.Interface): ...
@@ -3659,21 +4861,34 @@ class GbxCustomizationTargetData(gbx_runtime.GbxDataAsset):
     DisplayName: str
 
 
-
 class GbxCustomizationTypeData(gbx_runtime.GbxDataAsset):
     CustomizationTypeName: str
     CustomizationTypeDescription: str
     bUnique: bool
     DependentCustomizationType: GbxCustomizationTypeData
     DependentCustomizationTarget: GbxCustomizationTargetData
-
+    AssociatedUnlockStat: Any
 
 
 class GbxDataTableFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def GetDataTableValueFromHandle(self, ValueHandle: DataTableValueHandle, ContextSource: unreal.UObject, DefaultValue: float, ReturnValue: float) -> float: ...
-    def GetDataTableValue(self, Table: engine.DataTable, RowName: str, ValueName: str, ValueInStructType: core_uobject.ScriptStruct, OutValue: int, ReturnValue: bool) -> bool: ...
-    def Conv_DataTableValueHandleToString(self, ValueHandle: DataTableValueHandle, ReturnValue: str) -> str: ...
+    def GetDataTableValueFromHandle(
+        self,
+        ValueHandle: DataTableValueHandle,
+        ContextSource: unreal.UObject,
+        DefaultValue: float,
+    ) -> float: ...
+    def GetDataTableValue(
+        self,
+        Table: engine.DataTable,
+        RowName: str,
+        ValueName: str,
+        ValueInStructType: core_uobject.ScriptStruct,
+        OutValue: int,
+    ) -> bool: ...
+    def Conv_DataTableValueHandleToString(
+        self, ValueHandle: DataTableValueHandle
+    ) -> str: ...
 
 
 class GbxEnvQueryHotSpotProviderInterface(core_uobject.Interface): ...
@@ -3684,6 +4899,7 @@ class GbxEqsRenderingComponent(aimodule.EQSRenderingComponent):
     TraceDrawMode: aimodule.EEqsTraceDrawMode
     ExternalQueryParams: str
     EnvQueryParams: EnvQueryParams
+
     def GetAvailableEnvQueryParamRefNames(self, Names: unreal.WrappedArray[str]): ...
 
 
@@ -3691,12 +4907,37 @@ class GbxEventDelegateBinding(engine.DynamicBlueprintBinding):
     DelegateBindings: unreal.WrappedArray[GbxBlueprintlegateBinding]
 
 
-
 class GbxFeedbackBase(gbx_runtime.GbxDataAsset):
 
-    def StopGbxFeedback(self, FeedbackData: GbxFeedbackBase, WorldContextObject: unreal.UObject, Controller: GbxPlayerController): ...
-    def PlayGbxFeedbackData3D(self, FeedbackData: GbxFeedbackBase, WorldContextObject: unreal.UObject, Controller: GbxPlayerController, SourceLocation: core_uobject.Vector, bLoop: bool, bIgnoreController: bool, Scale: float, SourceContext: unreal.UObject, EffectFalloffMinDistance: float, EffectFalloffMaxDistance: float): ...
-    def PlayGbxFeedbackData2D(self, FeedbackData: GbxFeedbackBase, WorldContextObject: unreal.UObject, Controller: GbxPlayerController, bLoop: bool, bIgnoreController: bool, Scale: float, SourceContext: unreal.UObject): ...
+    def StopGbxFeedback(
+        self,
+        FeedbackData: GbxFeedbackBase,
+        WorldContextObject: unreal.UObject,
+        Controller: GbxPlayerController,
+    ): ...
+    def PlayGbxFeedbackData3D(
+        self,
+        FeedbackData: GbxFeedbackBase,
+        WorldContextObject: unreal.UObject,
+        Controller: GbxPlayerController,
+        SourceLocation: core_uobject.Vector,
+        bLoop: bool,
+        bIgnoreController: bool,
+        Scale: float,
+        SourceContext: unreal.UObject,
+        EffectFalloffMinDistance: float,
+        EffectFalloffMaxDistance: float,
+    ): ...
+    def PlayGbxFeedbackData2D(
+        self,
+        FeedbackData: GbxFeedbackBase,
+        WorldContextObject: unreal.UObject,
+        Controller: GbxPlayerController,
+        bLoop: bool,
+        bIgnoreController: bool,
+        Scale: float,
+        SourceContext: unreal.UObject,
+    ): ...
 
 
 class GbxFeedbackData(GbxFeedbackBase):
@@ -3735,10 +4976,8 @@ class GbxFeedbackData(GbxFeedbackBase):
     bLetSystemFinishAfterStopping: bool
 
 
-
 class GbxFeedbackList(GbxFeedbackBase):
     FeedbackList: unreal.WrappedArray[GbxFeedbackData]
-
 
 
 class GbxFeedbackManager(unreal.UObject): ...
@@ -3750,29 +4989,82 @@ class GbxFlagData(gbx_runtime.GbxDataAsset):
     ValueResolver: GbxFlagValueResolver
 
 
-
 class GbxFlagFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetFlagValue(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, bNewValue: bool): ...
-    def SetFlagTrueTimed(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, Duration: float): ...
-    def SetFlagDataValue(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, bNewValue: bool): ...
-    def SetFlagDataTrueTimed(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, Duration: float): ...
-    def GetFlagValue(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, ReturnValue: bool) -> bool: ...
-    def GetFlagDataValue(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def FlagTrueWithin(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagTrueFor(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagFalseWithin(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagFalseFor(self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagDataTrueWithin(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagDataTrueFor(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagDataFalseWithin(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, CheckTime: float, ReturnValue: bool) -> bool: ...
-    def FlagDataFalseFor(self, WorldContextObject: unreal.UObject, FlagData: GbxFlagData, ContextSource: unreal.UObject, CheckTime: float, ReturnValue: bool) -> bool: ...
+    def SetFlagValue(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, bNewValue: bool
+    ): ...
+    def SetFlagTrueTimed(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, Duration: float
+    ): ...
+    def SetFlagDataValue(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        bNewValue: bool,
+    ): ...
+    def SetFlagDataTrueTimed(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        Duration: float,
+    ): ...
+    def GetFlagValue(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag
+    ) -> bool: ...
+    def GetFlagDataValue(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+    ) -> bool: ...
+    def FlagTrueWithin(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float
+    ) -> bool: ...
+    def FlagTrueFor(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float
+    ) -> bool: ...
+    def FlagFalseWithin(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float
+    ) -> bool: ...
+    def FlagFalseFor(
+        self, WorldContextObject: unreal.UObject, Flag: GbxFlag, CheckTime: float
+    ) -> bool: ...
+    def FlagDataTrueWithin(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        CheckTime: float,
+    ) -> bool: ...
+    def FlagDataTrueFor(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        CheckTime: float,
+    ) -> bool: ...
+    def FlagDataFalseWithin(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        CheckTime: float,
+    ) -> bool: ...
+    def FlagDataFalseFor(
+        self,
+        WorldContextObject: unreal.UObject,
+        FlagData: GbxFlagData,
+        ContextSource: unreal.UObject,
+        CheckTime: float,
+    ) -> bool: ...
 
 
 class FlagPropertyTestContext(unreal.UObject):
     TestFlag: GbxFlag
     TestStruct: FlagPropertyTestStruct
-
 
 
 class FlagPropertyTestContextResolver(AttributeContextResolver): ...
@@ -3785,40 +5077,98 @@ class GbxFlagValueResolver_Property(GbxFlagValueResolver):
     Property: engine.ParsedProperty
 
 
-
 class BaseMenuStackMenuInfo(unreal.UObject): ...
 
 
 class GbxGameplayStatics(engine.GameplayStatics):
 
-    def SetTeamCollisionResponseWith(self, Actor: engine.Actor, TeamActor: engine.Actor, bIgnore: bool): ...
-    def SetTeamCollisionResponseToChannel(self, Actor: engine.Actor, Channel: ETeamCollisionChannel, bIgnore: bool): ...
-    def SetTeamCollisionChannelFrom(self, Actor: engine.Actor, TeamActor: engine.Actor, bOn: bool): ...
-    def SetTeamCollisionChannel(self, Actor: engine.Actor, Channel: ETeamCollisionChannel, bOn: bool): ...
-    def SetPlayerMaster(self, AIActor: engine.Actor, PlayerMaster: engine.Actor, ReturnValue: bool) -> bool: ...
-    def SetComponentTeamCollisionResponseWith(self, Component: engine.SceneComponent, TeamActor: engine.Actor, bIgnore: bool, bPropagateToChildren: bool): ...
-    def SetComponentTeamCollisionResponseToChannel(self, Component: engine.SceneComponent, Channel: ETeamCollisionChannel, bIgnore: bool, bPropagateToChildren: bool): ...
-    def SetComponentTeamCollisionChannel(self, Component: engine.SceneComponent, Channel: ETeamCollisionChannel, bOn: bool, bPropagateToChildren: bool): ...
-    def ProjectFromQueryToSimulation(self, Component: GbxSkeletalMeshComponent, BodyName: str, InOutHitPoint: core_uobject.Vector, InOutHitNormal: core_uobject.Vector): ...
-    def GetPrimaryPlayerController(self, WorldContextObject: unreal.UObject, ReturnValue: engine.PlayerController) -> engine.PlayerController: ...
-    def GetAssociatedPrimaryCharacter(self, Actor: engine.Actor, ReturnValue: GbxCharacter) -> GbxCharacter: ...
-    def AlignTransformToSurface(self, Transform: core_uobject.Transform, SurfaceNormal: core_uobject.Vector, ReturnValue: core_uobject.Transform) -> core_uobject.Transform: ...
+    def SetTeamCollisionResponseWith(
+        self, Actor: engine.Actor, TeamActor: engine.Actor, bIgnore: bool
+    ): ...
+    def SetTeamCollisionResponseToChannel(
+        self, Actor: engine.Actor, Channel: ETeamCollisionChannel, bIgnore: bool
+    ): ...
+    def SetTeamCollisionChannelFrom(
+        self, Actor: engine.Actor, TeamActor: engine.Actor, bOn: bool
+    ): ...
+    def SetTeamCollisionChannel(
+        self, Actor: engine.Actor, Channel: ETeamCollisionChannel, bOn: bool
+    ): ...
+    def SetPlayerMaster(
+        self, AIActor: engine.Actor, PlayerMaster: engine.Actor
+    ) -> bool: ...
+    def SetComponentTeamCollisionResponseWith(
+        self,
+        Component: engine.SceneComponent,
+        TeamActor: engine.Actor,
+        bIgnore: bool,
+        bPropagateToChildren: bool,
+    ): ...
+    def SetComponentTeamCollisionResponseToChannel(
+        self,
+        Component: engine.SceneComponent,
+        Channel: ETeamCollisionChannel,
+        bIgnore: bool,
+        bPropagateToChildren: bool,
+    ): ...
+    def SetComponentTeamCollisionChannel(
+        self,
+        Component: engine.SceneComponent,
+        Channel: ETeamCollisionChannel,
+        bOn: bool,
+        bPropagateToChildren: bool,
+    ): ...
+    def ProjectFromQueryToSimulation(
+        self,
+        Component: GbxSkeletalMeshComponent,
+        BodyName: str,
+        InOutHitPoint: core_uobject.Vector,
+        InOutHitNormal: core_uobject.Vector,
+    ): ...
+    def GetPrimaryPlayerController(
+        self, WorldContextObject: unreal.UObject
+    ) -> engine.PlayerController: ...
+    def GetAssociatedPrimaryCharacter(self, Actor: engine.Actor) -> GbxCharacter: ...
+    def AlignTransformToSurface(
+        self, Transform: core_uobject.Transform, SurfaceNormal: core_uobject.Vector
+    ) -> core_uobject.Transform: ...
 
 
 class GbxGameStatsBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def UpdateStatForParty(self, WorldContextObject: unreal.UObject, StatData: GameStatData, NewValue: int): ...
-    def UpdateStat(self, ContextActor: engine.Actor, StatData: GameStatData, NewValue: int): ...
-    def IncrementStatForParty(self, WorldContextObject: unreal.UObject, StatData: GameStatData, Amount: int): ...
-    def IncrementStat(self, ContextActor: engine.Actor, StatData: GameStatData, Amount: int): ...
-    def GetStatValue(self, ContextActor: engine.Actor, StatData: GameStatData, ReturnValue: int) -> int: ...
-    def DecrementStatForParty(self, WorldContextObject: unreal.UObject, StatData: GameStatData, Amount: int): ...
-    def DecrementStat(self, ContextActor: engine.Actor, StatData: GameStatData, Amount: int): ...
+    def UpdateStatForParty(
+        self, WorldContextObject: unreal.UObject, StatData: GameStatData, NewValue: int
+    ): ...
+    def UpdateStat(
+        self, ContextActor: engine.Actor, StatData: GameStatData, NewValue: int
+    ): ...
+    def IncrementStatForParty(
+        self, WorldContextObject: unreal.UObject, StatData: GameStatData, Amount: int
+    ): ...
+    def IncrementStat(
+        self, ContextActor: engine.Actor, StatData: GameStatData, Amount: int
+    ): ...
+    def GetStatValue(
+        self, ContextActor: engine.Actor, StatData: GameStatData
+    ) -> int: ...
+    def DecrementStatForParty(
+        self, WorldContextObject: unreal.UObject, StatData: GameStatData, Amount: int
+    ): ...
+    def DecrementStat(
+        self, ContextActor: engine.Actor, StatData: GameStatData, Amount: int
+    ): ...
 
 
 class GbxGameSystemCoreBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetComponentPhysicalRotation(self, Target: engine.PrimitiveComponent, PitchRotation: float, YawRotation: float, RollRotation: float, BoneName: str): ...
+    def SetComponentPhysicalRotation(
+        self,
+        Target: engine.PrimitiveComponent,
+        PitchRotation: float,
+        YawRotation: float,
+        RollRotation: float,
+        BoneName: str,
+    ): ...
     def ResourceUnlockTurns(self, Actor: engine.Actor, Reason: str): ...
     def ResourceUnlockTickAndRefreshBones(self, Actor: engine.Actor, Reason: str): ...
     def ResourceUnlockRotation(self, Actor: engine.Actor, Reason: str): ...
@@ -3839,7 +5189,9 @@ class GbxGameSystemCoreBlueprintLibrary(engine.BlueprintFunctionLibrary):
     def ResourceUnlockAiming(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockTurns(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockTickAndRefreshBones(self, Actor: engine.Actor, Reason: str): ...
-    def ResourceLockTargetable(self, Actor: engine.Actor, Reason: str, bTargetable: bool): ...
+    def ResourceLockTargetable(
+        self, Actor: engine.Actor, Reason: str, bTargetable: bool
+    ): ...
     def ResourceLockRotation(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockPhysicsRotation(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockMovement(self, Actor: engine.Actor, Reason: str): ...
@@ -3855,27 +5207,100 @@ class GbxGameSystemCoreBlueprintLibrary(engine.BlueprintFunctionLibrary):
     def ResourceLockDodging(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockDemigod(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockCrouching(self, Actor: engine.Actor, Reason: str): ...
-    def ResourceLockAIThinking(self, Actor: engine.Actor, Reason: str, bAbort: bool): ...
+    def ResourceLockAIThinking(
+        self, Actor: engine.Actor, Reason: str, bAbort: bool
+    ): ...
     def ResourceLockAiming(self, Actor: engine.Actor, Reason: str): ...
-    def IsSplitScreen(self, GameInstance: engine.GameInstance, ReturnValue: bool) -> bool: ...
-    def IsPlayer(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def IsContentCensored(self, WorldContextObject: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def HoverComponentAtActor(self, Component: engine.SceneComponent, TargetActor: engine.Actor, Altitude: float, Radius: float, AccelerationTime: float, Speed: float, Duration: float, LatentInfo: engine.LatentActionInfo): ...
-    def GetRelativeDirection(self, RelativeDirectionData: RelativeDirectionData, DefaultDirection: core_uobject.Vector, SourceActor: engine.Actor, SourceSocketName: str, TargetActor: engine.Actor, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetCurveFloatValue(self, Curve: engine.RuntimeFloatCurve, InTime: float, ReturnValue: float) -> float: ...
-    def GetAreAnyPlayersOverlappingActors(self, WorldContextObject: unreal.UObject, Actors: unreal.WrappedArray[engine.Actor], ReturnValue: bool) -> bool: ...
-    def GetAreAnyPlayersOverlappingActor(self, WorldContextObject: unreal.UObject, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def GetAreAllPlayersOverlappingActors(self, WorldContextObject: unreal.UObject, Actors: unreal.WrappedArray[engine.Actor], ReturnValue: bool) -> bool: ...
-    def GetAreAllPlayersOverlappingActor(self, WorldContextObject: unreal.UObject, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def GetActorListTrimmedToBestCluster(self, OutputActors: unreal.WrappedArray[engine.Actor], ClusterMidpoint: core_uobject.Vector, InputActors: unreal.WrappedArray[engine.Actor], SourceActor: engine.Actor, ClusterRadius: float, bPreferClusterContainingCurrentTarget: bool): ...
+    def IsSplitScreen(self, GameInstance: engine.GameInstance) -> bool: ...
+    def IsPlayer(self, Actor: engine.Actor) -> bool: ...
+    def IsContentCensored(self, WorldContextObject: unreal.UObject) -> bool: ...
+    def HoverComponentAtActor(
+        self,
+        Component: engine.SceneComponent,
+        TargetActor: engine.Actor,
+        Altitude: float,
+        Radius: float,
+        AccelerationTime: float,
+        Speed: float,
+        Duration: float,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
+    def GetRelativeDirection(
+        self,
+        RelativeDirectionData: RelativeDirectionData,
+        DefaultDirection: core_uobject.Vector,
+        SourceActor: engine.Actor,
+        SourceSocketName: str,
+        TargetActor: engine.Actor,
+    ) -> core_uobject.Vector: ...
+    def GetCurveFloatValue(
+        self, Curve: engine.RuntimeFloatCurve, InTime: float
+    ) -> float: ...
+    def GetAreAnyPlayersOverlappingActors(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actors: unreal.WrappedArray[engine.Actor],
+    ) -> bool: ...
+    def GetAreAnyPlayersOverlappingActor(
+        self, WorldContextObject: unreal.UObject, Actor: engine.Actor
+    ) -> bool: ...
+    def GetAreAllPlayersOverlappingActors(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actors: unreal.WrappedArray[engine.Actor],
+    ) -> bool: ...
+    def GetAreAllPlayersOverlappingActor(
+        self, WorldContextObject: unreal.UObject, Actor: engine.Actor
+    ) -> bool: ...
+    def GetActorListTrimmedToBestCluster(
+        self,
+        OutputActors: unreal.WrappedArray[engine.Actor],
+        ClusterMidpoint: core_uobject.Vector,
+        InputActors: unreal.WrappedArray[engine.Actor],
+        SourceActor: engine.Actor,
+        ClusterRadius: float,
+        bPreferClusterContainingCurrentTarget: bool,
+    ): ...
     def BranchOnIsPlayer(self, Actor: engine.Actor, Branches: EIsPlayerExecOutput): ...
-    def BranchOnIsAutonomous(self, Actor: engine.Actor, Branches: EIsAutonomousOuput): ...
-    def AreAnyPlayersOverlappingActors(self, WorldContextObject: unreal.UObject, Actors: unreal.WrappedArray[engine.Actor], Branches: EPlayersOverlappingActorOutput): ...
-    def AreAnyPlayersOverlappingActor(self, WorldContextObject: unreal.UObject, Actor: engine.Actor, Branches: EPlayersOverlappingActorOutput): ...
-    def AreAnyPlayersInVolume(self, WorldContextObject: unreal.UObject, Volumes: unreal.WrappedArray[engine.Volume], Branches: EPlayersInVolumeOutput): ...
-    def AreAllPlayersOverlappingActors(self, WorldContextObject: unreal.UObject, Actors: unreal.WrappedArray[engine.Actor], Branches: EPlayersOverlappingActorOutput): ...
-    def AreAllPlayersOverlappingActor(self, WorldContextObject: unreal.UObject, Actor: engine.Actor, Branches: EPlayersOverlappingActorOutput): ...
-    def AreAllPlayersInVolume(self, WorldContextObject: unreal.UObject, Volumes: unreal.WrappedArray[engine.Volume], Branches: EPlayersInVolumeOutput): ...
+    def BranchOnIsAutonomous(
+        self, Actor: engine.Actor, Branches: EIsAutonomousOuput
+    ): ...
+    def AreAnyPlayersOverlappingActors(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actors: unreal.WrappedArray[engine.Actor],
+        Branches: EPlayersOverlappingActorOutput,
+    ): ...
+    def AreAnyPlayersOverlappingActor(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actor: engine.Actor,
+        Branches: EPlayersOverlappingActorOutput,
+    ): ...
+    def AreAnyPlayersInVolume(
+        self,
+        WorldContextObject: unreal.UObject,
+        Volumes: unreal.WrappedArray[engine.Volume],
+        Branches: EPlayersInVolumeOutput,
+    ): ...
+    def AreAllPlayersOverlappingActors(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actors: unreal.WrappedArray[engine.Actor],
+        Branches: EPlayersOverlappingActorOutput,
+    ): ...
+    def AreAllPlayersOverlappingActor(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actor: engine.Actor,
+        Branches: EPlayersOverlappingActorOutput,
+    ): ...
+    def AreAllPlayersInVolume(
+        self,
+        WorldContextObject: unreal.UObject,
+        Volumes: unreal.WrappedArray[engine.Volume],
+        Branches: EPlayersInVolumeOutput,
+    ): ...
 
 
 class GbxHUDFeedbackData(gbx_runtime.GbxDataAsset):
@@ -3890,27 +5315,28 @@ class GbxHUDFeedbackData(gbx_runtime.GbxDataAsset):
     GamepadLookMultiplier: float
 
 
-
 class GbxInventoryCategoryData(gbx_runtime.GbxDataAsset):
     bIsPremiumCurrencyCategory: bool
-
 
 
 class GbxLevelSequenceControllableInterface(core_uobject.Interface): ...
 
 
 class GbxMediaData(gbx_runtime.GbxDataAsset):
+    AudioSinkProvider: Any
     MediaTexture: media_assets.MediaTexture
     MediaSource: media_assets.MediaSource
 
 
-
 class GbxMediaManager(engine.GbxBaseMediaManager):
     ActiveMediaPlayers: unreal.WrappedArray[media_assets.MediaPlayer]
+
     def OnMovieMediaOpenFailed(self, DeviceUrl: str): ...
     def OnMovieMediaClosed(self): ...
     def OnMovieEndReached(self): ...
-    def GbxPlayMovie(self, WorldContextObject: unreal.UObject, InMediaData: GbxMediaData, ReturnValue: media_assets.MediaPlayer) -> media_assets.MediaPlayer: ...
+    def GbxPlayMovie(
+        self, WorldContextObject: unreal.UObject, InMediaData: GbxMediaData
+    ) -> media_assets.MediaPlayer: ...
 
 
 class GbxNavAvoidanceInterface(core_uobject.Interface):
@@ -3922,40 +5348,48 @@ class GbxPainCausingVolume(engine.PainCausingVolume):
     GbxDamagePerSec: AttributeInitializationData
 
 
-
 class GbxParamExt(engine.BlueprintFunctionLibrary):
 
-    def IsValueInRangePure(self, Param: GbxParam, Value: float, Context: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def IsValueInRange(self, Param: GbxParam, Value: float, Context: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def GetParamPropertyDescription(self, Param: GbxParam, Property: core_uobject.Property, ReturnValue: str) -> str: ...
-    def GetParamDescriptionText(self, Param: GbxParam, ReturnValue: str) -> str: ...
-    def GetParamDescription(self, Param: GbxParam, ReturnValue: str) -> str: ...
-    def GetNamedParamDescriptionText(self, Param: GbxNamedParam, ReturnValue: str) -> str: ...
-    def GetNamedParamDescription(self, Param: GbxNamedParam, ReturnValue: str) -> str: ...
-    def EvaluatePure(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: float) -> float: ...
-    def EvaluateIntPure(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: float) -> float: ...
-    def EvaluateInt(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: float) -> float: ...
-    def EvaluateBoolPure(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def EvaluateBool(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: bool) -> bool: ...
-    def Evaluate(self, Param: GbxParam, Context: unreal.UObject, ReturnValue: float) -> float: ...
+    def IsValueInRangePure(
+        self, Param: GbxParam, Value: float, Context: unreal.UObject
+    ) -> bool: ...
+    def IsValueInRange(
+        self, Param: GbxParam, Value: float, Context: unreal.UObject
+    ) -> bool: ...
+    def GetParamPropertyDescription(
+        self, Param: GbxParam, Property: core_uobject.Property
+    ) -> str: ...
+    def GetParamDescriptionText(self, Param: GbxParam) -> str: ...
+    def GetParamDescription(self, Param: GbxParam) -> str: ...
+    def GetNamedParamDescriptionText(self, Param: GbxNamedParam) -> str: ...
+    def GetNamedParamDescription(self, Param: GbxNamedParam) -> str: ...
+    def EvaluatePure(self, Param: GbxParam, Context: unreal.UObject) -> float: ...
+    def EvaluateIntPure(self, Param: GbxParam, Context: unreal.UObject) -> float: ...
+    def EvaluateInt(self, Param: GbxParam, Context: unreal.UObject) -> float: ...
+    def EvaluateBoolPure(self, Param: GbxParam, Context: unreal.UObject) -> bool: ...
+    def EvaluateBool(self, Param: GbxParam, Context: unreal.UObject) -> bool: ...
+    def Evaluate(self, Param: GbxParam, Context: unreal.UObject) -> float: ...
 
 
 class GbxPerceptionComponent(aimodule.AIPerceptionComponent):
     StimulusStrengthOverrideTime: float
 
 
-
 class GbxPhysicsCollisionHandler(engine.PhysicsCollisionHandler): ...
 
 
 class GbxPhysicsSettings(unreal.UObject):
+    SurfaceTypeInfoMap: Any
     RigidBodyImpactSettings: RigidBodyImpactSettings
     ForceSmoothing: DestructionForceSmoothing
     LowDamageThreshold: float
     MediumDamageThreshold: float
     HighDamageThreshold: float
     RagdollWeaponForceFeatherPercent: float
-    def StaticSetRigidBodySimulationInteractability(self, Comp: engine.SkeletalMeshComponent, bAesthetic: bool, BodyName: str): ...
+
+    def StaticSetRigidBodySimulationInteractability(
+        self, Comp: engine.SkeletalMeshComponent, bAesthetic: bool, BodyName: str
+    ): ...
 
 
 class GbxQueryManager(unreal.UObject):
@@ -3963,22 +5397,76 @@ class GbxQueryManager(unreal.UObject):
     Queries: unreal.WrappedArray[GbxQuery]
     World: engine.World
     EnvQueryManager: aimodule.EnvQueryManager
+
     def NotifyAIHotSpotListChangedFor(self, OwnerActor: engine.Actor): ...
 
 
 class GbxSignificanceSettings(engine.DeveloperSettings):
+    Events: Any
 
     def EnumerateSignificanceEvents(self, OutEvents: unreal.WrappedArray[str]): ...
 
 
 class GbxSimpleMotionLibrary(engine.BlueprintFunctionLibrary):
 
-    def UpdateVectorMotion(self, DeltaTime: float, CurrentValue: core_uobject.Vector, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: core_uobject.Vector, State: SimpleMotionInstanceState): ...
-    def UpdateRotatorMotion(self, DeltaTime: float, CurrentValue: core_uobject.Rotator, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: core_uobject.Rotator, bShortestRotation: bool, State: SimpleMotionInstanceState): ...
-    def UpdateFloatMotion(self, DeltaTime: float, CurrentValue: float, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: float, State: SimpleMotionInstanceState): ...
-    def TeleportVectorMotion(self, CurrentValue: core_uobject.Vector, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: core_uobject.Vector, State: SimpleMotionInstanceState): ...
-    def TeleportRotatorMotion(self, CurrentValue: core_uobject.Rotator, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: core_uobject.Rotator, State: SimpleMotionInstanceState): ...
-    def TeleportFloatMotion(self, CurrentValue: float, ControlValue: float, Data: SimpleMotionState, SpeedScale: float, TargetValue: float, State: SimpleMotionInstanceState): ...
+    def UpdateVectorMotion(
+        self,
+        DeltaTime: float,
+        CurrentValue: core_uobject.Vector,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: core_uobject.Vector,
+        State: SimpleMotionInstanceState,
+    ): ...
+    def UpdateRotatorMotion(
+        self,
+        DeltaTime: float,
+        CurrentValue: core_uobject.Rotator,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: core_uobject.Rotator,
+        bShortestRotation: bool,
+        State: SimpleMotionInstanceState,
+    ): ...
+    def UpdateFloatMotion(
+        self,
+        DeltaTime: float,
+        CurrentValue: float,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: float,
+        State: SimpleMotionInstanceState,
+    ): ...
+    def TeleportVectorMotion(
+        self,
+        CurrentValue: core_uobject.Vector,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: core_uobject.Vector,
+        State: SimpleMotionInstanceState,
+    ): ...
+    def TeleportRotatorMotion(
+        self,
+        CurrentValue: core_uobject.Rotator,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: core_uobject.Rotator,
+        State: SimpleMotionInstanceState,
+    ): ...
+    def TeleportFloatMotion(
+        self,
+        CurrentValue: float,
+        ControlValue: float,
+        Data: SimpleMotionState,
+        SpeedScale: float,
+        TargetValue: float,
+        State: SimpleMotionInstanceState,
+    ): ...
     def ResetMotionState(self, State: SimpleMotionInstanceState): ...
 
 
@@ -3987,7 +5475,6 @@ class GbxSkeletalMeshActor(engine.SkeletalMeshActor): ...
 
 class GbxStaticMeshComponent(engine.StaticMeshComponent):
     CustomizationTargets: unreal.WrappedArray[GbxCustomizationTargetData]
-
 
 
 class GbxSubtitleManagerInterface(core_uobject.Interface): ...
@@ -4001,7 +5488,8 @@ class GbxUIFormattableParameter(core_uobject.Interface): ...
 
 class GbxUIName(gbx_runtime.GbxDataAsset):
     DisplayName: str
-    def GetFormattedText(self, ReturnValue: str) -> str: ...
+
+    def GetFormattedText(self) -> str: ...
 
 
 class GestaltPartData(gbx_runtime.GbxDataAsset): ...
@@ -4013,12 +5501,14 @@ class GestaltPartData_Mesh(GestaltPartData):
     AdditionalGestaltMeshPartNames: unreal.WrappedArray[str]
     ChildParts: unreal.WrappedArray[GestaltChildPartData]
     FoleyAudioAccessory: GestaltPartFoleyAccessory
-    def EnumerateGestaltMeshPartNames(self, OutPartNameList: unreal.WrappedArray[str]): ...
+
+    def EnumerateGestaltMeshPartNames(
+        self, OutPartNameList: unreal.WrappedArray[str]
+    ): ...
 
 
 class GestaltPartData_Random(GestaltPartData):
     RandomParts: unreal.WrappedArray[GestaltRandomPartData]
-
 
 
 class GestaltPartListData(gbx_runtime.GbxDataAsset):
@@ -4027,13 +5517,16 @@ class GestaltPartListData(gbx_runtime.GbxDataAsset):
     SpecialParts: unreal.WrappedArray[GestaltPartData]
 
 
-
 class GlobalBoneModifyProfileState(engine.DataAsset):
     DefaultTransform: BMPOverride
+    SkeletonOverrides: Any
+    CharacterOverrides: Any
+    SkeletonExceptions: Any
+    CharacterExceptions: Any
 
 
-
-class GlobalBoneModifyProfile(unreal.UObject): ...
+class GlobalBoneModifyProfile(unreal.UObject):
+    GlobalProfileSet: Any
 
 
 class GlobalBoneModBlueprintLibrary(engine.BlueprintFunctionLibrary):
@@ -4047,10 +5540,8 @@ class GravityOverrideVolume(engine.PhysicsVolume):
     OverrideTeamGravity: int
 
 
-
 class HealthResourcePoolModifierAttributeValueResolver(AttributeValueResolver):
     HealthResourcePool: GameResourcePoolData
-
 
 
 class HealthTypeData(gbx_runtime.GbxDataAsset):
@@ -4062,23 +5553,46 @@ class HealthTypeData(gbx_runtime.GbxDataAsset):
     HealthTypeModifierAttribute: GbxAttributeData
 
 
-
 class HitReactionBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetHitReactionData(self, Actor: engine.Actor, HitReactionData: HitReactionData): ...
-    def ScriptHitReaction(self, Actor: engine.Actor, Causer: engine.Actor, Tag: HitReactionTag, LocalHitDirection: core_uobject.Vector, BoneName: str, Force: ForceSelection): ...
-    def ScriptDeath(self, Actor: engine.Actor, Causer: engine.Actor, Tag: HitReactionTag, LocalHitDirection: core_uobject.Vector, BoneName: str, Force: ForceSelection): ...
+    def SetHitReactionData(
+        self, Actor: engine.Actor, HitReactionData: HitReactionData
+    ): ...
+    def ScriptHitReaction(
+        self,
+        Actor: engine.Actor,
+        Causer: engine.Actor,
+        Tag: HitReactionTag,
+        LocalHitDirection: core_uobject.Vector,
+        BoneName: str,
+        Force: ForceSelection,
+    ): ...
+    def ScriptDeath(
+        self,
+        Actor: engine.Actor,
+        Causer: engine.Actor,
+        Tag: HitReactionTag,
+        LocalHitDirection: core_uobject.Vector,
+        BoneName: str,
+        Force: ForceSelection,
+    ): ...
     def ResourceUnlockHitReactions(self, Actor: engine.Actor, Reason: str): ...
     def ResourceLockHitReactions(self, Actor: engine.Actor, Reason: str): ...
     def RemoveHitReactionLiveLayer(self, Actor: engine.Actor, Layer: unreal.UClass): ...
-    def RemoveHitReactionDeathLayer(self, Actor: engine.Actor, Layer: unreal.UClass): ...
-    def K2_GetHitLocationFromAction(self, Action: GbxAction, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def K2_GetHitDirectionFromAction(self, Action: GbxAction, bLocalSpace: bool, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def K2_GetHitCauserFromAction(self, Action: GbxAction, ReturnValue: unreal.UObject) -> unreal.UObject: ...
-    def K2_GetHealthPercentFromAction(self, Action: GbxAction, ReturnValue: float) -> float: ...
-    def K2_GetForceFromAction(self, Action: GbxAction, ReturnValue: float) -> float: ...
-    def K2_GetBoneIndexFromAction(self, Action: GbxAction, ReturnValue: int) -> int: ...
-    def IsHitReactionTagActive(self, Actor: engine.Actor, Tag: HitReactionTag, ReturnValue: bool) -> bool: ...
+    def RemoveHitReactionDeathLayer(
+        self, Actor: engine.Actor, Layer: unreal.UClass
+    ): ...
+    def K2_GetHitLocationFromAction(self, Action: GbxAction) -> core_uobject.Vector: ...
+    def K2_GetHitDirectionFromAction(
+        self, Action: GbxAction, bLocalSpace: bool
+    ) -> core_uobject.Vector: ...
+    def K2_GetHitCauserFromAction(self, Action: GbxAction) -> unreal.UObject: ...
+    def K2_GetHealthPercentFromAction(self, Action: GbxAction) -> float: ...
+    def K2_GetForceFromAction(self, Action: GbxAction) -> float: ...
+    def K2_GetBoneIndexFromAction(self, Action: GbxAction) -> int: ...
+    def IsHitReactionTagActive(
+        self, Actor: engine.Actor, Tag: HitReactionTag
+    ) -> bool: ...
     def AddHitReactionLiveLayer(self, Actor: engine.Actor, Layer: unreal.UClass): ...
     def AddHitReactionDeathLayer(self, Actor: engine.Actor, Layer: unreal.UClass): ...
 
@@ -4089,10 +5603,19 @@ class HitReactionData(gbx_runtime.GbxDataAsset):
     HitReactions: unreal.WrappedArray[HitReactionPair]
 
 
-
 class HitReactionLayer_Blueprint(HitReactionLayer):
 
-    def EvaluateTag(self, Receiver: DamageComponent, Causer: DamageCauserComponent, DamageAmount: float, DamageType: GbxDamageType, DamageSource: DamageSource, HitRegion: HitRegionData, Force: float, PreviousTag: HitReactionTag, ReturnValue: HitReactionTag) -> HitReactionTag: ...
+    def EvaluateTag(
+        self,
+        Receiver: DamageComponent,
+        Causer: DamageCauserComponent,
+        DamageAmount: float,
+        DamageType: GbxDamageType,
+        DamageSource: DamageSource,
+        HitRegion: HitRegionData,
+        Force: float,
+        PreviousTag: HitReactionTag,
+    ) -> HitReactionTag: ...
 
 
 class HitReactionLayer_Combine(HitReactionLayer):
@@ -4101,12 +5624,10 @@ class HitReactionLayer_Combine(HitReactionLayer):
     bMissingTagsAreHighestPriority: bool
 
 
-
 class HitReactionLayer_Condition(HitReactionLayer):
     Conditions: unreal.WrappedArray[HitReactionCondition]
     Combine: EHitReactionConditionCombine
     SubLayer: unreal.UClass
-
 
 
 class HitReactionLayer_Cooldown(HitReactionLayer):
@@ -4114,10 +5635,8 @@ class HitReactionLayer_Cooldown(HitReactionLayer):
     Cooldowns: unreal.WrappedArray[HitReactionCooldownData]
 
 
-
 class HitReactionLayer_Map(HitReactionLayer):
     TagMap: unreal.WrappedArray[HitReactionMapItem]
-
 
 
 class HitReactionLayer_Priority(HitReactionLayer):
@@ -4125,20 +5644,40 @@ class HitReactionLayer_Priority(HitReactionLayer):
     CanInterruptSelf: unreal.WrappedArray[HitReactionTag]
 
 
-
 class HitReactionTag(gbx_runtime.GbxDataAsset):
     SoundTag: gbx_audio.CharacterSoundTag
     CensoredTag: HitReactionTag
 
 
-
 class HitRegionFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def ResetHitRegionHealth(self, Actor: engine.Actor, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent): ...
+    def ResetHitRegionHealth(
+        self,
+        Actor: engine.Actor,
+        HitRegion: HitRegionData,
+        AssociatedComponent: engine.PrimitiveComponent,
+    ): ...
     def ResetAllHitRegionHealth(self, Actor: engine.Actor): ...
-    def RefillHitRegionHealthByPercent(self, RefillPercent: float, Actor: engine.Actor, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent): ...
-    def RefillHitRegionHealthByAmount(self, RefillAmount: float, Actor: engine.Actor, HitRegion: HitRegionData, AssociatedComponent: engine.PrimitiveComponent): ...
-    def AssociateComponentWithHitRegion(self, Actor: engine.Actor, ComponentToAssociate: engine.PrimitiveComponent, HitRegion: HitRegionData): ...
+    def RefillHitRegionHealthByPercent(
+        self,
+        RefillPercent: float,
+        Actor: engine.Actor,
+        HitRegion: HitRegionData,
+        AssociatedComponent: engine.PrimitiveComponent,
+    ): ...
+    def RefillHitRegionHealthByAmount(
+        self,
+        RefillAmount: float,
+        Actor: engine.Actor,
+        HitRegion: HitRegionData,
+        AssociatedComponent: engine.PrimitiveComponent,
+    ): ...
+    def AssociateComponentWithHitRegion(
+        self,
+        Actor: engine.Actor,
+        ComponentToAssociate: engine.PrimitiveComponent,
+        HitRegion: HitRegionData,
+    ): ...
 
 
 class IGbxProjectileManager(unreal.UObject): ...
@@ -4171,11 +5710,9 @@ class ImpactData(gbx_runtime.GbxDataAsset):
     bUseMassWwiseParameter: bool
 
 
-
 class ImpactExpansionData(gbx_runtime.GbxDataAsset):
     ImpactDataToExpand: ImpactData
     ImpactResponses: unreal.WrappedArray[ImpactResponseInfo]
-
 
 
 class ImpactDataOverride(core_uobject.Interface): ...
@@ -4189,10 +5726,42 @@ class PooledImpactDecalComponent(engine.DecalComponent): ...
 
 class ImpactEffectFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def PlayTraceImpactAndGetParticleSystemComponents(self, ImpactData: ImpactData, Instigator: engine.Actor, TraceStart: core_uobject.Vector, TraceEnd: core_uobject.Vector, SpawnedParticleSystemComponents: unreal.WrappedArray[engine.ParticleSystemComponent], TraceChannel: int): ...
-    def PlayTraceImpact(self, ImpactData: ImpactData, Instigator: engine.Actor, TraceStart: core_uobject.Vector, TraceEnd: core_uobject.Vector, TraceChannel: int, bReplicated: bool): ...
-    def PlayHitResultImpactGetParticleSystemComponents(self, ImpactData: ImpactData, Instigator: engine.Actor, HitInfo: engine.HitResult, SpawnedParticleSystemComponents: unreal.WrappedArray[engine.ParticleSystemComponent]): ...
-    def PlayHitResultImpact(self, ImpactData: ImpactData, Instigator: engine.Actor, HitInfo: engine.HitResult, bReplicated: bool): ...
+    def PlayTraceImpactAndGetParticleSystemComponents(
+        self,
+        ImpactData: ImpactData,
+        Instigator: engine.Actor,
+        TraceStart: core_uobject.Vector,
+        TraceEnd: core_uobject.Vector,
+        SpawnedParticleSystemComponents: unreal.WrappedArray[
+            engine.ParticleSystemComponent
+        ],
+        TraceChannel: int,
+    ): ...
+    def PlayTraceImpact(
+        self,
+        ImpactData: ImpactData,
+        Instigator: engine.Actor,
+        TraceStart: core_uobject.Vector,
+        TraceEnd: core_uobject.Vector,
+        TraceChannel: int,
+        bReplicated: bool,
+    ): ...
+    def PlayHitResultImpactGetParticleSystemComponents(
+        self,
+        ImpactData: ImpactData,
+        Instigator: engine.Actor,
+        HitInfo: engine.HitResult,
+        SpawnedParticleSystemComponents: unreal.WrappedArray[
+            engine.ParticleSystemComponent
+        ],
+    ): ...
+    def PlayHitResultImpact(
+        self,
+        ImpactData: ImpactData,
+        Instigator: engine.Actor,
+        HitInfo: engine.HitResult,
+        bReplicated: bool,
+    ): ...
 
 
 class ImpactFXManagerComponent(engine.ActorComponent):
@@ -4211,16 +5780,33 @@ class ImpactFXManagerComponent(engine.ActorComponent):
     bEffectsEnabled: bool
     bAutoEnableCollisionNotifications: bool
     ActiveSlideEffects: unreal.WrappedArray[ImpactFXManagerTrackingData]
+
     def SetEffectsEnabled(self, bEnabled: bool): ...
     def OnTrackedParticleSystemFinished(self, PSC: engine.ParticleSystemComponent): ...
     def OnTrackedComponentDeactivated(self, Component: engine.ActorComponent): ...
-    def OnHit(self, SelfActor: engine.Actor, OtherActor: engine.Actor, NormalImpulse: core_uobject.Vector, Hit: engine.HitResult): ...
+    def OnHit(
+        self,
+        SelfActor: engine.Actor,
+        OtherActor: engine.Actor,
+        NormalImpulse: core_uobject.Vector,
+        Hit: engine.HitResult,
+    ): ...
 
 
 class InspectionInfoFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def AddScreenOutput(self, InspectionInfo: InspectionInfo, String: str, Verbosity: EDebugDisplayVerbosityLevel): ...
-    def AddAboveActorOutput(self, InspectionInfo: InspectionInfo, String: str, Verbosity: EDebugDisplayVerbosityLevel): ...
+    def AddScreenOutput(
+        self,
+        InspectionInfo: InspectionInfo,
+        String: str,
+        Verbosity: EDebugDisplayVerbosityLevel,
+    ): ...
+    def AddAboveActorOutput(
+        self,
+        InspectionInfo: InspectionInfo,
+        String: str,
+        Verbosity: EDebugDisplayVerbosityLevel,
+    ): ...
 
 
 class InterpComponent(engine.ActorComponent):
@@ -4252,6 +5838,7 @@ class InterpComponent(engine.ActorComponent):
     BallisticsGravity: float
     BallisticsStartTime: float
     BallisticsTotalTime: float
+
     def Stop(self): ...
     def SetUpdateVelocity(self, bNewUpdateVelocity: bool): ...
     def SetRemoveOnCompletion(self, bRemove: bool): ...
@@ -4259,13 +5846,53 @@ class InterpComponent(engine.ActorComponent):
     def SetClearVelocity(self, bNewClearVelocity: bool): ...
     def MatchRotationToVelocity(self, bInSetToInitialWhenFinished: bool): ...
     def ManualTick(self, DeltaTime: float): ...
-    def IsFinished(self, ReturnValue: bool) -> bool: ...
-    def InterpRotation(self, NewRot: core_uobject.Rotator, InterpTime: float, bLinear: bool, bYawOnly: bool, bInRelative: bool): ...
-    def InterpLocation(self, NewLoc: core_uobject.Vector, InterpTime: float, bLinear: bool, bNoZ: bool, bInRelative: bool): ...
-    def InterpDeltaRotation(self, DeltaRot: core_uobject.Rotator, InterpTime: float, bLinear: bool, bYawOnly: bool, bInRelative: bool): ...
-    def InterpDeltaLocation(self, DeltaLoc: core_uobject.Vector, InterpTime: float, bLinear: bool, bNoZ: bool, bInRelative: bool): ...
-    def InterpBallisticsByTime(self, StartLoc: core_uobject.Vector, EndLoc: core_uobject.Vector, LeapTime: float, LeapGravity: float, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def InterpBallistics(self, StartLoc: core_uobject.Vector, EndLoc: core_uobject.Vector, LeapSpeed: float, LeapAngle: float, ReturnValue: float) -> float: ...
+    def IsFinished(self) -> bool: ...
+    def InterpRotation(
+        self,
+        NewRot: core_uobject.Rotator,
+        InterpTime: float,
+        bLinear: bool,
+        bYawOnly: bool,
+        bInRelative: bool,
+    ): ...
+    def InterpLocation(
+        self,
+        NewLoc: core_uobject.Vector,
+        InterpTime: float,
+        bLinear: bool,
+        bNoZ: bool,
+        bInRelative: bool,
+    ): ...
+    def InterpDeltaRotation(
+        self,
+        DeltaRot: core_uobject.Rotator,
+        InterpTime: float,
+        bLinear: bool,
+        bYawOnly: bool,
+        bInRelative: bool,
+    ): ...
+    def InterpDeltaLocation(
+        self,
+        DeltaLoc: core_uobject.Vector,
+        InterpTime: float,
+        bLinear: bool,
+        bNoZ: bool,
+        bInRelative: bool,
+    ): ...
+    def InterpBallisticsByTime(
+        self,
+        StartLoc: core_uobject.Vector,
+        EndLoc: core_uobject.Vector,
+        LeapTime: float,
+        LeapGravity: float,
+    ) -> core_uobject.Vector: ...
+    def InterpBallistics(
+        self,
+        StartLoc: core_uobject.Vector,
+        EndLoc: core_uobject.Vector,
+        LeapSpeed: float,
+        LeapAngle: float,
+    ) -> float: ...
 
 
 class Ladder(engine.Actor):
@@ -4302,7 +5929,6 @@ class Ladder(engine.Actor):
     TopVolumeBoxComponent: engine.BoxComponent
 
 
-
 class LadderInterface(core_uobject.Interface): ...
 
 
@@ -4311,10 +5937,8 @@ class LadderVolume(engine.Volume):
     Normal: core_uobject.Vector
 
 
-
 class LandingData(gbx_runtime.GbxDataAsset):
     LandingData: unreal.WrappedArray[LandingInfo]
-
 
 
 class MantleData(gbx_runtime.GbxDataAsset):
@@ -4329,17 +5953,27 @@ class MantleData(gbx_runtime.GbxDataAsset):
     WallHopDepth: float
 
 
-
 class ModifierMathAttributeValueResolver(AttributeValueResolver):
     BaseValue: AttributeInitializationData
     ModifierStack: unreal.WrappedArray[ModifierMathAttributeValueResolverStackEntry]
 
 
-
 class MotionControlLibrary(engine.BlueprintFunctionLibrary):
 
-    def UpdateSpeed(self, CurrentSpeed: float, TargetSpeed: float, Acceleration: float, DeltaTime: float, ReturnValue: float) -> float: ...
-    def Spin(self, CurrentRotation: core_uobject.Rotator, RotationRate: float, RotationAxis: core_uobject.Vector, DeltaTime: float, ReturnValue: core_uobject.Rotator) -> core_uobject.Rotator: ...
+    def UpdateSpeed(
+        self,
+        CurrentSpeed: float,
+        TargetSpeed: float,
+        Acceleration: float,
+        DeltaTime: float,
+    ) -> float: ...
+    def Spin(
+        self,
+        CurrentRotation: core_uobject.Rotator,
+        RotationRate: float,
+        RotationAxis: core_uobject.Vector,
+        DeltaTime: float,
+    ) -> core_uobject.Rotator: ...
 
 
 class OrbitingActorComponent(engine.ActorComponent):
@@ -4353,6 +5987,7 @@ class OrbitingActorComponent(engine.ActorComponent):
     ZAxisOscillation: OrbitOscillationInfo
     bIsInOrbit: bool
     SmoothingAlpha: float
+
     def SetTargetActor(self, NewTarget: engine.Actor): ...
     def OnRep_TargetActor(self, LastTarget: engine.Actor): ...
 
@@ -4366,13 +6001,11 @@ class ParticleAttributeParameterEvaluator(engine.ParticleParameterEvaluator):
     bEvaluateEveryFrame: bool
 
 
-
 class ParticleConditionalEmitterEvaluator(engine.ParticleParameterEvaluator):
     Condition: gbx_runtime.GbxCondition
     EmitterName: str
     bEnableIfTrue: bool
     bEvaluateEveryFrame: bool
-
 
 
 class ParticlePropertyTrackingData(gbx_runtime.GbxDataAsset):
@@ -4388,16 +6021,21 @@ class ParticlePropertyTrackingData(gbx_runtime.GbxDataAsset):
     PauseDuration: float
 
 
-
 class PawnAttachmentFunctionLibrary(engine.BlueprintFunctionLibrary):
 
     def RequestDetachPawnFromSlot(self, Actor: engine.Actor, SlotName: str): ...
     def RequestDetachPawnFromActor(self, Pawn: engine.Pawn): ...
-    def QueryPawnAttachment(self, Pawn: engine.Pawn, ReturnValue: PawnAttachmentQueryResult) -> PawnAttachmentQueryResult: ...
-    def FindPawnAttachSlotComponent(self, Pawn: engine.Pawn, ReturnValue: PawnAttachSlotComponent) -> PawnAttachSlotComponent: ...
-    def DetachPawnFromSlot(self, Actor: engine.Actor, SlotName: str, bInstant: bool): ...
+    def QueryPawnAttachment(self, Pawn: engine.Pawn) -> PawnAttachmentQueryResult: ...
+    def FindPawnAttachSlotComponent(
+        self, Pawn: engine.Pawn
+    ) -> PawnAttachSlotComponent: ...
+    def DetachPawnFromSlot(
+        self, Actor: engine.Actor, SlotName: str, bInstant: bool
+    ): ...
     def DetachPawnFromActor(self, Pawn: engine.Pawn, bInstant: bool): ...
-    def AttachPawnToSlot(self, Actor: engine.Actor, SlotName: str, Pawn: engine.Pawn, bInstant: bool): ...
+    def AttachPawnToSlot(
+        self, Actor: engine.Actor, SlotName: str, Pawn: engine.Pawn, bInstant: bool
+    ): ...
 
 
 class PawnAttributeContextResolver(AttributeContextResolver): ...
@@ -4408,15 +6046,15 @@ class PhysicalAnimationProfileAsset(gbx_runtime.GbxDataAsset):
     DynamicToKinematicBlendMode: EPhysicalAnimationBlendToKinematicMode
 
 
-
 class ProjectileAimViewPointHomingTargetComponent(engine.ActorComponent):
     LookAheadDistance: float
     HomingComponent: ProjectileHomingComponent
     TargetController: engine.Controller
+
     def SetTargetController(self, InTargetController: engine.Controller): ...
     def SetTargetActor(self, InTargetActor: engine.Actor): ...
-    def GetTargetController(self, ReturnValue: engine.Controller) -> engine.Controller: ...
-    def GetCurrentHomingLoc(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+    def GetTargetController(self) -> engine.Controller: ...
+    def GetCurrentHomingLoc(self) -> core_uobject.Vector: ...
 
 
 class PropertyUtilsTestContext(unreal.UObject):
@@ -4433,9 +6071,11 @@ class PropertyUtilsTestContext(unreal.UObject):
     Int8Prop: int
     UInt8Prop: int
     Int16Prop: int
+    UInt16Prop: int
     Int32Prop: int
+    UInt32Prop: int
     Int64Prop: int
-
+    UInt64Prop: int
 
 
 class RangedFeedbackData(FeedbackData): ...
@@ -4443,6 +6083,7 @@ class RangedFeedbackData(FeedbackData): ...
 
 class ReferenceActor(engine.Actor):
     PreviewClass: str
+
     def EnumeratePreviewClasses(self, ClasssList: unreal.WrappedArray[str]): ...
 
 
@@ -4453,6 +6094,7 @@ class ReplicatedEmitter(engine.Emitter):
     ReplicatedVectorParams: unreal.WrappedArray[EmitterVectorParam]
     ReplicatedColorParams: unreal.WrappedArray[EmitterColorParam]
     ReplicatedWwiseEvent: EmitterWwiseEvent
+
     def OnRep_TemplateOptions(self): ...
     def OnRep_ReplicatedWwiseEvent(self): ...
     def OnRep_ReplicatedVectorParams(self): ...
@@ -4470,16 +6112,18 @@ class ResourceWeightAttributeValueResolver(AttributeValueResolver):
     MaxBelowThresholdWeight: AttributeInitializationData
 
 
-
 class RigidBodyActor(engine.Actor):
     RigidBodyComponent: RigidBodyComponent
 
 
-
 class RigidBodyComponent(engine.StaticMeshComponent):
     RigidBodyImpactData: ImpactData
+    OnImpulseAdded: Any
     bEnableHardSleeping: bool
-    def SetKinematic(self, SleepingComponent: engine.PrimitiveComponent, BoneName: str): ...
+
+    def SetKinematic(
+        self, SleepingComponent: engine.PrimitiveComponent, BoneName: str
+    ): ...
 
 
 class SaveGameActorInterface(core_uobject.Interface): ...
@@ -4493,18 +6137,27 @@ class SceneBodySwitchComponent(engine.SceneComponent):
     DetachAction: SceneBodySwitchAction
     ComponentRecords: unreal.WrappedArray[SceneComponentSwitchRecord]
     ReplicatedState: unreal.WrappedArray[int]
+
     def OnRep_ReplicatedState(self): ...
-    def HandleWwiseEventFinished(self, WAC: wwise_audio.WwiseAudioComponent, WwiseEvent: wwise_audio.WwiseEvent): ...
+    def HandleWwiseEventFinished(
+        self, WAC: wwise_audio.WwiseAudioComponent, WwiseEvent: wwise_audio.WwiseEvent
+    ): ...
     def HandleParticleSystemFinished(self, PSC: engine.ParticleSystemComponent): ...
     def GetValidSwitchStateNames(self, OutNames: unreal.WrappedArray[str]): ...
 
 
 class SceneBodySwitchFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def EnumerateValidSwitchStateNames(self, SwitchName: str, Names: unreal.WrappedArray[str]): ...
+    def EnumerateValidSwitchStateNames(
+        self, SwitchName: str, Names: unreal.WrappedArray[str]
+    ): ...
     def EnumerateValidSwitchNames(self, Names: unreal.WrappedArray[str]): ...
-    def ChangeSwitchExternal(self, Actor: engine.Actor, SwitchName: str, StateName: str): ...
-    def ChangeSwitch(self, Context: unreal.UObject, SwitchName: str, StateName: str): ...
+    def ChangeSwitchExternal(
+        self, Actor: engine.Actor, SwitchName: str, StateName: str
+    ): ...
+    def ChangeSwitch(
+        self, Context: unreal.UObject, SwitchName: str, StateName: str
+    ): ...
 
 
 class SceneBodySwitchManagerComponent(engine.ActorComponent): ...
@@ -4513,18 +6166,105 @@ class SceneBodySwitchManagerComponent(engine.ActorComponent): ...
 class ScreenParticleManagerComponent(engine.ActorComponent):
     ScreenParticleRecords: unreal.WrappedArray[ScreenParticleRecord]
     TrackedParticleProperties: unreal.WrappedArray[ParticlePropertyTracker]
-    def ShowScreenParticleForActor(self, Actor: engine.Actor, Template: engine.ParticleSystem, bHideWhenFinished: bool, ContentDims: core_uobject.Vector2D, ParticleDepth: float, ScalingMode: EScreenParticleScalingMode, bOnlyOwnerSee: bool, bAlwaysVisible: bool, Tag: str, bAllowMultipleInstances: bool, bServerAuthority: bool, bTickEvenWhenPaused: bool, bHideDuringInGameMenu: bool): ...
+
+    def ShowScreenParticleForActor(
+        self,
+        Actor: engine.Actor,
+        Template: engine.ParticleSystem,
+        bHideWhenFinished: bool,
+        ContentDims: core_uobject.Vector2D,
+        ParticleDepth: float,
+        ScalingMode: EScreenParticleScalingMode,
+        bOnlyOwnerSee: bool,
+        bAlwaysVisible: bool,
+        Tag: str,
+        bAllowMultipleInstances: bool,
+        bServerAuthority: bool,
+        bTickEvenWhenPaused: bool,
+        bHideDuringInGameMenu: bool,
+    ): ...
     def OnScreenParticleFinished(self, Component: engine.ParticleSystemComponent): ...
-    def HideScreenParticleForActor(self, Actor: engine.Actor, Template: engine.ParticleSystem, Tag: str, bAllowParticleToFinish: bool, bServerAuthority: bool): ...
-    def ClientTrackParticleProperty(self, TrackingData: ParticlePropertyTrackingData, Template: engine.ParticleSystem, Tag: str, PropertyName: str, PropertyValue: float, bAddToValue: bool, UsedMaterialProperty: engine.MaterialInterface, MaterialPropertyName: str): ...
-    def ClientShowScreenParticleEx(self, Template: engine.ParticleSystem, InitFlags: int, ContentDims: core_uobject.Vector2D, ParticleDepth: float, ScalingMode: EScreenParticleScalingMode, Tag: str): ...
-    def ClientShowScreenParticle(self, Template: engine.ParticleSystem, bHideWhenFinished: bool, ContentDims: core_uobject.Vector2D, ParticleDepth: float, ScalingMode: EScreenParticleScalingMode, bOnlyOwnerSee: bool, bAlwaysVisible: bool, Tag: str, bAllowMultipleInstances: bool, bTickEvenWhenPaused: bool, bHideDuringInGameMenu: bool, bDepthPriorityWorld: bool): ...
-    def ClientSetScreenParticleVectorParameter(self, Template: engine.ParticleSystem, Tag: str, ParameterName: str, Param: core_uobject.Vector): ...
-    def ClientSetScreenParticleMaterialParameter(self, Template: engine.ParticleSystem, Tag: str, ParameterName: str, Param: engine.MaterialInterface): ...
-    def ClientSetScreenParticleFloatParameter(self, Template: engine.ParticleSystem, Tag: str, ParameterName: str, Param: float): ...
-    def ClientSetScreenParticleColorParameter(self, Template: engine.ParticleSystem, Tag: str, ParameterName: str, Param: core_uobject.LinearColor): ...
-    def ClientSetScreenParticleActorParameter(self, Template: engine.ParticleSystem, Tag: str, ParameterName: str, Param: engine.Actor): ...
-    def ClientHideScreenParticle(self, Template: engine.ParticleSystem, Tag: str, bAllowParticleToFinish: bool): ...
+    def HideScreenParticleForActor(
+        self,
+        Actor: engine.Actor,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        bAllowParticleToFinish: bool,
+        bServerAuthority: bool,
+    ): ...
+    def ClientTrackParticleProperty(
+        self,
+        TrackingData: ParticlePropertyTrackingData,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        PropertyName: str,
+        PropertyValue: float,
+        bAddToValue: bool,
+        UsedMaterialProperty: engine.MaterialInterface,
+        MaterialPropertyName: str,
+    ): ...
+    def ClientShowScreenParticleEx(
+        self,
+        Template: engine.ParticleSystem,
+        InitFlags: int,
+        ContentDims: core_uobject.Vector2D,
+        ParticleDepth: float,
+        ScalingMode: EScreenParticleScalingMode,
+        Tag: str,
+    ): ...
+    def ClientShowScreenParticle(
+        self,
+        Template: engine.ParticleSystem,
+        bHideWhenFinished: bool,
+        ContentDims: core_uobject.Vector2D,
+        ParticleDepth: float,
+        ScalingMode: EScreenParticleScalingMode,
+        bOnlyOwnerSee: bool,
+        bAlwaysVisible: bool,
+        Tag: str,
+        bAllowMultipleInstances: bool,
+        bTickEvenWhenPaused: bool,
+        bHideDuringInGameMenu: bool,
+        bDepthPriorityWorld: bool,
+    ): ...
+    def ClientSetScreenParticleVectorParameter(
+        self,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        ParameterName: str,
+        Param: core_uobject.Vector,
+    ): ...
+    def ClientSetScreenParticleMaterialParameter(
+        self,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        ParameterName: str,
+        Param: engine.MaterialInterface,
+    ): ...
+    def ClientSetScreenParticleFloatParameter(
+        self,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        ParameterName: str,
+        Param: float,
+    ): ...
+    def ClientSetScreenParticleColorParameter(
+        self,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        ParameterName: str,
+        Param: core_uobject.LinearColor,
+    ): ...
+    def ClientSetScreenParticleActorParameter(
+        self,
+        Template: engine.ParticleSystem,
+        Tag: str,
+        ParameterName: str,
+        Param: engine.Actor,
+    ): ...
+    def ClientHideScreenParticle(
+        self, Template: engine.ParticleSystem, Tag: str, bAllowParticleToFinish: bool
+    ): ...
 
 
 class SenseConfigProviderInterface(core_uobject.Interface): ...
@@ -4537,7 +6277,6 @@ class SimpleMathValueResolver(AttributeValueResolver):
     ValueA: AttributeInitializationData
     Operator: ESimpleMathValueResolverOperatorType
     ValueB: AttributeInitializationData
-
 
 
 class SocketComponent(engine.SceneComponent): ...
@@ -4558,7 +6297,6 @@ class SpawnSimulatedActorSwitchAction(SceneBodySwitchAction):
     LifeSpan: float
 
 
-
 class SprintData(engine.DataAsset):
     SprintFOVCurve: engine.CurveFloat
     bAddModifierToBaseFOV: bool
@@ -4570,36 +6308,52 @@ class SprintData(engine.DataAsset):
     SprintAttributeEffects: unreal.WrappedArray[AttributeEffectData]
 
 
-
 class StanceBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def TryGetStanceComponent(self, AIController: aimodule.AIController, ReturnValue: StanceComponent) -> StanceComponent: ...
+    def TryGetStanceComponent(
+        self, AIController: aimodule.AIController
+    ) -> StanceComponent: ...
     def SetStance(self, Target: engine.Actor, Stance: StanceDataProvider): ...
-    def IsStanceComponentInStance(self, StanceComponent: StanceComponent, Stance: StanceDataProvider, ReturnValue: bool) -> bool: ...
-    def IsInStance(self, AnimInstance: engine.AnimInstance, Stance: StanceDataProvider, ReturnValue: bool) -> bool: ...
-    def EqualEqual_StanceTypeStanceType(self, A: StanceType, B: StanceType, ReturnValue: bool) -> bool: ...
-    def EqualEqual_StanceDataStanceData(self, A: StanceData, B: StanceData, ReturnValue: bool) -> bool: ...
+    def IsStanceComponentInStance(
+        self, StanceComponent: StanceComponent, Stance: StanceDataProvider
+    ) -> bool: ...
+    def IsInStance(
+        self, AnimInstance: engine.AnimInstance, Stance: StanceDataProvider
+    ) -> bool: ...
+    def EqualEqual_StanceTypeStanceType(self, A: StanceType, B: StanceType) -> bool: ...
+    def EqualEqual_StanceDataStanceData(self, A: StanceData, B: StanceData) -> bool: ...
     def ClearStance(self, Target: engine.Actor): ...
 
 
 class StanceComponent(engine.ActorComponent):
+    OnStanceChanged: Any
     StanceSelector: StanceDataSelector
     StanceStack: StanceStack
     StanceState: StanceChangedEventArgs
+    DefaultStanceMap: Any
     TimeEnteredCurrentStance: float
-    def StackStanceChangedCallback(self, PreviousLayer: EStanceStackLayer, PreviousStance: StanceData, NextLayer: EStanceStackLayer, NextStance: StanceData): ...
-    def SetStanceLayer(self, Layer: EStanceStackLayer, NewStance: StanceDataProvider): ...
+
+    def StackStanceChangedCallback(
+        self,
+        PreviousLayer: EStanceStackLayer,
+        PreviousStance: StanceData,
+        NextLayer: EStanceStackLayer,
+        NextStance: StanceData,
+    ): ...
+    def SetStanceLayer(
+        self, Layer: EStanceStackLayer, NewStance: StanceDataProvider
+    ): ...
     def SetBlueprintStance(self, NewStance: StanceDataProvider): ...
     def OnRep_StanceState(self): ...
-    def IsInStanceType(self, Type: StanceType, ReturnValue: bool) -> bool: ...
-    def IsInStanceLayer(self, Layer: EStanceStackLayer, ReturnValue: bool) -> bool: ...
-    def IsInStance(self, Stance: StanceDataProvider, ReturnValue: bool) -> bool: ...
-    def IsInAnimStance(self, Stance: StanceDataProvider, ReturnValue: bool) -> bool: ...
-    def GetTimeSpentInCurrentStance(self, ReturnValue: float) -> float: ...
-    def GetStanceLayer(self, ReturnValue: EStanceStackLayer) -> EStanceStackLayer: ...
-    def GetStance(self, ReturnValue: StanceData) -> StanceData: ...
-    def FindTypeForStance(self, Stance: StanceData, ReturnValue: StanceType) -> StanceType: ...
-    def FindStanceForType(self, Type: StanceType, ReturnValue: StanceData) -> StanceData: ...
+    def IsInStanceType(self, Type: StanceType) -> bool: ...
+    def IsInStanceLayer(self, Layer: EStanceStackLayer) -> bool: ...
+    def IsInStance(self, Stance: StanceDataProvider) -> bool: ...
+    def IsInAnimStance(self, Stance: StanceDataProvider) -> bool: ...
+    def GetTimeSpentInCurrentStance(self) -> float: ...
+    def GetStanceLayer(self) -> EStanceStackLayer: ...
+    def GetStance(self) -> StanceData: ...
+    def FindTypeForStance(self, Stance: StanceData) -> StanceType: ...
+    def FindStanceForType(self, Type: StanceType) -> StanceData: ...
     def ClearStanceLayer(self, Layer: EStanceStackLayer): ...
     def ClearBlueprintStance(self): ...
 
@@ -4614,11 +6368,15 @@ class StatusEffect(unreal.UObject):
     DamageType: unreal.UClass
     DamageSourceClass: unreal.UClass
     DataAssetCopy: StatusEffectData
+
     def OnEndEffect(self, Target: engine.Actor): ...
     def OnBeginEffect(self, Target: engine.Actor): ...
 
 
-class StatusEffectModifierAttributePropertyValueResolver(AttributePropertyValueResolver): ...
+class StatusEffectModifierAttributePropertyValueResolver(
+    AttributePropertyValueResolver
+):
+    StatusEffectData: Any
 
 
 class StatusEffectStackingStrategyData_Capped(StatusEffectStackingStrategyData):
@@ -4628,7 +6386,6 @@ class StatusEffectStackingStrategyData_Capped(StatusEffectStackingStrategyData):
     SelectionCriteria: EStatusEffectStackingInstanceSelectionCriteria
     ReplacementCriteria: EStatusEffectStackingInstanceReplacementCriteria
     DurationRefund: StatusEffectStackingStrategyData_DurationRefundData
-
 
 
 class TargetableComponent(TeamComponent):
@@ -4656,6 +6413,7 @@ class TargetableComponent(TeamComponent):
     AimAssistSnapTargetType: EAimAssistSnapTargetType
     bTargetTracking: bool
     bDisableBulletMagnetism: bool
+
     def SetTargetUIName(self, NewTargetUIName: GbxUIName): ...
     def SetTargetName(self, NewTargetName: str): ...
     def SetIsTargetableByNonPlayers(self, IsTargetable: bool): ...
@@ -4663,61 +6421,93 @@ class TargetableComponent(TeamComponent):
     def SetIsTargetableByAIPlayers(self, IsTargetable: bool): ...
     def SetIsTargetable(self, IsTargetable: bool): ...
     def OnRep_TargetUIName(self): ...
-    def IsTargetableByPawn(self, Pawn: engine.Pawn, ReturnValue: bool) -> bool: ...
-    def IsTargetableByNonPlayers(self, ReturnValue: bool) -> bool: ...
-    def IsTargetableByHumanPlayers(self, ReturnValue: bool) -> bool: ...
-    def IsTargetableByController(self, Controller: engine.Controller, ReturnValue: bool) -> bool: ...
-    def IsTargetableByAIPlayers(self, ReturnValue: bool) -> bool: ...
-    def IsTargetableByActor(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def IsTargetable(self, ReturnValue: bool) -> bool: ...
-    def GetTargetSocketName(self, ReturnValue: str) -> str: ...
+    def IsTargetableByPawn(self, Pawn: engine.Pawn) -> bool: ...
+    def IsTargetableByNonPlayers(self) -> bool: ...
+    def IsTargetableByHumanPlayers(self) -> bool: ...
+    def IsTargetableByController(self, Controller: engine.Controller) -> bool: ...
+    def IsTargetableByAIPlayers(self) -> bool: ...
+    def IsTargetableByActor(self, Actor: engine.Actor) -> bool: ...
+    def IsTargetable(self) -> bool: ...
+    def GetTargetSocketName(self) -> str: ...
     def GetTargetProxyComponentNames(self, Array: unreal.WrappedArray[str]): ...
-    def GetTargetNameString(self, ReturnValue: str) -> str: ...
-    def GetTargetLocations(self, ReturnValue: unreal.WrappedArray[core_uobject.Vector]) -> unreal.WrappedArray[core_uobject.Vector]: ...
-    def GetTargetLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetClosestTargetLocation(self, Origin: core_uobject.Vector, Direction: core_uobject.Vector, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+    def GetTargetNameString(self) -> str: ...
+    def GetTargetLocations(self) -> unreal.WrappedArray[core_uobject.Vector]: ...
+    def GetTargetLocation(self) -> core_uobject.Vector: ...
+    def GetClosestTargetLocation(
+        self, Origin: core_uobject.Vector, Direction: core_uobject.Vector
+    ) -> core_uobject.Vector: ...
     def GetAvailableSocketNames(self, Array: unreal.WrappedArray[str]): ...
 
 
 class TargetActorInfoLibrary(engine.BlueprintFunctionLibrary):
 
-    def IsSenseActive(self, Info: TargetActorInfo, Sense: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def IsExistingTarget(self, Info: TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def IsDirectlySensed(self, Info: TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def HasStimulusForSense(self, Info: TargetActorInfo, Sense: unreal.UClass, ReturnValue: bool) -> bool: ...
-    def HasAnyKnownStimuli(self, Info: TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def GetStimulusLocation(self, Info: TargetActorInfo, Sense: unreal.UClass, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetStimulusForSense(self, Info: TargetActorInfo, Sense: unreal.UClass, Stimulus: aimodule.AIStimulus, ReturnValue: bool) -> bool: ...
-    def GetReceiverLocation(self, Info: TargetActorInfo, Sense: unreal.UClass, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetBestStimulusLocation(self, Info: TargetActorInfo, Age: float, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetBestStimulus(self, Info: TargetActorInfo, Stimulus: aimodule.AIStimulus, ReturnValue: bool) -> bool: ...
-    def GetBestAttackLocation(self, Info: TargetActorInfo, OutTargetVelocity: core_uobject.Vector, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def FindActorTargetingComponent(self, Actor: engine.Actor, ReturnValue: TargetingComponent) -> TargetingComponent: ...
+    def IsSenseActive(self, Info: TargetActorInfo, Sense: unreal.UClass) -> bool: ...
+    def IsExistingTarget(self, Info: TargetActorInfo) -> bool: ...
+    def IsDirectlySensed(self, Info: TargetActorInfo) -> bool: ...
+    def HasStimulusForSense(
+        self, Info: TargetActorInfo, Sense: unreal.UClass
+    ) -> bool: ...
+    def HasAnyKnownStimuli(self, Info: TargetActorInfo) -> bool: ...
+    def GetStimulusLocation(
+        self, Info: TargetActorInfo, Sense: unreal.UClass
+    ) -> core_uobject.Vector: ...
+    def GetStimulusForSense(
+        self, Info: TargetActorInfo, Sense: unreal.UClass, Stimulus: aimodule.AIStimulus
+    ) -> bool: ...
+    def GetReceiverLocation(
+        self, Info: TargetActorInfo, Sense: unreal.UClass
+    ) -> core_uobject.Vector: ...
+    def GetBestStimulusLocation(
+        self, Info: TargetActorInfo, Age: float
+    ) -> core_uobject.Vector: ...
+    def GetBestStimulus(
+        self, Info: TargetActorInfo, Stimulus: aimodule.AIStimulus
+    ) -> bool: ...
+    def GetBestAttackLocation(
+        self, Info: TargetActorInfo, OutTargetVelocity: core_uobject.Vector
+    ) -> core_uobject.Vector: ...
+    def FindActorTargetingComponent(
+        self, Actor: engine.Actor
+    ) -> TargetingComponent: ...
 
 
 class TargetingComponent(engine.ActorComponent):
+    TargetListChangedBpEvent: Any
     QueryFrequency: float
     bQueryImmediately: bool
     QueryParams: EnvQueryParams
     BlackboardKeys: unreal.WrappedArray[GbxBlackboardKeySelector]
     bOnlyTargetThreatsToPlayers: bool
     CurrentTargetable: TargetableComponent
+
     def ServerSetBestTarget(self, NewBestTarget: engine.Actor): ...
-    def IsBestTargetDirectlySensed(self, TargetIndex: int, ReturnValue: bool) -> bool: ...
-    def HasTargets(self, ReturnValue: bool) -> bool: ...
-    def HasTarget(self, Actor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def GetTargetLocationForActor(self, Actor: engine.Actor, TargetLocation: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def GetTargetInfoForActor(self, Actor: engine.Actor, TargetInfo: TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def GetTargetInfoCount(self, ReturnValue: int) -> int: ...
-    def GetTargetInfoAt(self, TargetIndex: int, TargetInfo: TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def GetTargetActorAt(self, TargetIndex: int, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetBestThreatActor(self, bRequireFirsthandKnowledge: bool, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetBestTargetLocation(self, TargetIndex: int, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def GetBestTargetInfo(self, TargetInfo: TargetActorInfo, TargetIndex: int, ReturnValue: bool) -> bool: ...
-    def GetBestTargetActor(self, TargetIndex: int, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def GetBestTargetableComponent(self, TargetIndex: int, ReturnValue: TargetableComponent) -> TargetableComponent: ...
-    def GetBestAttackTargetLocation(self, OutTargetVelocity: core_uobject.Vector, TargetIndex: int, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def DoesBestTargetHaveStimulusForSense(self, Sense: unreal.UClass, MaxAge: float, TargetIndex: int, ReturnValue: bool) -> bool: ...
+    def IsBestTargetDirectlySensed(self, TargetIndex: int) -> bool: ...
+    def HasTargets(self) -> bool: ...
+    def HasTarget(self, Actor: engine.Actor) -> bool: ...
+    def GetTargetLocationForActor(
+        self, Actor: engine.Actor, TargetLocation: core_uobject.Vector
+    ) -> bool: ...
+    def GetTargetInfoForActor(
+        self, Actor: engine.Actor, TargetInfo: TargetActorInfo
+    ) -> bool: ...
+    def GetTargetInfoCount(self) -> int: ...
+    def GetTargetInfoAt(
+        self, TargetIndex: int, TargetInfo: TargetActorInfo
+    ) -> bool: ...
+    def GetTargetActorAt(self, TargetIndex: int) -> engine.Actor: ...
+    def GetBestThreatActor(self, bRequireFirsthandKnowledge: bool) -> engine.Actor: ...
+    def GetBestTargetLocation(self, TargetIndex: int) -> core_uobject.Vector: ...
+    def GetBestTargetInfo(
+        self, TargetInfo: TargetActorInfo, TargetIndex: int
+    ) -> bool: ...
+    def GetBestTargetActor(self, TargetIndex: int) -> engine.Actor: ...
+    def GetBestTargetableComponent(self, TargetIndex: int) -> TargetableComponent: ...
+    def GetBestAttackTargetLocation(
+        self, OutTargetVelocity: core_uobject.Vector, TargetIndex: int
+    ) -> core_uobject.Vector: ...
+    def DoesBestTargetHaveStimulusForSense(
+        self, Sense: unreal.UClass, MaxAge: float, TargetIndex: int
+    ) -> bool: ...
 
 
 class TargetingDebugServerRpcComponent(engine.ActorComponent):
@@ -4735,7 +6525,8 @@ class Team(gbx_runtime.GbxDataAsset):
     AttitudeFromTeams: unreal.WrappedArray[TeamAttitudeSetEntry]
     bEnableTeamCollisionChannel: bool
     TeamCollisionChannel: ETeamCollisionChannel
-    def GetAttitudeToward(self, Team: Team, ReturnValue: int) -> int: ...
+
+    def GetAttitudeToward(self, Team: Team) -> int: ...
 
 
 class TeleportInterface(core_uobject.Interface): ...
@@ -4752,7 +6543,6 @@ class TerritoryComponent(engine.PrimitiveComponent):
     LinkedTerritories: unreal.WrappedArray[TerritoryComponent]
 
 
-
 class TrivialFoleyImplementationComponent(engine.ActorComponent):
     FootstepImpact: ImpactData
     FootstepPhysmat: engine.PhysicalMaterial
@@ -4761,16 +6551,13 @@ class TrivialFoleyImplementationComponent(engine.ActorComponent):
     CachedFoleyMainComponent: gbx_audio.FoleyMainComponent
 
 
-
 class UIStatData_Numeric_Formula(UIStatData_Numeric):
     Formula: UIStatFormulaEvaluator
-
 
 
 class UIStatData_Text(UIStatData):
     Text: str
     TextWithAdditionalInput: str
-
 
 
 class UIStatAttributeEffectProvider(core_uobject.Interface): ...
@@ -4784,7 +6571,6 @@ class UsabilityDataSelection(gbx_runtime.GbxDataAsset):
     SecondaryHoldUseDefSelection: UseDefSelection
 
 
-
 class UsableTypeDefinition(gbx_runtime.GbxDataAsset):
     ActionText: str
     InputActionOverride: str
@@ -4796,16 +6582,17 @@ class UsableTypeDefinition(gbx_runtime.GbxDataAsset):
     Cost: AttributeInitializationData
 
 
-
 class UserStatesInterface(core_uobject.Interface):
 
-    def HasEnableConditionsSetForAnyUserState(self, ReturnValue: bool) -> bool: ...
+    def HasEnableConditionsSetForAnyUserState(self) -> bool: ...
     def BlueprintStateHandler(self, bFromLoad: bool): ...
 
 
 class UserStatesFunctionLibrary(engine.BlueprintFunctionLibrary):
 
-    def HasEnableConditionsSetForSpecificUserState(self, Context: unreal.UObject, UserStateProperty: str, ReturnValue: bool) -> bool: ...
+    def HasEnableConditionsSetForSpecificUserState(
+        self, Context: unreal.UObject, UserStateProperty: str
+    ) -> bool: ...
 
 
 class UseSystemFunctionLibrary(engine.BlueprintFunctionLibrary):
@@ -4825,7 +6612,6 @@ class WeatherTemplate(gbx_runtime.GbxDataAsset):
     ScreenSpaceParticleTemplate: engine.ParticleSystem
 
 
-
 class StanceChangedEventArgs:
     PreviousLayer: EStanceStackLayer
     PreviousStanceType: StanceType
@@ -4835,11 +6621,9 @@ class StanceChangedEventArgs:
     NextStance: StanceData
 
 
-
 class ControlledMoveNetCorrection:
     Runtime: float
     ControlledMove: unreal.UClass
-
 
 
 class FacingInfo:
@@ -4851,12 +6635,10 @@ class FacingInfo:
     Offset: core_uobject.Vector
 
 
-
 class MantleAttemptInfo:
     ActionIndex: int
     Location: core_uobject.Vector
     MovementBase: engine.PrimitiveComponent
-
 
 
 class CharacterMoveToCommand:
@@ -4867,7 +6649,6 @@ class CharacterMoveToCommand:
     bEnforceMaxSpeed: bool
     bEnforceMaxSpeedOnEnding: bool
     bMoveZAxis: bool
-
 
 
 class CharacterRotateToCommand:
@@ -4883,18 +6664,15 @@ class CharacterRotateToCommand:
     Easing: GbxEasingFunc
 
 
-
 class GbxEasingFunc:
     Func: int
     BlendExp: float
     Steps: int
 
 
-
 class RootMotionStateData:
     GbxCharMoveComp: GbxCharacterMovementComponent
     GbxAnimInstance: GbxCharacterAnimInstance
-
 
 
 class IdleVelocityData: ...
@@ -4906,10 +6684,8 @@ class GbxInterpData:
     MoveComp: engine.MovementComponent
 
 
-
 class RotationDeltaMatchingInfo:
     RotationTimeCurve: engine.FloatCurve
-
 
 
 class NavAnimClientData:
@@ -4918,11 +6694,9 @@ class NavAnimClientData:
     GoalRadius: float
 
 
-
 class NavAnimServerData:
     Areas: unreal.UObject
     UserEdges: unreal.UObject
-
 
 
 class NavAnimState:
@@ -4930,7 +6704,6 @@ class NavAnimState:
     MachineList: unreal.WrappedArray[NavAnimMachineData]
     ServerTransition: NavAnimTransition
     ClientTransitionIdx: int
-
 
 
 class NavAnimTransition:
@@ -4941,11 +6714,9 @@ class NavAnimTransition:
     RunIdx: int
 
 
-
 class NavAnimDesiredInfo:
     Yaw: float
     FaceLoc: engine.Vector_NetQuantize
-
 
 
 class NavAnimMachineData:
@@ -4954,16 +6725,13 @@ class NavAnimMachineData:
     CurrState: ENavAnimState
 
 
-
 class GbxCharacterNavWalking:
     MoveComp: GbxCharacterMovementComponent
-
 
 
 class ReplicatedMantleState:
     Counter: int
     ActionIndex: int
-
 
 
 class MantleState:
@@ -4974,10 +6742,8 @@ class MantleState:
     CurrentTrace: MantleTraceCheck
 
 
-
 class MantleTraceCheck:
     Inputs: MantleTraceInputs
-
 
 
 class MantleTraceInputs:
@@ -4987,10 +6753,8 @@ class MantleTraceInputs:
     SourceActor: engine.Actor
 
 
-
 class MantleActiveActionData:
     MantleAttempt: MantleAttemptInfo
-
 
 
 class ControlledMoveReplicationData:
@@ -5002,14 +6766,12 @@ class ControlledMoveReplicationData:
     bInterrupted: bool
 
 
-
 class ControlledMoveParameters:
     SpeedOverride: float
     DurationOverride: float
     LaunchAngleOverride: float
     TargetActor: engine.Actor
     TargetLocation: core_uobject.Vector
-
 
 
 class ControlledMoveState:
@@ -5028,11 +6790,9 @@ class ControlledMoveState:
     aStrafeInput: float
 
 
-
 class ReplicatedLadderState:
     DirtyCounter: int
     LadderType: EScriptedLadderType
-
 
 
 class LadderAnimState:
@@ -5040,10 +6800,8 @@ class LadderAnimState:
     CurrentType: EScriptedLadderType
 
 
-
 class CharacterScriptedMeshOffsetState:
     Cmd: CharacterScriptedMeshOffsetCommand
-
 
 
 class CharacterScriptedMeshOffsetCommand:
@@ -5052,15 +6810,12 @@ class CharacterScriptedMeshOffsetCommand:
     VertCurv: engine.RuntimeFloatCurve
 
 
-
 class CharacterRotateToState:
     CommandData: CharacterRotateToCommand
 
 
-
 class CharacterMoveToState:
     CommandData: CharacterMoveToCommand
-
 
 
 class UseEvent:
@@ -5070,7 +6825,6 @@ class UseEvent:
     bWasHeld: bool
 
 
-
 class LandingInfo:
     bNoMinVelIfJumped: bool
     LandedMinVel: float
@@ -5078,7 +6832,6 @@ class LandingInfo:
     bPlayLandedImpactAtSpecificFeet: bool
     LandedAction: unreal.UClass
     VocalizationTag: gbx_audio.CharacterSoundTag
-
 
 
 class ReceivedDamageDetails:
@@ -5093,11 +6846,9 @@ class ReceivedDamageDetails:
     bWasBulletReflected: bool
 
 
-
 class HealthTypeDamageSummary:
     HealthType: HealthTypeData
     Damage: float
-
 
 
 class CausedDamageDetails:
@@ -5111,7 +6862,6 @@ class CausedDamageDetails:
     RadiusDamageOrigin: core_uobject.Vector
     DamageRadius: float
     bIsDamageOverTime: bool
-
 
 
 class CausedDeathDetails:
@@ -5131,14 +6881,12 @@ class CausedDeathDetails:
     DamagePerHealthType: unreal.WrappedArray[HealthTypeDamageSummary]
 
 
-
 class CausedHealingDetails:
     HealTarget: engine.Actor
     HealInstigator: engine.Actor
     Healing: float
     DamageSource: DamageSource
     DamageType: GbxDamageType
-
 
 
 class HitFriendlyEventDetails:
@@ -5148,12 +6896,10 @@ class HitFriendlyEventDetails:
     DamageType: GbxDamageType
 
 
-
 class HitByFriendlyEventDetails:
     DamageInstigator: engine.Actor
     DamageType: GbxDamageType
     DamageSource: DamageSource
-
 
 
 class GameResourcePoolReference:
@@ -5161,18 +6907,15 @@ class GameResourcePoolReference:
     PoolManager: GameResourcePoolManagerComponent
 
 
-
 class PlayerDamageDataPresentation:
     ScreenParticle: engine.ParticleSystem
     HitDirection: engine.Vector_NetQuantizeNormal
-
 
 
 class RangedDistanceOverrides:
     bOverrideRangedDistances: bool
     MinDistanceOverride: float
     MaxDistanceOverride: float
-
 
 
 class ActiveTrackedFeedback:
@@ -5193,7 +6936,6 @@ class ActiveTrackedFeedback:
     SourceContext: unreal.UObject
 
 
-
 class StatusEffectSpec:
     StatusEffectData: StatusEffectData
     EffectOwner: unreal.UObject
@@ -5203,7 +6945,6 @@ class StatusEffectSpec:
     EffectInstigator: engine.Controller
     DamageCauser: engine.Actor
     DamagePerSecond: float
-
 
 
 class UsabilityInfo:
@@ -5221,10 +6962,8 @@ class UsabilityInfo:
     SecondaryHoldUseDef: UsableTypeDefinition
 
 
-
 class ResourceLock:
     bLocked: bool
-
 
 
 class UsableCostCache:
@@ -5234,17 +6973,14 @@ class UsableCostCache:
     SecondaryHoldUseCost: int
 
 
-
 class LatentUseState:
     UsableComponent: UsableComponent
-
 
 
 class UseTraceResult:
     UsableComponent: UsableComponent
     HitComponent: engine.PrimitiveComponent
     Usability: UsabilityInfo
-
 
 
 class UsabilityQuery:
@@ -5254,11 +6990,9 @@ class UsabilityQuery:
     bUseHeld: bool
 
 
-
 class UsableAngleRestriction:
     AngleOffset: float
     AngleWidth: float
-
 
 
 class UseDefSelection:
@@ -5268,11 +7002,9 @@ class UseDefSelection:
     ConditionalUseDefs: unreal.WrappedArray[UseDefinitionConditional]
 
 
-
 class UseDefinitionConditional:
     UseDefinition: UsableTypeDefinition
     UseCondition: gbx_runtime.GbxCondition
-
 
 
 class HoldToUseSettings:
@@ -5283,12 +7015,10 @@ class HoldToUseSettings:
     InteractionBreakDistance: float
 
 
-
 class StatusEffectInstanceReference:
     StatusEffectManagerComponent: StatusEffectManagerComponent
     StatusEffectData: StatusEffectData
     StatusEffectInstanceID: int
-
 
 
 class HealthType:
@@ -5301,7 +7031,6 @@ class HealthType:
     HealthPool: GameResourcePoolReference
 
 
-
 class AttributeInitializationData:
     BaseValueConstant: float
     DataTableValue: DataTableValueHandle
@@ -5310,12 +7039,10 @@ class AttributeInitializationData:
     BaseValueScale: float
 
 
-
 class DataTableValueHandle:
     DataTable: engine.DataTable
     RowName: str
     ValueName: str
-
 
 
 class ReplicatedImpactHitResult:
@@ -5328,13 +7055,11 @@ class ReplicatedImpactHitResult:
     BoneName: str
 
 
-
 class ImpactResponseParams:
     ParticleParameters: unreal.WrappedArray[engine.ParticleSysParam]
     AudioParameters: unreal.WrappedArray[ImpactAudioParam]
     AudioSurfaceSwitch: wwise_audio.WwiseSwitch
     DecalOverride: engine.MaterialInterface
-
 
 
 class ImpactAudioParam:
@@ -5343,17 +7068,14 @@ class ImpactAudioParam:
     Value: float
 
 
-
 class AnimGraphBoneSet:
     BoneSet: engine.GbxBoneSet
     AnimGraphMachineName: str
 
 
-
 class SavedCollision:
     SavedItems: unreal.WrappedArray[SavedCollisionItem]
     SavedTeamItems: unreal.WrappedArray[SavedTeamCollision]
-
 
 
 class SavedTeamCollision:
@@ -5362,16 +7084,13 @@ class SavedTeamCollision:
     bCollideWithTeam: bool
 
 
-
 class SavedCollisionItem:
     Primitive: engine.PrimitiveComponent
     Responses: engine.CollisionResponseContainer
 
 
-
 class FacingController:
     RemoteChannels: RemoteFacingChannel
-
 
 
 class RemoteFacingChannel:
@@ -5379,11 +7098,10 @@ class RemoteFacingChannel:
     Yaw: int
 
 
-
 class ReplicatedPawnAttachState:
     Slot: PawnAttachSlotComponent
     Status: EPawnAttachStatus
-
+    StatusFlag: int
 
 
 class SpawnCostSelection:
@@ -5392,12 +7110,10 @@ class SpawnCostSelection:
     SpawnCost: int
 
 
-
 class MassSelection:
     Selection: EMassSelection
     Preset: str
     Mass: float
-
 
 
 class SoundPerceptionProperties:
@@ -5406,31 +7122,26 @@ class SoundPerceptionProperties:
     MaxRange: float
 
 
-
 class BulletPerceptionProperties:
     bEnabled: bool
     Strength: float
-
 
 
 class ActorPartList:
     Parts: unreal.WrappedArray[ActorPartData]
 
 
-
 class ActorPartSelectionOverrideData:
     PreferredParts: unreal.WrappedArray[ActorPartList]
-
 
 
 class StaticRagdollReplicationData:
     Bodies: unreal.WrappedArray[MinimalStaticRigidBodyState]
 
 
-
 class MinimalStaticRigidBodyState:
+    BoneIndex: int
     Rotation: core_uobject.Rotator
-
 
 
 class GbxAttributeModifierHandle: ...
@@ -5441,11 +7152,9 @@ class RegisteredConditionalDamageCriticalModifier:
     ModifierValueContextOverride: unreal.UObject
 
 
-
 class RegisteredConditionalDamageValueModifier:
     Modifier: ConditionalDamageValueModifier
     DamageValueContextOverride: unreal.UObject
-
 
 
 class ReflectedDamageParams:
@@ -5455,13 +7164,11 @@ class ReflectedDamageParams:
     DamageType: unreal.UClass
 
 
-
 class StatusEffectModifiers:
     StatusEffectData: StatusEffectData
     EffectChanceModifier: engine.GbxAttributeFloat
     EffectDurationModifier: engine.GbxAttributeFloat
     EffectDamageModifier: engine.GbxAttributeFloat
-
 
 
 class AttitudeDamageRules:
@@ -5470,18 +7177,15 @@ class AttitudeDamageRules:
     bAllowFriendlyDamage: bool
 
 
-
 class DamageGoreModifiers:
     GoreModifier: float
     GibModifier: float
-
 
 
 class CriticalHitDamageOverrides:
     Type: ECriticalHitDamageOverride
     bUseDefaultCriticalHitMultiplier: bool
     AdditionalCriticalMultiplier: float
-
 
 
 class DamageReactionEventSummary:
@@ -5497,17 +7201,14 @@ class DamageReactionEventSummary:
     EventIndex: int
 
 
-
 class HitRegionInfo:
     Data: HitRegionData
     StateIndex: int
 
 
-
 class StanceFloatValue:
     ValueType: EStanceValueOverrideType
     Value: float
-
 
 
 class SpawnPatternResult:
@@ -5518,21 +7219,17 @@ class SpawnPatternResult:
     bAngularVelocityChange: bool
 
 
-
 class AimControlParameters:
     AimControlData: AimControlData
-
 
 
 class CachedUIStatCollectionData:
     Sections: unreal.WrappedArray[CachedUIStatSectionData]
 
 
-
 class CachedUIStatSectionData:
     Name: str
     Stats: unreal.WrappedArray[CachedUIStatData]
-
 
 
 class CachedUIStatData:
@@ -5543,11 +7240,9 @@ class CachedUIStatData:
     ComparisonResult: EUIStatComparisonResult
 
 
-
 class StatusEffectQueryResult:
     NumberOfInstances: int
     DPS: float
-
 
 
 class StatusEffectQuery:
@@ -5555,11 +7250,9 @@ class StatusEffectQuery:
     Owner: unreal.UObject
 
 
-
 class StatusEffectRemoveSpec:
     StatusEffectData: StatusEffectData
     EffectOwner: unreal.UObject
-
 
 
 class StatusEffectInstanceStack:
@@ -5571,19 +7264,17 @@ class StatusEffectInstanceStack:
     Instances: unreal.WrappedArray[StatusEffectInstance]
 
 
-
 class StatusEffectInstance:
     Spec: StatusEffectSpec
-
 
 
 class DamageOverTimeContribution:
     PipelineInput: PipelineDamageInput
 
 
-
 class PipelineDamageInput:
     DamageReceiverComp: DamageComponent
+    Damageable: Any
     InstigatorPawn: engine.Pawn
     AdditionalEventListenerPawn: engine.Pawn
     DamageCauser: engine.Actor
@@ -5598,27 +7289,23 @@ class PipelineDamageInput:
     GoreModifiers: DamageGoreModifiers
 
 
-
 class AppliedAttributeEffect:
     AttributeEffectRef: AttributeEffectReference
     AttributeResolutionContext: unreal.UObject
     Owner: StatusEffectManagerComponent
 
 
-
 class AttributeEffectReference:
     StatusEffectData: StatusEffectData
 
 
-
 class UserStatesReplicationData:
     bInitialized: bool
-
+    PackedStateBits: int
 
 
 class UserStatesRuntimeData:
     States: unreal.WrappedArray[UserStateSetRuntimeData]
-
 
 
 class UserStateSetRuntimeData:
@@ -5627,10 +7314,8 @@ class UserStateSetRuntimeData:
     EnableConditions: unreal.WrappedArray[gbx_runtime.GbxCondition]
 
 
-
 class CompiledUserStatesData:
     CompiledSets: unreal.WrappedArray[CompiledUserSet]
-
 
 
 class CompiledUserSet:
@@ -5638,16 +7323,14 @@ class CompiledUserSet:
     EnableConditionVariableNames: unreal.WrappedArray[str]
 
 
-
 class GbxUIFormattedText:
     FormatText: str
-
+    FormatParams: Any
 
 
 class GbxBlackboardKeySelector:
     KeyName: str
     bRuntimeKey: bool
-
 
 
 class GbxParam:
@@ -5662,7 +7345,6 @@ class GbxParam:
     BlackboardKey: GbxBlackboardKeySelector
     Condition: gbx_runtime.GbxCondition
     Actor: engine.Actor
-
 
 
 class GbxQueryOptions:
@@ -5685,12 +7367,10 @@ class GbxQueryOptions:
     bUpdateWhenHotSpotsListChanges: bool
 
 
-
 class GbxQueryOriginOptions:
     UpdatePeriod: GbxParam
     UpdateCondition: GbxParam
     bInvertCondition: bool
-
 
 
 class EnvQueryParams:
@@ -5702,26 +7382,23 @@ class EnvQueryParams:
     Contexts: unreal.WrappedArray[GbxNamedParam]
     bDisableContextEditing: bool
     bAllowEmptyContexts: bool
+    ContextTypeTable: Any
     Params: unreal.WrappedArray[GbxNamedParam]
     RequiredSignificanceRating: int
-
 
 
 class GbxNamedParam(GbxParam):
     Name: str
 
 
-
 class GbxAnimTableRow(engine.TableRowBase):
     Animation: AnimActionDef
-
 
 
 class AnimActionDef:
     InputType: EAnimActionDefInput
     AnimAsset: engine.AnimationAsset
     AnimAssetName: str
-
 
 
 class ActionState_Base: ...
@@ -5738,7 +7415,6 @@ class AnimMeshList:
     Extras: unreal.WrappedArray[AnimMeshExtra]
 
 
-
 class AnimMeshExtra:
     Anim: AnimActionDef
     MeshName: str
@@ -5748,7 +7424,6 @@ class AnimMeshExtra:
     bHasBlendInOverride: bool
     BlendOutOverride: float
     bHasBlendOutOverride: bool
-
 
 
 class PreviewState:
@@ -5767,13 +7442,11 @@ class PreviewState:
     bRepeatAction: bool
 
 
-
 class PreviewActorManager:
     AttachComponent: engine.SceneComponent
     Actor: engine.Actor
     ActorClass: unreal.UClass
     ActorTemplate: engine.Actor
-
 
 
 class ActionState_Anim(ActionState_SimpleAnim): ...
@@ -5784,11 +7457,9 @@ class AttributeBaseValueData:
     BaseValue: AttributeInitializationData
 
 
-
 class ImpactResponseInfo:
     PhysicalMaterial: engine.PhysicalMaterial
     Response: ImpactResponseEffect
-
 
 
 class ImpactResponseEffect:
@@ -5820,10 +7491,8 @@ class ImpactResponseEffect:
     EffectParameters: ImpactResponseParams
 
 
-
 class GbxSignificanceEvent:
     Event: str
-
 
 
 class ForceSelection:
@@ -5831,7 +7500,6 @@ class ForceSelection:
     Preset: str
     Attribute: GbxAttributeData
     Force: float
-
 
 
 class GbxAnimInstanceProxy(engine.AnimInstanceProxy): ...
@@ -5863,14 +7531,12 @@ class CustomizationLinkedParameter:
     LinkedParameterType: ELinkedParameterType
 
 
-
 class HealthTypeBalanceData(engine.TableRowBase): ...
 
 
 class WeightedActorPartData:
     PartData: ActorPartData
     Weight: AttributeInitializationData
-
 
 
 class ViewLeadingRotationInfo:
@@ -5883,7 +7549,6 @@ class ViewLeadingRotationInfo:
     Min: core_uobject.Rotator
 
 
-
 class ViewLeadingTranslationInfo:
     Effect: core_uobject.Vector
     AccelRate: float
@@ -5892,12 +7557,10 @@ class ViewLeadingTranslationInfo:
     Min: core_uobject.Vector
 
 
-
 class AttributeEffectData:
     AttributeToModify: GbxAttributeData
     ModifierType: engine.EGbxAttributeModifierType
     ModifierValue: AttributeInitializationData
-
 
 
 class ChallengeInstanceData:
@@ -5906,9 +7569,9 @@ class ChallengeInstanceData:
     ChallengeInstance: Challenge
 
 
-
 class ChallengePersistentState:
     ChallengeClass: unreal.UClass
+    ChallengeClassPath: Any
     CompletedCount: int
     CompletedProgressLevel: int
     StatInstanceState: unreal.WrappedArray[ChallengeStatInstanceData]
@@ -5918,16 +7581,14 @@ class ChallengePersistentState:
     CustomPersistentData: CustomChallengePersistentState
 
 
-
 class ChallengeStatInstanceData:
     StatId: GameStatData
+    ChallengeStatPath: Any
     CurrentStatValue: int
-
 
 
 class DataActionPair_Base:
     ActionValue: unreal.UClass
-
 
 
 class DataActionPair_SmartObject(DataActionPair_Base):
@@ -5935,15 +7596,12 @@ class DataActionPair_SmartObject(DataActionPair_Base):
     BoneSetFilter: engine.GbxBoneSet
 
 
-
 class DataActionPair_SpawnMesh(DataActionPair_Base):
     ActionKey: gameplay_tags.GameplayTag
 
 
-
 class DataActionPair_Spawn(DataActionPair_Base):
     ActionKey: gameplay_tags.GameplayTag
-
 
 
 class ActorPartListData:
@@ -5956,18 +7614,17 @@ class ActorPartListData:
     Parts: unreal.WrappedArray[WeightedActorPartData]
 
 
-
 class MultiSelectionGestaltPartNameData:
     IndexOfType: int
     GestaltMeshPartNames: unreal.WrappedArray[str]
-    ConditionalGestaltMeshPartNames: unreal.WrappedArray[ConditionalMultiSelectionGestaltPartNameData]
-
+    ConditionalGestaltMeshPartNames: unreal.WrappedArray[
+        ConditionalMultiSelectionGestaltPartNameData
+    ]
 
 
 class ConditionalMultiSelectionGestaltPartNameData:
     OtherParts: unreal.WrappedArray[ActorPartData]
     GestaltMeshPartNames: unreal.WrappedArray[str]
-
 
 
 class RuntimeActorPartListData:
@@ -5976,23 +7633,19 @@ class RuntimeActorPartListData:
     AllParts: unreal.WrappedArray[WeightedActorPartData]
 
 
-
 class RuntimeActorPartListPartTypeData:
     StartIndex: int
     NumParts: int
-
 
 
 class ActorTagCompositeQuery:
     Queries: unreal.WrappedArray[ActorTagQuery]
 
 
-
 class ActorTagQuery:
     bIncludeComponents: bool
     Mode: EActorTagQueryMode
     Tags: unreal.WrappedArray[str]
-
 
 
 class AIChargeState: ...
@@ -6003,12 +7656,10 @@ class AIDodgeInstance:
     SourceActor: engine.Actor
 
 
-
 class AIDodgeBasicData:
     Cooldown: GbxParam
     Action: unreal.UClass
     Condition: gbx_runtime.GbxCondition
-
 
 
 class AIDodgeData(AIDodgeBasicData):
@@ -6023,11 +7674,9 @@ class AIDodgeData(AIDodgeBasicData):
     bLimitShooterDistance: bool
 
 
-
 class AimAssistSmoothingProperties:
     LastTarget: engine.Actor
     LastTargetTeam: Team
-
 
 
 class AimSensitivityLevelParameters:
@@ -6040,11 +7689,9 @@ class AimSensitivityLevelParameters:
     TurningRampUpDelay: float
 
 
-
 class AIBulletEvent:
     Strength: float
     Instigator: engine.Actor
-
 
 
 class PredictionSource: ...
@@ -6055,11 +7702,9 @@ class GbxAISightEvent:
     Observer: engine.Actor
 
 
-
 class WeightedAnim:
     Anims: AnimMeshList
     Weight: AttributeInitializationData
-
 
 
 class StretchAnimData:
@@ -6067,13 +7712,11 @@ class StretchAnimData:
     AnimSeq: engine.AnimSequence
 
 
-
 class AsyncExplosionImpactRequest:
     ExplosionImpact: ImpactData
     ExplodingActor: engine.Actor
     Instigator: engine.Actor
     World: engine.World
-
 
 
 class AsyncExplosionImpactRequestEntry: ...
@@ -6085,14 +7728,14 @@ class AttributePropertyValueResolverTestStruct:
     FloatPropDynamicArray: unreal.WrappedArray[float]
     ObjectProp: AttributePropertyValueResolverTestContext
     ObjectPropStaticArray: AttributePropertyValueResolverTestContext
-    ObjectPropDynamicArray: unreal.WrappedArray[AttributePropertyValueResolverTestContext]
-
+    ObjectPropDynamicArray: unreal.WrappedArray[
+        AttributePropertyValueResolverTestContext
+    ]
 
 
 class GameStageGradeWeightData:
     MinGameStage: AttributeInitializationData
     MaxGameStage: AttributeInitializationData
-
 
 
 class StatChallengeTest:
@@ -6103,11 +7746,9 @@ class StatChallengeTest:
     bResetLocalStatWhenGoalReached: bool
 
 
-
 class ChallengeGoalValue:
     GoalValue: int
     NotificationThreshold: int
-
 
 
 class ChallengeDataType:
@@ -6115,11 +7756,9 @@ class ChallengeDataType:
     ChallengeDataType: int
 
 
-
 class AttributeConditionalValue:
     ValueIfAllConditionsAreTrue: AttributeInitializationData
     Conditions: unreal.WrappedArray[gbx_runtime.GbxCondition]
-
 
 
 class ConditionalDamageDamageTypeConditional:
@@ -6127,11 +7766,9 @@ class ConditionalDamageDamageTypeConditional:
     DamageType: unreal.UClass
 
 
-
 class ConditionalDamageDamageConditionalValue:
     Condition: gbx_runtime.GbxCondition
     DamageValue: AttributeInitializationData
-
 
 
 class CMMotionData:
@@ -6140,17 +7777,14 @@ class CMMotionData:
     Z: engine.RuntimeFloatCurve
 
 
-
 class DamageTargetResult:
     DamageComponent: DamageComponent
     AsyncDamagedActor: DamagedActor
 
 
-
 class DamagedActor:
     Actor: engine.Actor
     DamageComponent: DamageComponent
-
 
 
 class CauseDamageAsyncRequest:
@@ -6159,16 +7793,13 @@ class CauseDamageAsyncRequest:
     DamageTarget: engine.Actor
 
 
-
 class DamageContextSource:
     SourceActor: engine.Actor
     Instigator: engine.Pawn
 
 
-
 class CauseDamageAsyncRequestEntry(CauseDamageAsyncRequest):
     Results: unreal.WrappedArray[DamageTargetResult]
-
 
 
 class DamageReactionEvent_DamageComponent:
@@ -6182,7 +7813,6 @@ class DamageReactionEvent_DamageComponent:
     MaxTriggerCount: int
 
 
-
 class SyncedHitReactionData:
     Tag: HitReactionTag
     Action: unreal.UClass
@@ -6191,7 +7821,7 @@ class SyncedHitReactionData:
     Direction: engine.Vector_NetQuantizeNormal
     Force: float
     HitBoneIndex: int
-
+    Flags: int
 
 
 class SimpleHealthInfo:
@@ -6199,7 +7829,6 @@ class SimpleHealthInfo:
     HealthType: HealthTypeData
     MaxHealth: engine.GbxAttributeFloat
     CurrentHealth: float
-
 
 
 class DamageDataEventDetails:
@@ -6212,12 +7841,10 @@ class DamageDataEventDetails:
     bWasCrit: bool
 
 
-
 class DamageLocalizationSettings:
     CriticalTexture: engine.Texture2D
     ResistTexture: engine.Texture2D
     ImmuneTexture: engine.Texture2D
-
 
 
 class ProtectionTimerSettings:
@@ -6226,12 +7853,10 @@ class ProtectionTimerSettings:
     MaintainedMaxHealthPct: float
 
 
-
 class LevelBasedDamageScale:
     LevelDifference: int
     HigherLevelAttackerDmgScale: float
     LowerLevelAttackerDmgScale: float
-
 
 
 class DamageModifierAttributeCollection:
@@ -6239,10 +7864,8 @@ class DamageModifierAttributeCollection:
     ReceivedModifier: GbxAttributeData
 
 
-
 class DamageOverTimeInstance:
     DamageData: DamageData
-
 
 
 class DamageScaleConditionalData:
@@ -6252,16 +7875,13 @@ class DamageScaleConditionalData:
     DamageScale: AttributeInitializationData
 
 
-
 class DamageSourceHealthTypeModifier:
     HealthTypeData: HealthTypeData
     InstigatedFriendlyFireHealingModifier: GbxAttributeData
 
 
-
 class HitRegionDamagePreview:
     HitRegion: HitRegionInfo
-
 
 
 class DynamicPhysicalAnimationTickFunction(engine.TickFunction): ...
@@ -6269,7 +7889,6 @@ class DynamicPhysicalAnimationTickFunction(engine.TickFunction): ...
 
 class ExplosionImpactOverride:
     DecalOverride: engine.MaterialInterface
-
 
 
 class DamageInfo:
@@ -6286,11 +7905,9 @@ class DamageInfo:
     CriticalHitOverrides: CriticalHitDamageOverrides
 
 
-
 class DamageTypeExplosionAssociation:
     DamageType: unreal.UClass
     ExplosionSizeData: ExplosionSizeSelectionData
-
 
 
 class ExplosionSizeProperties:
@@ -6308,7 +7925,6 @@ class ExplosionSizeProperties:
     SignificanceEvent: GbxSignificanceEvent
 
 
-
 class FeedbackDataFirstPersonImpulse:
     bUseDurationFromCameraShake: bool
     CameraShakeDurationEaseInWeight: float
@@ -6324,14 +7940,12 @@ class FeedbackDataFirstPersonImpulse:
     ZoomedEffectScale: float
 
 
-
 class LoopingShakeInfo:
     AssociatedController: engine.PlayerController
     Scale: float
     ContextObject: unreal.UObject
     TimerHandle: engine.TimerHandle
     FeedbackLocation: core_uobject.Vector
-
 
 
 class ShakeScaleAssociation:
@@ -6345,11 +7959,9 @@ class ShakeScaleAssociation:
     ContinuousScaleCurve: engine.RuntimeFloatCurve
 
 
-
 class HapticFeedbackData:
     HapticFeedbackEffect: engine.HapticFeedbackEffect_Curve
     Hand: input_core.EControllerHand
-
 
 
 class FeedbackTableRowHandle(engine.DataTableRowHandle): ...
@@ -6359,16 +7971,13 @@ class FeedbackAssociationRow(engine.TableRowBase):
     Feedback: FeedbackData
 
 
-
 class TrackedFirstPersonComponent:
     Component: engine.SceneComponent
-
 
 
 class GameplayTagToValueMap:
     Tag: gameplay_tags.GameplayTag
     ValueIfContextHasTag: AttributeInitializationData
-
 
 
 class GameResourcePool:
@@ -6393,15 +8002,21 @@ class GameResourcePool:
     PostAddedPercentRegenerationRate: engine.GbxAttributeFloat
 
 
-
 class GameResourceUserEvent:
     ResourceData: GameResourceData
-
+    OnResourceNowDepleted: Any
+    OnResourceNowNotDepleted: Any
+    OnResourceNowFilled: Any
+    OnResourceNowNotFilled: Any
+    OnResourceNowRegenerating: Any
+    OnResourceNowNotRegenerating: Any
+    OnResourceNowDepleting: Any
+    OnResourceNowNotDepleting: Any
+    OnResourceNowIdle: Any
 
 
 class GameResourcePoolNet:
     Manager: GameResourcePoolManagerComponent
-
 
 
 class GameStat:
@@ -6409,11 +8024,9 @@ class GameStat:
     StatValue: int
 
 
-
 class QueuedGameStatEvent:
     StatContext: engine.Actor
     GameStat: GameStatData
-
 
 
 class ActionState_AICharge(ActionState_SimpleAnim): ...
@@ -6426,14 +8039,12 @@ class ExtraAnimationSettings:
     bHasAnimSlotOverride: bool
 
 
-
 class ActionState_BlueprintBase(ActionState_Base): ...
 
 
 class ConditionActionPair:
     Condition: gbx_runtime.GbxCondition
     ActionClass: unreal.UClass
-
 
 
 class CoordinatedAppliedMesh: ...
@@ -6445,7 +8056,6 @@ class CoordinatedLightParameterData:
     bSetIntensity: bool
     Color: CoordinatedVectorParameter
     Intensity: CoordinatedScalarParameter
-
 
 
 class CoordinatedScalarParameter:
@@ -6463,7 +8073,6 @@ class CoordinatedScalarParameter:
     SpecificMaterialList: unreal.WrappedArray[int]
 
 
-
 class CoordinatedVectorParameter:
     ParamName: str
     ParamValueOverTime: engine.RuntimeCurveLinearColor
@@ -6473,7 +8082,6 @@ class CoordinatedVectorParameter:
     BlendCurve: engine.RuntimeFloatCurve
     bSpecificMaterial: bool
     SpecificMaterialList: unreal.WrappedArray[int]
-
 
 
 class CoordinatedConditionalMaterialData:
@@ -6486,7 +8094,6 @@ class CoordinatedConditionalMaterialData:
     InheritedMaterialParameters: unreal.WrappedArray[str]
 
 
-
 class CoordinatedAudioData:
     WwiseEvent: wwise_audio.WwiseEvent
     AttachmentName: str
@@ -6496,13 +8103,11 @@ class CoordinatedAudioData:
     RtpcValueOverTime: engine.RuntimeFloatCurve
 
 
-
 class CoordinatedParticleSystemParameterData:
     Name: str
     ParticleSystem: engine.ParticleSystem
     ScalarParameters: unreal.WrappedArray[CoordinatedScalarParameter]
     VectorParameters: unreal.WrappedArray[CoordinatedVectorParameter]
-
 
 
 class CoordinatedParticleSystemData:
@@ -6520,11 +8125,9 @@ class CoordinatedParticleSystemData:
     bPermanent: bool
 
 
-
 class DirectionActionData:
     AngleRange: gbx_runtime.NumericRange
     ActionClass: unreal.UClass
-
 
 
 class ActionState_DropshipSpawn(ActionState_SimpleAnim): ...
@@ -6540,7 +8143,6 @@ class GibData:
     MaterialOverride: engine.MaterialInstanceConstant
 
 
-
 class ActionState_Launch(ActionState_SimpleAnim): ...
 
 
@@ -6548,7 +8150,6 @@ class LoopAnimData:
     AnimStart: engine.AnimSequenceBase
     AnimLoop: engine.AnimSequenceBase
     AnimStop: engine.AnimSequenceBase
-
 
 
 class ActionState_Ragdoll(ActionState_SimpleAnim): ...
@@ -6561,7 +8162,6 @@ class AttachedObjectFollow:
     ObjectBoneName: str
     ObjectHoldBoneName: str
     ObjectHoldBodyName: str
-
 
 
 class MotionMatchedAnimationRow(GbxAnimTableRow):
@@ -6580,11 +8180,9 @@ class MotionMatchedAnimationRow(GbxAnimTableRow):
     PoseDriverStrength: float
 
 
-
 class RandomActionPair:
     ActionClass: unreal.UClass
     Weight: float
-
 
 
 class ActionState_StretchBones(ActionState_SimpleAnim): ...
@@ -6600,15 +8198,12 @@ class StretchBonesSettings:
     MaxPredictionDistance: float
 
 
-
 class DataActionPair(DataActionPair_Base):
     ActionKey: gameplay_tags.GameplayTag
 
 
-
 class ExampleStruct:
     ActionKey: gameplay_tags.GameplayTag
-
 
 
 class ActionStateNet: ...
@@ -6624,10 +8219,8 @@ class GbxActionRegister:
     VecValue: core_uobject.Vector
 
 
-
 class GbxActionSlot:
     Name: str
-
 
 
 class ForwardDynamicsNodeProfile:
@@ -6656,10 +8249,10 @@ class ForwardDynamicsNodeProfile:
     LODInterpolationSpeed: float
 
 
-
-class GbxAnimNode_ApplyBoneModifyProfile(anim_graph_runtime.AnimNode_SkeletalControlBase):
+class GbxAnimNode_ApplyBoneModifyProfile(
+    anim_graph_runtime.AnimNode_SkeletalControlBase
+):
     Config: GbxBoneModifyProfile
-
 
 
 class GlobalBMPCachedTransform: ...
@@ -6683,10 +8276,8 @@ class GbxAnimNode_ForwardDynamics(immediate_physics.AnimNode_RigidBody):
     bStripAnimationFromNonSimulationRelevantBones: bool
 
 
-
 class GbxAnimNode_RefPoseConstraints(anim_graph_runtime.AnimNode_SkeletalControlBase):
     Constraints: unreal.WrappedArray[GbxRefPoseBoneConstraint]
-
 
 
 class GbxRefPoseBoneConstraint:
@@ -6694,8 +8285,9 @@ class GbxRefPoseBoneConstraint:
     Weight: float
 
 
-
-class GbxAnimNode_SimpleMotionBoneControl(anim_graph_runtime.AnimNode_SkeletalControlBase):
+class GbxAnimNode_SimpleMotionBoneControl(
+    anim_graph_runtime.AnimNode_SkeletalControlBase
+):
     ControlValue: float
     bIsActive: bool
     bAutoActivate: bool
@@ -6732,7 +8324,6 @@ class GbxAnimNode_SimpleMotionBoneControl(anim_graph_runtime.AnimNode_SkeletalCo
     ControlImpulseDecaySpeed: float
 
 
-
 class SimpleMotionState:
     MotionType: ESimpleMotionType
     MinSpeed: float
@@ -6742,7 +8333,6 @@ class SimpleMotionState:
     bScaleTransformByValue: bool
     bScaleSpeedByValue: bool
     bScaleAccelerationByValue: bool
-
 
 
 class GbxAnimNode_StretchBones(anim_graph_runtime.AnimNode_SkeletalControlBase):
@@ -6771,16 +8361,13 @@ class GbxAnimNode_StretchBones(anim_graph_runtime.AnimNode_SkeletalControlBase):
     InterpolationTriggerThreashold: float
 
 
-
 class GbxAnimPoseMatch:
     PoseMatchBones: unreal.WrappedArray[str]
-
 
 
 class AnimStateGroup:
     GroupName: str
     States: unreal.WrappedArray[str]
-
 
 
 class RuntimeStateMachineData: ...
@@ -6791,7 +8378,7 @@ class BakedMachineInfo: ...
 
 class GbxAnimTableMapItem:
     bCanUse: bool
-
+    LastFrame: int
 
 
 class StartupAssetTypeData:
@@ -6800,7 +8387,6 @@ class StartupAssetTypeData:
     ResolvedClassType: unreal.UClass
     bBlueprint: bool
     AssetCategory: str
-
 
 
 class GbxAttributeDelegateBindingHandle: ...
@@ -6812,18 +8398,15 @@ class PropertyToAttributeMapping:
     AttributeDataReference: core_uobject.SoftObjectPath
 
 
-
 class BoneModifyProfileData:
     Profile: GbxBoneModifyProfile
     States: unreal.WrappedArray[BoneModifyState_RepData]
-
 
 
 class BoneModifyState_RepData:
     bActive: bool
     Alpha: float
     BlendTime: float
-
 
 
 class BoneModifyState:
@@ -6834,13 +8417,11 @@ class BoneModifyState:
     Bones: unreal.WrappedArray[BoneModifyInfo]
 
 
-
 class BoneModifyInfo:
     BoneName: str
     Translation: core_uobject.Vector
     Rotation: core_uobject.Rotator
     Scale: core_uobject.Vector
-
 
 
 class BoneModifyTransition:
@@ -6849,7 +8430,6 @@ class BoneModifyTransition:
     Blend: engine.AlphaBlend
     Base: core_uobject.Vector
     Desired: core_uobject.Vector
-
 
 
 class MantleCheckData: ...
@@ -6864,10 +8444,12 @@ class MantleCheckTypeData_MantleUp(MantleCheckTypeData): ...
 class MantleStandData: ...
 
 
-class DistanceMatchingInfo: ...
+class DistanceMatchingInfo:
+    DistanceCurveMap: Any
 
 
-class StopDistanceMatchingInfo(DistanceMatchingInfo): ...
+class StopDistanceMatchingInfo(DistanceMatchingInfo):
+    StoppingInfoMap: Any
 
 
 class CachedStoppingInfo: ...
@@ -6877,13 +8459,13 @@ class MaterialArray:
     Materials: unreal.WrappedArray[engine.MaterialInterface]
 
 
-
 class CustomizationTextureInheritanceSettings:
     OnlyInheritCustomizationTextureParameters: unreal.WrappedArray[str]
     BaseMaterial: engine.MaterialInterface
-    CustomizationTargetSpecificBaseMaterials: unreal.WrappedArray[CustomizationInheritedTextureBaseMaterial]
+    CustomizationTargetSpecificBaseMaterials: unreal.WrappedArray[
+        CustomizationInheritedTextureBaseMaterial
+    ]
     ExtraParams: unreal.WrappedArray[InheritedCustomizationTextureExtraParam]
-
 
 
 class InheritedCustomizationTextureExtraParam:
@@ -6892,12 +8474,10 @@ class InheritedCustomizationTextureExtraParam:
     Texture: engine.Texture
 
 
-
 class CustomizationInheritedTextureBaseMaterial:
     Target: GbxCustomizationTargetData
     MaterialIndex: int
     BaseMaterial: engine.MaterialInterface
-
 
 
 class CustomizationColorApplication:
@@ -6910,13 +8490,11 @@ class CustomizationColorApplication:
     DefaultSplitColor: core_uobject.Vector
 
 
-
 class CustomizationLinkedParameterEntry:
     LinkedParameters: unreal.WrappedArray[CustomizationLinkedParameter]
     LinkedParameterSource: GbxCustomizationTargetData
     LinkedParameterTarget: GbxCustomizationTargetData
     LinkedParameterTargets: unreal.WrappedArray[GbxCustomizationTargetData]
-
 
 
 class CustomizationColorEntry:
@@ -6926,12 +8504,10 @@ class CustomizationColorEntry:
     ColorCustomizationDisplayName: str
 
 
-
 class GbxCustomizationContainer(engine.FastArraySerializer):
     Customizations: unreal.WrappedArray[GbxCustomizationContainerEntry]
     CustomizationCache: unreal.WrappedArray[GbxCustomizationCacheEntry]
     Owner: GbxCustomizationComponent
-
 
 
 class GbxCustomizationCacheEntry:
@@ -6939,12 +8515,10 @@ class GbxCustomizationCacheEntry:
     CustomizationData: GbxCustomizationData
 
 
-
 class GbxCustomizationContainerEntry(engine.FastArraySerializerItem):
     CustomizationData: GbxCustomizationData
     OptionalCustomizationId: int
     ClientCachedCustomizationData: GbxCustomizationData
-
 
 
 class CustomizationAssetEntry:
@@ -6955,11 +8529,9 @@ class CustomizationAssetEntry:
     LoadForPreview: bool
 
 
-
 class CustomizationAssetInfo:
     AssetReferenceTargetName: str
     AssetReference: core_uobject.SoftObjectPath
-
 
 
 class CustomizationStreamingEntry:
@@ -6967,11 +8539,9 @@ class CustomizationStreamingEntry:
     WaitingComponents: unreal.WrappedArray[GbxCustomizationComponent]
 
 
-
 class DamageSurfaceModifier:
     PhysicalSurface: EDamageSurfaceType
     Modifier: AttributeInitializationData
-
 
 
 class GbxBlueprintlegateBinding:
@@ -6981,12 +8551,10 @@ class GbxBlueprintlegateBinding:
     FunctionNameToBind: str
 
 
-
 class ActiveGbxFeedbackEffect:
     ActiveData: GbxFeedbackData
     Controller: GbxPlayerController
     SourceContext: unreal.UObject
-
 
 
 class GbxFlag: ...
@@ -6998,26 +8566,21 @@ class GbxFlagEval:
     TimeSeconds: AttributeInitializationData
 
 
-
 class FlagPropertyTestStruct:
     TestFlag: GbxFlag
-
 
 
 class SharedPickupInventoryActor:
     Actor: engine.Actor
 
 
-
 class MenuStash:
     StashedMenus: unreal.WrappedArray[BaseMenuStackMenuInfo]
-
 
 
 class DefaultExplosionSettings:
     ExplosionSize: float
     RadialBlur: engine.RadialBlurSelection
-
 
 
 class GbxHUDFeedbackImpulse:
@@ -7036,27 +8599,25 @@ class GbxHUDFeedbackImpulse:
     Tag: str
 
 
-
 class GbxObjectReplicatorProxy:
     Items: unreal.WrappedArray[GbxObjectReplicatorProxyItem]
 
 
-
 class GbxObjectReplicatorProxyItem:
+    Object: Any
     Component: engine.ActorComponent
 
 
-
 class RigidBodyImpactSettings:
+    RigidBodyImpactData: Any
+    DefaultRigidBodyImpactData: Any
     ImpactSpeedAudioParameter: wwise_audio.WwiseRtpc
     ImpactMassAudioParameter: wwise_audio.WwiseRtpc
-
 
 
 class PhysicalMaterialImpactPair:
     MaterialA: engine.PhysicalMaterial
     MaterialB: engine.PhysicalMaterial
-
 
 
 class DestructionForceSmoothing:
@@ -7065,11 +8626,9 @@ class DestructionForceSmoothing:
     GlobalScale: float
 
 
-
 class SurfaceTypeInfo:
     DamageSurfaceType: EDamageSurfaceType
     AudioMaterialSwitch: wwise_audio.WwiseSwitch
-
 
 
 class RecentlyMetPlayer:
@@ -7078,10 +8637,8 @@ class RecentlyMetPlayer:
     bUseShiftId: bool
 
 
-
 class PlayerInputBindings:
     Categories: unreal.WrappedArray[PlayerInputBinding_Category]
-
 
 
 class PlayerInputBinding_Category:
@@ -7091,11 +8648,9 @@ class PlayerInputBinding_Category:
     AxisBindings: unreal.WrappedArray[PlayerInputBinding_Axis]
 
 
-
 class PlayerInputBinding_Axis:
     RebindDataPath: str
     Keys: unreal.WrappedArray[PlayerInputBinding_Axis_Key]
-
 
 
 class PlayerInputBinding_Axis_Key:
@@ -7103,11 +8658,9 @@ class PlayerInputBinding_Axis_Key:
     Scale3D: core_uobject.Vector
 
 
-
 class PlayerInputBinding_Button:
     RebindDataPath: str
     KeyNames: unreal.WrappedArray[str]
-
 
 
 class GbxQuery:
@@ -7119,7 +8672,6 @@ class GbxQuery:
     NavComp: NavComponent
 
 
-
 class GbxSignificanceEventData:
     bTestVisibility: bool
     AlwaysSignificantDistance: float
@@ -7129,11 +8681,9 @@ class GbxSignificanceEventData:
     PlayerSourceInfluence: float
 
 
-
 class CachedInterp:
     Tag: str
     Interp: str
-
 
 
 class SimpleMotionInstanceState:
@@ -7144,12 +8694,10 @@ class SimpleMotionInstanceState:
     bInTransition: bool
 
 
-
 class GestaltPartFoleyAccessory:
     Priority: int
     WwiseEvent: wwise_audio.WwiseEvent
     AttachmentPoint: str
-
 
 
 class GestaltChildPartData:
@@ -7157,11 +8705,9 @@ class GestaltChildPartData:
     Probability: float
 
 
-
 class GestaltRandomPartData:
     GestaltPart: GestaltPartData
     Weight: float
-
 
 
 class ReplicatedGestaltPartsData: ...
@@ -7173,11 +8719,9 @@ class GesaltOptionalPartData:
     bSuppressChildParts: bool
 
 
-
 class BMPOverride:
     Bones: unreal.WrappedArray[BMPOverrideBone]
     PoseMode: EGlobalBoneModifyProfile_PoseMode
-
 
 
 class BMPOverrideBone:
@@ -7185,18 +8729,15 @@ class BMPOverrideBone:
     Scale: float
 
 
-
 class HitReactionPair:
     Tag: HitReactionTag
     Action: unreal.UClass
-
 
 
 class HitReactionCondition:
     Condition: gbx_runtime.GbxCondition
     Context: EHitReactionConditionContext
     OptionalContext: EHitReactionConditionContext
-
 
 
 class HitReactionCooldownData:
@@ -7206,11 +8747,9 @@ class HitReactionCooldownData:
     bCooldownFromStartTime: bool
 
 
-
 class HitReactionMapItem:
     FromTag: HitReactionTag
     ToTag: HitReactionTag
-
 
 
 class HitReactionParams:
@@ -7228,7 +8767,6 @@ class HitReactionParams:
     bForceInterruptSelf: bool
 
 
-
 class HitReactionState:
     HitReactionData: HitReactionData
     NoLockTags: unreal.WrappedArray[HitReactionTag]
@@ -7244,10 +8782,11 @@ class HitReactionState:
     DeathOverride: HitReactionTag
     LiveLayers: unreal.WrappedArray[unreal.UClass]
     DeathLayers: unreal.WrappedArray[unreal.UClass]
+    TagTimeStartMap: Any
+    TagTimeEndMap: Any
     ActiveTag: HitReactionTag
     Hits: unreal.WrappedArray[HitReactionParams]
     SoundCharacter: GbxCharacter
-
 
 
 class HitRegionState:
@@ -7260,7 +8799,6 @@ class HitRegionState:
     MaxHealth: float
     CurrentHealth: float
     ResourcePool: GameResourcePoolReference
-
 
 
 class DamageReactionEvent:
@@ -7277,18 +8815,15 @@ class DamageReactionEvent:
     bTriggerOnlyOnDeath: bool
 
 
-
 class HitRegionHealthParams:
     OwnerHealthPercent: float
     ResourcePool: GameResourcePoolData
     DamageRule: EHitRegionDamageRule
 
 
-
 class HomingTargetedActorInfo:
     Target: engine.Actor
     ProjectileCount: int
-
 
 
 class InspectionInfo: ...
@@ -7299,12 +8834,10 @@ class ImpactTriggerInfo:
     RigidBodyMinimumVelocity: float
 
 
-
 class ImpactEffectEventInfo:
     InstigatorActor: engine.Actor
     HitActor: engine.Actor
     HitMaterial: engine.PhysicalMaterial
-
 
 
 class ImpactFXManagerTrackingData:
@@ -7312,11 +8845,11 @@ class ImpactFXManagerTrackingData:
     PhysicalMaterial: engine.PhysicalMaterial
 
 
-
 class InstigatorAttributeEffectData(AttributeEffectData):
-    AttributeToModifyContextSource: EInstigatorAttributeEffectAttributeToModifyContextSource
+    AttributeToModifyContextSource: (
+        EInstigatorAttributeEffectAttributeToModifyContextSource
+    )
     ModifierValueContext: EInstigatorAttributeEffectModifierValueContext
-
 
 
 class MantleActionData:
@@ -7329,7 +8862,6 @@ class MantleActionData:
     PercentThroughAnimationToFinishMantle: float
     bAlignRotation: bool
     bMustLookAt: bool
-
 
 
 class MantleGlobalData:
@@ -7358,11 +8890,9 @@ class MantleGlobalData:
     bIgnoreTeamCollision: bool
 
 
-
 class ModifierMathAttributeValueResolverStackEntry:
     ModifierType: engine.EGbxAttributeModifierType
     ModifierValue: AttributeInitializationData
-
 
 
 class MontageLoopHelper: ...
@@ -7377,17 +8907,15 @@ class OrbitOscillationInfo:
     CurrentTime: float
 
 
-
 class PawnAttachmentQueryResult:
     Pawn: engine.Pawn
     SlotName: str
     AttachBase: engine.Actor
 
 
-
 class AttachSlotAnimSet:
+    AssociatedCharacter: Any
     AnimSet: engine.GbxAnimSet
-
 
 
 class PawnAttachmentTransition:
@@ -7400,7 +8928,6 @@ class PawnAttachmentTransition:
     Conditions: gbx_runtime.GbxCondition
 
 
-
 class PawnSceneAttachmentInfo:
     bAttachToBaseOwner: bool
     bMaintainWorldLocation: bool
@@ -7411,7 +8938,6 @@ class PawnSceneAttachmentInfo:
     SocketNameForAdditionalOffset: str
 
 
-
 class PawnDetachTransition(PawnAttachmentTransition):
     bValidateDetachLocation: bool
     ValidationMaxOffset: float
@@ -7419,7 +8945,6 @@ class PawnDetachTransition(PawnAttachmentTransition):
     bComputeDetachLocationFromAction: bool
     bAbsoluteDetachLocation: bool
     DetachLocationOffset: core_uobject.Vector
-
 
 
 class PawnAttachTransition(PawnAttachmentTransition): ...
@@ -7435,7 +8960,6 @@ class PawnAttachSlotState:
     DetachTransitionIndex: int
 
 
-
 class PhysicalAnimationBoneData:
     BodyName: str
     bIncludeChildren: bool
@@ -7446,11 +8970,9 @@ class PhysicalAnimationBoneData:
     VelocityStrength: float
 
 
-
 class BoneFatigueParams:
     CurrentFatigue: float
     FatigueDissipationRate: float
-
 
 
 class PropertyUtilsTestStruct:
@@ -7464,19 +8986,19 @@ class PropertyUtilsTestStruct:
     Int8Prop: int
     UInt8Prop: int
     Int16Prop: int
+    UInt16Prop: int
     Int32Prop: int
+    UInt32Prop: int
     Int64Prop: int
-
+    UInt64Prop: int
 
 
 class RagdollReplicationData:
     Bodies: unreal.WrappedArray[ArticulatedRigidBodyState]
 
 
-
 class ArticulatedRigidBodyState(engine.RigidBodyState):
     BodyName: str
-
 
 
 class RecentlyCausedDamageInstance:
@@ -7490,18 +9012,15 @@ class RecentlyCausedDamageInstance:
     DamagedActor: engine.Actor
 
 
-
 class ReferenceActorClasses:
     Name: str
     ActorAsset: core_uobject.SoftObjectPath
-
 
 
 class RelativeDirectionData:
     RelativeDirection: ERelativeDirectionType
     ConeAroundDirection: AttributeInitializationData
     AdditionalRotation: core_uobject.Rotator
-
 
 
 class EmitterWwiseEvent:
@@ -7512,11 +9031,9 @@ class EmitterWwiseEvent:
     PlaybackLocation: core_uobject.Vector
 
 
-
 class EmitterWwiseEventRTPCParam:
     RTPC: wwise_audio.WwiseRtpc
     Value: float
-
 
 
 class EmitterColorParam:
@@ -7524,17 +9041,14 @@ class EmitterColorParam:
     Value: core_uobject.Color
 
 
-
 class EmitterVectorParam:
     Name: str
     Value: core_uobject.Vector
 
 
-
 class EmitterFloatParam:
     Name: str
     Value: float
-
 
 
 class ReplicatedEmitterTemplateOptions:
@@ -7543,12 +9057,10 @@ class ReplicatedEmitterTemplateOptions:
     bEligibleForCensoring: bool
 
 
-
 class SceneComponentSwitchRecord:
     Component: engine.SceneComponent
     ParentComponent: engine.SceneComponent
     DetachAction: SceneBodySwitchAction
-
 
 
 class ScreenParticleInitParams:
@@ -7568,7 +9080,6 @@ class ScreenParticleInitParams:
     OwnerOverride: engine.Actor
 
 
-
 class ParticlePropertyTracker:
     TrackingData: ParticlePropertyTrackingData
     Template: engine.ParticleSystem
@@ -7580,11 +9091,9 @@ class ParticlePropertyTracker:
     MaterialPropertyName: str
 
 
-
 class ScreenParticleRecord:
     Template: engine.ParticleSystem
     Component: engine.ParticleSystemComponent
-
 
 
 class SharedAnimInstanceData: ...
@@ -7598,17 +9107,14 @@ class SpawnPatternInputs:
     IncomingImpulse: core_uobject.Vector
 
 
-
 class StanceVectorValue:
     ValueType: EStanceValueOverrideType
     Value: core_uobject.Vector
 
 
-
 class ConditionalStance:
     Condition: gbx_runtime.GbxCondition
     StanceProvider: StanceDataProvider
-
 
 
 class StanceStack:
@@ -7619,14 +9125,12 @@ class StanceStack:
     StanceCurr: StanceData
 
 
-
 class BalanceFormulaDefinedValueRow(AttributeDefinedValueRow):
     Multiplier: AttributeInitializationData
     Level: AttributeInitializationData
     Power: AttributeInitializationData
     Offset: AttributeInitializationData
     Scalar: AttributeInitializationData
-
 
 
 class RandomValueRow(AttributeDefinedValueRow):
@@ -7639,15 +9143,12 @@ class RandomValueRow(AttributeDefinedValueRow):
     bClampToOutputMaxValue: bool
 
 
-
 class GbxParamDefinedSingleValueRow(AttributeDefinedValueRow):
     Value: GbxParam
 
 
-
 class AttributeDefinedSingleValueRow(AttributeDefinedValueRow):
     Value: AttributeInitializationData
-
 
 
 class AttributeEffect:
@@ -7657,17 +9158,14 @@ class AttributeEffect:
     Mutator: AttributeEffectMutatorData
 
 
-
 class AttributeEffectValueContextHardRef:
     Context: unreal.UObject
     ContextResolverOverride: unreal.UObject
 
 
-
 class StatusEffectStackingStrategyData_DurationRefundData:
     bApplyReplacementRefund: bool
     RefundPercent: float
-
 
 
 class StretchBonesInstance:
@@ -7679,11 +9177,9 @@ class StretchBonesInstance:
     Distance: float
 
 
-
 class OverrideMeleeSocket:
     OverrideCondition: gbx_runtime.GbxCondition
     OverrideSockets: unreal.WrappedArray[str]
-
 
 
 class TargetLocationData:
@@ -7693,18 +9189,15 @@ class TargetLocationData:
     TargetBoundsHalfHeight: float
 
 
-
 class TargetLocationBoundsSettings:
     BoundsRadius: float
     BoundsHalfHeight: float
     bUseBoundsHalfHeight: bool
 
 
-
 class TargetLocationSettings(TargetLocationBoundsSettings):
     Enabled: GbxParam
     Socket: str
-
 
 
 class TargetActorInfo:
@@ -7718,11 +9211,9 @@ class TargetActorInfo:
     TargetListIndex: int
 
 
-
 class TargetQueryTestDebugDesc:
     Value: float
     Score: float
-
 
 
 class TargetQueryDebugDesc:
@@ -7733,11 +9224,9 @@ class TargetQueryDebugDesc:
     FailReason: str
 
 
-
 class TeamAttitudeSetEntry:
     OtherTeam: Team
     Attitude: int
-
 
 
 class TerritoryData:
@@ -7745,7 +9234,6 @@ class TerritoryData:
     Radius: float
     Height: float
     Volumes: unreal.WrappedArray[engine.Volume]
-
 
 
 class TargetPersistentNotes: ...
@@ -7759,14 +9247,12 @@ class UIStatValueRemappingData:
     OutputValueMax: AttributeInitializationData
 
 
-
 class UIStatCollector: ...
 
 
 class UIStatPriorityData:
     UIStat: UIStatData
     PriorityIncrease: float
-
 
 
 class ReplicatedUIStatCollectionData: ...
@@ -7779,7 +9265,6 @@ class UserStateEnumValue:
     EnumValue: int
 
 
-
 class ViewModelOffsetImpulseInfo:
     EaseInDuration: float
     EaseInFunc: GbxEasingFunc
@@ -7789,11 +9274,9 @@ class ViewModelOffsetImpulseInfo:
     TranslationExtent: core_uobject.Vector
 
 
-
 class Vector2DWaveform:
     X: FloatWaveform
     Y: FloatWaveform
-
 
 
 class FloatWaveform:
@@ -7802,12 +9285,10 @@ class FloatWaveform:
     Phase: float
 
 
-
 class VectorWaveform:
     X: FloatWaveform
     Y: FloatWaveform
     Z: FloatWaveform
-
 
 
 class EGbxActionEndState(enum.Enum):

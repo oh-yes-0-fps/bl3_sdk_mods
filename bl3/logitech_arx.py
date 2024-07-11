@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class LogitechARXConfig(unreal.UObject):
@@ -12,4 +9,3 @@ class LogitechARXConfig(unreal.UObject):
     IndexFile: str
     AppletTitle: str
     AppletFriendlyName: str
-

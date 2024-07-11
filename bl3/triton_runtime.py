@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -11,10 +11,10 @@ from . import wwise_audio
 from . import gbx_audio
 
 
-
 class TritonAcousticDataComponent(engine.SceneComponent):
     ProbeLayers: unreal.WrappedArray[TritonProbeLayer]
     SpeedOfSound: float
+    ExtraTritonMaterialEquivalences: Any
     ExcludeComponentsFilters: unreal.WrappedArray[gbx_audio.AudioPrepComponentFilter]
     IncludeComponentsFilters: unreal.WrappedArray[gbx_audio.AudioPrepComponentFilter]
     ThinningSteps: unreal.WrappedArray[gbx_audio.EOcclusionVoxelThinningAlgorithm]
@@ -29,6 +29,7 @@ class TritonAcousticDataComponent(engine.SceneComponent):
     CachedVoxelDataNoThinning: gbx_audio.AudioOcclusionVoxelDataProvider
     CachedNavMeshVoxelData: gbx_audio.AudioOcclusionVoxelDataProvider
     TriggerBuildFallbackAcousticData: gbx_runtime.GbxTriggerProperty
+
     def VisualizeMaterials(self): ...
     def UpdateProbeLocations(self): ...
     def RefreshCachedVoxelData(self): ...
@@ -40,7 +41,6 @@ class TritonZone(engine.Actor):
     TritonDataComponent: TritonAcousticDataComponent
 
 
-
 class TritonVoxelOverrideVolume(engine.Volume): ...
 
 
@@ -48,7 +48,6 @@ class TritonProbeHelper(engine.Actor):
     DistanceLimit: float
     bRecording: bool
     RecordedLocations: unreal.WrappedArray[core_uobject.Vector]
-
 
 
 class TritonProbeLocationProvider(engine.Volume):
@@ -59,19 +58,24 @@ class TritonProbeLocationProvider(engine.Volume):
     DecimationThreshold: float
     MaxNumberDecimations: int
     SuppressingZones: unreal.WrappedArray[TritonProbeLocationProvider]
-    def FindProbeLocations(self, WorldBoxSphere: core_uobject.BoxSphereBounds, GeoVoxels: gbx_audio.AudioOcclusionVoxelDataProvider, NavVoxels: gbx_audio.AudioOcclusionVoxelDataProvider, out_ResultProbeLocations: unreal.WrappedArray[core_uobject.Vector]): ...
+
+    def FindProbeLocations(
+        self,
+        WorldBoxSphere: core_uobject.BoxSphereBounds,
+        GeoVoxels: gbx_audio.AudioOcclusionVoxelDataProvider,
+        NavVoxels: gbx_audio.AudioOcclusionVoxelDataProvider,
+        out_ResultProbeLocations: unreal.WrappedArray[core_uobject.Vector],
+    ): ...
 
 
 class TritonSettings(unreal.UObject):
     TritonDataPath: engine.DirectoryPath
 
 
-
 class CachedPerProbeAcousticData:
     ERVolume: float
     LRVolume: float
     LRDuration: float
-
 
 
 class TritonUpdateDesc:
@@ -87,7 +91,6 @@ class TritonUpdateDesc:
     bIncorporateNewACE: bool
 
 
-
 class TritonProbeLayer:
     ProbeLocationSets: unreal.WrappedArray[TritonProbeSet]
     SimulationParams: TritonSimulationParams
@@ -101,13 +104,11 @@ class TritonProbeLayer:
     bHasGeneratedEarlyReflections: bool
 
 
-
 class FallbackAcousticData:
     Location: core_uobject.Vector
     AcousticData: wwise_audio.WwiseEmitterAcousticData
     Outdoorness: float
     EarlyReflections: unreal.WrappedArray[float]
-
 
 
 class TritonAdvancedParams:
@@ -122,14 +123,12 @@ class TritonAdvancedParams:
     ProbeSearchDistance: float
 
 
-
 class TritonLayerFadeParams:
     RangeMin: float
     VolMin: float
     Pivot: float
     RangeMax: float
     VolMax: float
-
 
 
 class TritonSimulationParams:
@@ -142,10 +141,8 @@ class TritonSimulationParams:
     bUseWallinessFactorForLongDistanceVolumes: bool
 
 
-
 class TritonProbeSet:
     Label: str
     ProbeLocationProvider: TritonProbeLocationProvider
     ProbeLocations: unreal.WrappedArray[core_uobject.Vector]
     bLowDetail: bool
-

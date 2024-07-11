@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import engine
-
 
 
 class SynthComponent(engine.SceneComponent):
@@ -27,42 +26,90 @@ class SynthComponent(engine.SceneComponent):
     bIsPreviewSound: bool
     EnvelopeFollowerAttackTime: int
     EnvelopeFollowerReleaseTime: int
+    OnAudioEnvelopeValue: Any
     Synth: SynthSound
     AudioComponent: engine.AudioComponent
     LastSampleRate: int
+
     def Stop(self): ...
     def Start(self): ...
     def SetVolumeMultiplier(self, VolumeMultiplier: float): ...
     def SetSubmixSend(self, Submix: engine.SoundSubmix, SendLevel: float): ...
-    def IsPlaying(self, ReturnValue: bool) -> bool: ...
+    def IsPlaying(self) -> bool: ...
 
 
 class AudioMixerBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def StopRecordingOutput(self, WorldContextObject: unreal.UObject, ExportType: engine.EAudioRecordingExportType, Name: str, Path: str, SubmixToRecord: engine.SoundSubmix, ExistingSoundWaveToOverwrite: engine.SoundWave, ReturnValue: engine.SoundWave) -> engine.SoundWave: ...
-    def StartRecordingOutput(self, WorldContextObject: unreal.UObject, ExpectedDuration: float, SubmixToRecord: engine.SoundSubmix): ...
-    def SetBypassSourceEffectChainEntry(self, WorldContextObject: unreal.UObject, PresetChain: engine.SoundEffectSourcePresetChain, EntryIndex: int, bBypassed: bool): ...
-    def RemoveSourceEffectFromPresetChain(self, WorldContextObject: unreal.UObject, PresetChain: engine.SoundEffectSourcePresetChain, EntryIndex: int): ...
-    def RemoveMasterSubmixEffect(self, WorldContextObject: unreal.UObject, SubmixEffectPreset: engine.SoundEffectSubmixPreset): ...
-    def GetNumberOfEntriesInSourceEffectChain(self, WorldContextObject: unreal.UObject, PresetChain: engine.SoundEffectSourcePresetChain, ReturnValue: int) -> int: ...
+    def StopRecordingOutput(
+        self,
+        WorldContextObject: unreal.UObject,
+        ExportType: engine.EAudioRecordingExportType,
+        Name: str,
+        Path: str,
+        SubmixToRecord: engine.SoundSubmix,
+        ExistingSoundWaveToOverwrite: engine.SoundWave,
+    ) -> engine.SoundWave: ...
+    def StartRecordingOutput(
+        self,
+        WorldContextObject: unreal.UObject,
+        ExpectedDuration: float,
+        SubmixToRecord: engine.SoundSubmix,
+    ): ...
+    def SetBypassSourceEffectChainEntry(
+        self,
+        WorldContextObject: unreal.UObject,
+        PresetChain: engine.SoundEffectSourcePresetChain,
+        EntryIndex: int,
+        bBypassed: bool,
+    ): ...
+    def RemoveSourceEffectFromPresetChain(
+        self,
+        WorldContextObject: unreal.UObject,
+        PresetChain: engine.SoundEffectSourcePresetChain,
+        EntryIndex: int,
+    ): ...
+    def RemoveMasterSubmixEffect(
+        self,
+        WorldContextObject: unreal.UObject,
+        SubmixEffectPreset: engine.SoundEffectSubmixPreset,
+    ): ...
+    def GetNumberOfEntriesInSourceEffectChain(
+        self,
+        WorldContextObject: unreal.UObject,
+        PresetChain: engine.SoundEffectSourcePresetChain,
+    ) -> int: ...
     def ClearMasterSubmixEffects(self, WorldContextObject: unreal.UObject): ...
-    def AddSourceEffectToPresetChain(self, WorldContextObject: unreal.UObject, PresetChain: engine.SoundEffectSourcePresetChain, Entry: engine.SourceEffectChainEntry): ...
-    def AddMasterSubmixEffect(self, WorldContextObject: unreal.UObject, SubmixEffectPreset: engine.SoundEffectSubmixPreset): ...
+    def AddSourceEffectToPresetChain(
+        self,
+        WorldContextObject: unreal.UObject,
+        PresetChain: engine.SoundEffectSourcePresetChain,
+        Entry: engine.SourceEffectChainEntry,
+    ): ...
+    def AddMasterSubmixEffect(
+        self,
+        WorldContextObject: unreal.UObject,
+        SubmixEffectPreset: engine.SoundEffectSubmixPreset,
+    ): ...
 
 
 class SubmixEffectDynamicsProcessorPreset(engine.SoundEffectSubmixPreset):
     Settings: SubmixEffectDynamicsProcessorSettings
+
     def SetSettings(self, InSettings: SubmixEffectDynamicsProcessorSettings): ...
 
 
 class SubmixEffectSubmixEQPreset(engine.SoundEffectSubmixPreset):
     Settings: SubmixEffectSubmixEQSettings
+
     def SetSettings(self, InSettings: SubmixEffectSubmixEQSettings): ...
 
 
 class SubmixEffectReverbPreset(engine.SoundEffectSubmixPreset):
     Settings: SubmixEffectReverbSettings
-    def SetSettingsWithReverbEffect(self, InReverbEffect: engine.ReverbEffect, WetLevel: float): ...
+
+    def SetSettingsWithReverbEffect(
+        self, InReverbEffect: engine.ReverbEffect, WetLevel: float
+    ): ...
     def SetSettings(self, InSettings: SubmixEffectReverbSettings): ...
 
 
@@ -84,10 +131,8 @@ class SubmixEffectDynamicsProcessorSettings:
     bAnalogMode: bool
 
 
-
 class SubmixEffectSubmixEQSettings:
     EQBands: unreal.WrappedArray[SubmixEffectEQBand]
-
 
 
 class SubmixEffectEQBand:
@@ -95,7 +140,6 @@ class SubmixEffectEQBand:
     Bandwidth: float
     GainDb: float
     bEnabled: bool
-
 
 
 class SubmixEffectReverbSettings:
@@ -111,7 +155,6 @@ class SubmixEffectReverbSettings:
     LateDelay: float
     AirAbsorptionGainHF: float
     WetLevel: float
-
 
 
 class ESubmixEffectDynamicsPeakMode(enum.Enum):

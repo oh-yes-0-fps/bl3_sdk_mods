@@ -262,6 +262,23 @@ __all__: tuple[str, ...] = (
 )
 
 import mods_base
+import unrealsdk
+import typing
+
+def get_pc() -> oak_game.OakPlayerController:
+    return typing.cast(oak_game.OakPlayerController, mods_base.get_pc())
+
+T = typing.TypeVar("T")
+
+def ty_find_class(cls: type[T]) -> unrealsdk.unreal.UClass:
+    return unrealsdk.find_class(cls.__qualname__.split(".")[0])
+
+def ty_find_object(cls: type[T], name: str) -> T:
+    return typing.cast(T, unrealsdk.find_object(cls.__qualname__.split(".")[0], name))
+
+def ty_find_all(cls: type[T]) -> typing.Iterator[T]:
+    return typing.cast(typing.Iterator[T], unrealsdk.find_all(cls.__qualname__.split(".")[0]))
+
 mods_base.build_mod(
     mod_type=mods_base.ModType.Library,
     cls=mods_base.Library,

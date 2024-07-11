@@ -221,8 +221,8 @@ def OnDamage(
         cl.add_entry(entry)
 
 
-@hook("/Script/OakGame.GFxPauseMenu.OnQuitChoiceMade", Type.POST_UNCONDITIONAL, auto_enable=True)
-def close_logger_on_quit(caller: UObject, _2: Any, _3: Any, _4: BoundFunction) -> None:
+@hook("/Script/OakGame.GFxPauseMenu:OnQuitChoiceMade", Type.POST_UNCONDITIONAL, auto_enable=True)
+def close_logger_on_quit(_1: UObject, _2: Any, _3: Any, _4: BoundFunction) -> None:
     if COMBAT_LOGGER.enabled:
         COMBAT_LOGGER.end()
 

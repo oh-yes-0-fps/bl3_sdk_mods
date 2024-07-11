@@ -1,11 +1,10 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
-
 
 
 class ConsoleSettings(unreal.UObject):
@@ -19,7 +18,6 @@ class ConsoleSettings(unreal.UObject):
     AutoCompleteCommandColor: core_uobject.Color
     AutoCompleteCVarColor: core_uobject.Color
     AutoCompleteFadedColor: core_uobject.Color
-
 
 
 class GameMapsSettings(unreal.UObject):
@@ -39,7 +37,6 @@ class GameMapsSettings(unreal.UObject):
     GameModeClassAliases: unreal.WrappedArray[GameModeName]
 
 
-
 class GameNetworkManagerSettings(unreal.UObject):
     MinDynamicBandwidth: int
     MaxDynamicBandwidth: int
@@ -54,12 +51,10 @@ class GameNetworkManagerSettings(unreal.UObject):
     JoinInProgressStandbyWaitTime: float
 
 
-
 class GameSessionSettings(unreal.UObject):
     MaxSpectators: int
     MaxPlayers: int
     bRequiresPushToTalk: bool
-
 
 
 class GeneralEngineSettings(unreal.UObject): ...
@@ -90,11 +85,9 @@ class GeneralProjectSettings(unreal.UObject):
     bAllowMinimize: bool
 
 
-
 class HudSettings(unreal.UObject):
     bShowHUD: bool
     DebugDisplay: unreal.WrappedArray[str]
-
 
 
 class AutoCompleteCommand:
@@ -102,11 +95,9 @@ class AutoCompleteCommand:
     Desc: str
 
 
-
 class GameModeName:
     Name: str
     GameMode: core_uobject.SoftClassPath
-
 
 
 class EThreePlayerSplitScreenType(enum.Enum):

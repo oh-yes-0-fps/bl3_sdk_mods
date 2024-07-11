@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -12,15 +12,13 @@ from . import movie_scene
 from . import gbx_game_system_core
 
 
-
 class AnimNotify_DialogEvent(engine.AnimNotify):
     DialogEvent: DialogEvent
-
+    ParameterValues: Any
 
 
 class CharacterEchoDataBase(gbx_runtime.GbxDataAsset):
     AvailableVoGMoodKeyframes: unreal.WrappedArray[str]
-
 
 
 class DialogActionBlueprintImplementation(gbx_runtime.GbxDataAsset):
@@ -32,11 +30,9 @@ class GbxDialogDataAsset(gbx_runtime.GbxDataAsset):
     Guid: core_uobject.Guid
 
 
-
 class DialogActionFunction(GbxDialogDataAsset):
     Parameters: unreal.WrappedArray[DialogParameter]
     BlueprintImplementation: unreal.UClass
-
 
 
 class DialogAudioComponentProvider(unreal.UObject): ...
@@ -47,21 +43,26 @@ class DialogAudioComponentProvider_OcclusionResistant(DialogAudioComponentProvid
     ComponentTag: str
 
 
-
 class DialogBehaviorPreset(gbx_runtime.GbxDataAsset): ...
 
 
 class DialogBlackboard(unreal.UObject):
+    DistributedSpeakers: Any
+    PlayingSequenceDelegates: Any
     LookupSystem: DialogLookupSystem
     ControlSystem: DialogControlSystem
     RegisteredSpeakers: unreal.WrappedArray[GbxDialogComponent]
     ActiveScripts: unreal.WrappedArray[DialogScriptData]
+    ActivePureEchoNameTags: Any
+    PinnedScriptRefCounts: Any
+    CounterValues: Any
     PureEchoSpeakerHost: engine.Actor
     ConversationForDialogLookup: DialogConversation
     SuggestedPlayerForNextConversation: engine.PlayerController
     SuggestedKeyActorForNextConversation: engine.Actor
     SuggestedKeyLocationForNextConversation: core_uobject.Vector
-
+    RecentConversationInfo: Any
+    RecentPerformances: Any
 
 
 class QuietTimePredicate(unreal.UObject): ...
@@ -72,7 +73,6 @@ class QuietTimePredicate_BlockStuff(QuietTimePredicate):
     BlockKinds: unreal.WrappedArray[str]
     BlockStyles: unreal.WrappedArray[DialogStyle]
     OnlyForCharacter: DialogNameTag
-
 
 
 class DialogControlSystem(unreal.UObject):
@@ -87,7 +87,6 @@ class DialogControlSystem(unreal.UObject):
     PauseModeLastFrameTime: float
 
 
-
 class DialogEnumType(GbxDialogDataAsset): ...
 
 
@@ -97,16 +96,14 @@ class DialogEnumValue(GbxDialogDataAsset):
     bRestrictedQualifier: bool
 
 
-
 class DialogEnumValueInterface(core_uobject.Interface):
 
-    def GetEnumValue(self, EnumType: DialogEnumType, ReturnValue: DialogEnumValue) -> DialogEnumValue: ...
+    def GetEnumValue(self, EnumType: DialogEnumType) -> DialogEnumValue: ...
 
 
 class DialogEvent(GbxDialogDataAsset):
     Parameters: unreal.WrappedArray[DialogParameter]
     PerformanceNotifyNames: unreal.WrappedArray[str]
-
 
 
 class DialogEventList(GbxDialogDataAsset): ...
@@ -126,15 +123,16 @@ class DialogLineData(GbxDialogDataAsset):
     bSequential: bool
 
 
-
 class DialogLookupSystem(unreal.UObject):
     ControlSystem: DialogControlSystem
     Blackboard: DialogBlackboard
+    EventTriggeringDecisionTrees: Any
     ConditionTriggeringDecisionTree: DialogDecisionTree
+    ActiveScriptRegistrationIDs: Any
 
 
-
-class DialogNameTagMoodData(gbx_runtime.GbxDataAsset): ...
+class DialogNameTagMoodData(gbx_runtime.GbxDataAsset):
+    MoodData: Any
 
 
 class DialogNameTag(gbx_runtime.GbxDataAsset):
@@ -150,7 +148,7 @@ class DialogNameTag(gbx_runtime.GbxDataAsset):
     CustomizationRTPC: wwise_audio.WwiseRtpc
     CustomizationRTPCValue: float
     MoodDataAsset: DialogNameTagMoodData
-
+    MoodData: Any
 
 
 class DialogParameter(GbxDialogDataAsset):
@@ -159,13 +157,13 @@ class DialogParameter(GbxDialogDataAsset):
     bForceDecisionsToAlwaysRetest: bool
 
 
-
 class DialogPerformanceData(GbxDialogDataAsset):
     Text: str
     TriggerPlayWwiseEventPreview: gbx_runtime.GbxTriggerProperty
     WwiseEvent: wwise_audio.WwiseEvent
     WwiseExternalMediaTemplate: wwise_audio.WwiseEvent
     EstimatedDuration: float
+    WwiseEventShortID: int
     Action: unreal.UClass
     ActionWeight: float
     MoodName: str
@@ -180,15 +178,16 @@ class DialogPerformanceData(GbxDialogDataAsset):
     QuietTimeScope: EGbxDialogQuietTimeScope
     DialogKindCooldownTime: core_uobject.FloatInterval
     EchoData: PerformanceEchoDataBase
+
     def PlayWwiseEventPreview(self): ...
 
 
 class DialogScriptData(GbxDialogDataAsset):
     TimeSlots: unreal.WrappedArray[DialogTimeSlotData]
     PureEchoNameTags: unreal.WrappedArray[DialogNameTag]
+    EventTriggeredDecisionTrees: Any
     OtherConditionTriggeredDecisionTree: DialogDecisionTree
     FaceFXAnimSet: unreal.UObject
-
 
 
 class DialogSelectorFunction(GbxDialogDataAsset):
@@ -198,10 +197,11 @@ class DialogSelectorFunction(GbxDialogDataAsset):
     Implementation: DialogSelectorImplementation
 
 
-
 class DialogSelectorImplementation(unreal.UObject):
 
-    def PerformTest(self, Context: DialogContext, Result: EDialogDecisionTestResult): ...
+    def PerformTest(
+        self, Context: DialogContext, Result: EDialogDecisionTestResult
+    ): ...
 
 
 class DialogSelectorImplementation_CheckDistance(DialogSelectorImplementation):
@@ -212,11 +212,9 @@ class DialogSelectorImplementation_CheckDistance(DialogSelectorImplementation):
     bTrueIfCloser: bool
 
 
-
 class DialogSelectorImplementation_CheckNameTag(DialogSelectorImplementation):
     WhoParam: DialogParameter
     NameTagParam: DialogParameter
-
 
 
 class DialogSelectorImplementation_Equality(DialogSelectorImplementation):
@@ -224,15 +222,13 @@ class DialogSelectorImplementation_Equality(DialogSelectorImplementation):
     ParamB: DialogParameter
 
 
-
 class DialogSelectorImplementation_IsPreferredPlayer(DialogSelectorImplementation):
     WhoParam: DialogParameter
 
 
-
 class DialogSpeakerInterface(core_uobject.Interface):
 
-    def CanPerformThisDialog(self, Performance: DialogPerformanceData, ReturnValue: bool) -> bool: ...
+    def CanPerformThisDialog(self, Performance: DialogPerformanceData) -> bool: ...
 
 
 class DialogStyle(gbx_runtime.GbxDataAsset):
@@ -253,7 +249,6 @@ class DialogStyle(gbx_runtime.GbxDataAsset):
     bLocalOnly: bool
 
 
-
 class DialogSystemEchoManagerInterface(core_uobject.Interface): ...
 
 
@@ -264,6 +259,7 @@ class DialogTimeSlotData(GbxDialogDataAsset):
     Parameters: unreal.WrappedArray[DialogParameter]
     Lines: unreal.WrappedArray[DialogLineData]
     DecisionTree: DialogDecisionTree
+
     def PreviewAudio(self): ...
 
 
@@ -272,36 +268,179 @@ class GameDialogSystemCustomizationInterface(core_uobject.Interface): ...
 
 class GbxDialogBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def WaitForDialog(self, Conversation: DialogConversation, LatentInfo: engine.LatentActionInfo): ...
-    def TestDialogSelector(self, WorldContextObject: unreal.UObject, Selector: DialogSelectorFunction, InputParameters: DialogContext, ReturnValue: bool) -> bool: ...
+    def WaitForDialog(
+        self, Conversation: DialogConversation, LatentInfo: engine.LatentActionInfo
+    ): ...
+    def TestDialogSelector(
+        self,
+        WorldContextObject: unreal.UObject,
+        Selector: DialogSelectorFunction,
+        InputParameters: DialogContext,
+    ) -> bool: ...
     def StopActiveDialog(self, Target: unreal.UObject, bIncludeDeathDialog: bool): ...
-    def SetNextDialogPlayerHints(self, WorldContextObject: unreal.UObject, Actor: engine.Actor, NameTag: DialogNameTag, Location: core_uobject.Vector): ...
-    def SetDialogGameCustomizationMetadata(self, WorldContextObject: unreal.UObject, SequenceID: int, Object: unreal.UObject, Cookie: int): ...
-    def SetDialogFlag(self, WorldContextObject: unreal.UObject, DialogEnumValue: DialogEnumValue, Value: bool, Duration: float): ...
-    def SetDialogContextParameter(self, Context: DialogContext, Parameter: DialogParameter, ObjectValue: unreal.UObject, FloatValue: float, bBoolValue: bool): ...
-    def SetConversationPlayerHints(self, Conversation: DialogConversation, Actor: engine.Actor, NameTag: DialogNameTag, Location: core_uobject.Vector): ...
-    def ResolveDialogTimeSlotReference(self, Reference: DialogTimeSlotReference, TimeSlot: DialogTimeSlotData, Script: DialogScriptData): ...
-    def PlaceRegionalDialogHold(self, WorldContextObject: unreal.UObject, HoldName: str, Location: core_uobject.Vector, Radius: float, Rules: QuietTimePredicate, Duration: float): ...
-    def PlaceGlobalDialogHold(self, WorldContextObject: unreal.UObject, HoldName: str, Rules: QuietTimePredicate, Duration: float): ...
-    def NewDialogConversation(self, WorldContextObject: unreal.UObject, KeyActor: engine.Actor, KeySpeakerName: DialogNameTag, KeyLocation: core_uobject.Vector, ReturnValue: DialogConversation) -> DialogConversation: ...
-    def NewDialogContext(self, ReturnValue: DialogContext) -> DialogContext: ...
-    def InterruptDialogInRadius(self, WorldContextObject: unreal.UObject, Origin: core_uobject.Vector, Radius: float): ...
+    def SetNextDialogPlayerHints(
+        self,
+        WorldContextObject: unreal.UObject,
+        Actor: engine.Actor,
+        NameTag: DialogNameTag,
+        Location: core_uobject.Vector,
+    ): ...
+    def SetDialogGameCustomizationMetadata(
+        self,
+        WorldContextObject: unreal.UObject,
+        SequenceID: int,
+        Object: unreal.UObject,
+        Cookie: int,
+    ): ...
+    def SetDialogFlag(
+        self,
+        WorldContextObject: unreal.UObject,
+        DialogEnumValue: DialogEnumValue,
+        Value: bool,
+        Duration: float,
+    ): ...
+    def SetDialogContextParameter(
+        self,
+        Context: DialogContext,
+        Parameter: DialogParameter,
+        ObjectValue: unreal.UObject,
+        FloatValue: float,
+        bBoolValue: bool,
+    ): ...
+    def SetConversationPlayerHints(
+        self,
+        Conversation: DialogConversation,
+        Actor: engine.Actor,
+        NameTag: DialogNameTag,
+        Location: core_uobject.Vector,
+    ): ...
+    def ResolveDialogTimeSlotReference(
+        self,
+        Reference: DialogTimeSlotReference,
+        TimeSlot: DialogTimeSlotData,
+        Script: DialogScriptData,
+    ): ...
+    def PlaceRegionalDialogHold(
+        self,
+        WorldContextObject: unreal.UObject,
+        HoldName: str,
+        Location: core_uobject.Vector,
+        Radius: float,
+        Rules: QuietTimePredicate,
+        Duration: float,
+    ): ...
+    def PlaceGlobalDialogHold(
+        self,
+        WorldContextObject: unreal.UObject,
+        HoldName: str,
+        Rules: QuietTimePredicate,
+        Duration: float,
+    ): ...
+    def NewDialogConversation(
+        self,
+        WorldContextObject: unreal.UObject,
+        KeyActor: engine.Actor,
+        KeySpeakerName: DialogNameTag,
+        KeyLocation: core_uobject.Vector,
+    ) -> DialogConversation: ...
+    def NewDialogContext(self) -> DialogContext: ...
+    def InterruptDialogInRadius(
+        self,
+        WorldContextObject: unreal.UObject,
+        Origin: core_uobject.Vector,
+        Radius: float,
+    ): ...
     def InterruptConversation(self, Conversation: DialogConversation): ...
-    def GetDialogFlag(self, WorldContextObject: unreal.UObject, DialogEnumValue: DialogEnumValue, ReturnValue: bool) -> bool: ...
-    def GetDialogContextParameterSummary(self, Context: DialogContext, ReturnValue: unreal.WrappedArray[str]) -> unreal.WrappedArray[str]: ...
-    def GetDialogContextParameter(self, Context: DialogContext, Parameter: DialogParameter, ObjectValue: unreal.UObject, FloatValue: float, bBoolValue: bool): ...
-    def GetConversationStatus(self, Conversation: DialogConversation, ReturnValue: EGbxDialogConversationStatus) -> EGbxDialogConversationStatus: ...
-    def FinishTriggerDialog(self, WorldContextObject: unreal.UObject, Event: DialogEvent, Context: DialogContext, ContinueConversation: DialogConversation, Conversation: DialogConversation, StartDelay: float, SequenceID: int, ReturnValue: bool) -> bool: ...
-    def FinishSpeak(self, WorldContextObject: unreal.UObject, TimeSlotRef: DialogTimeSlotReference, OptionalSpeaker: GbxDialogComponent, Context: DialogContext, ContinueConversation: DialogConversation, Conversation: DialogConversation, StartDelay: float, SequenceID: int, OverrideMaxWait: float, ReturnValue: bool) -> bool: ...
-    def FindOrCreateNamedSpeaker(self, NameTag: DialogNameTag, bIncludePureEchoSpeakers: bool, bCreateIfNotFound: bool, Speaker: GbxDialogComponent, ReturnValue: bool) -> bool: ...
-    def EnqueueDialogPerformance(self, WorldContextObject: unreal.UObject, Speaker: GbxDialogComponent, Performance: DialogPerformanceData, StartDelay: float, ContinueConversation: DialogConversation, Conversation: DialogConversation, DialogPlaybackSequence: int, ReturnValue: bool) -> bool: ...
-    def ConvertBoolToDialogTestResult(self, bValue: bool, ReturnValue: EDialogDecisionTestResult) -> EDialogDecisionTestResult: ...
-    def CancelDialogBlockingHold(self, WorldContextObject: unreal.UObject, HoldName: str): ...
+    def GetDialogFlag(
+        self, WorldContextObject: unreal.UObject, DialogEnumValue: DialogEnumValue
+    ) -> bool: ...
+    def GetDialogContextParameterSummary(
+        self, Context: DialogContext
+    ) -> unreal.WrappedArray[str]: ...
+    def GetDialogContextParameter(
+        self,
+        Context: DialogContext,
+        Parameter: DialogParameter,
+        ObjectValue: unreal.UObject,
+        FloatValue: float,
+        bBoolValue: bool,
+    ): ...
+    def GetConversationStatus(
+        self, Conversation: DialogConversation
+    ) -> EGbxDialogConversationStatus: ...
+    def FinishTriggerDialog(
+        self,
+        WorldContextObject: unreal.UObject,
+        Event: DialogEvent,
+        Context: DialogContext,
+        ContinueConversation: DialogConversation,
+        Conversation: DialogConversation,
+        StartDelay: float,
+        SequenceID: int,
+    ) -> bool: ...
+    def FinishSpeak(
+        self,
+        WorldContextObject: unreal.UObject,
+        TimeSlotRef: DialogTimeSlotReference,
+        OptionalSpeaker: GbxDialogComponent,
+        Context: DialogContext,
+        ContinueConversation: DialogConversation,
+        Conversation: DialogConversation,
+        StartDelay: float,
+        SequenceID: int,
+        OverrideMaxWait: float,
+    ) -> bool: ...
+    def FindOrCreateNamedSpeaker(
+        self,
+        NameTag: DialogNameTag,
+        bIncludePureEchoSpeakers: bool,
+        bCreateIfNotFound: bool,
+        Speaker: GbxDialogComponent,
+    ) -> bool: ...
+    def EnqueueDialogPerformance(
+        self,
+        WorldContextObject: unreal.UObject,
+        Speaker: GbxDialogComponent,
+        Performance: DialogPerformanceData,
+        StartDelay: float,
+        ContinueConversation: DialogConversation,
+        Conversation: DialogConversation,
+        DialogPlaybackSequence: int,
+    ) -> bool: ...
+    def DeactivateDialogScript(
+        self,
+        WorldContextObject: unreal.UObject,
+        SoftScript: Any,
+        Script: DialogScriptData,
+    ): ...
+    def ConvertBoolToDialogTestResult(
+        self, bValue: bool
+    ) -> EDialogDecisionTestResult: ...
+    def CancelDialogBlockingHold(
+        self, WorldContextObject: unreal.UObject, HoldName: str
+    ): ...
+    def BindToDialogSequenceFinished(
+        self, WorldContextObject: unreal.UObject, PlayingSequenceID: int, Delegate: Any
+    ): ...
+    def BindToDialogNotify(
+        self,
+        WorldContextObject: unreal.UObject,
+        PlayingSequenceID: int,
+        NotifyName: str,
+        Delegate: Any,
+    ): ...
+    def ActivateDialogScript(
+        self,
+        WorldContextObject: unreal.UObject,
+        SoftScript: Any,
+        Script: DialogScriptData,
+    ): ...
 
 
 class GbxDialogComponent(engine.ActorComponent):
     RandomNameTags: unreal.WrappedArray[DialogNameTag]
     DialogScripts: unreal.WrappedArray[DialogScriptData]
+    OnStartedPerformance: Any
     NameTag: DialogNameTag
     CurrentPerformance: CurrentDialogPerformanceInfo
     PendingPerformance: CurrentDialogPerformanceInfo
@@ -315,11 +454,22 @@ class GbxDialogComponent(engine.ActorComponent):
     bPositional: bool
     bDistributedSpeaker: bool
     InitialDialogInProgress: InitialDialogInProgress
+
     def StopPerformance(self, DialogThreadID: int, bIncludeDeathDialog: bool): ...
-    def StartPerformance(self, DialogThreadID: int, DialogSequenceID: int, Performance: DialogPerformanceData): ...
+    def StartPerformance(
+        self,
+        DialogThreadID: int,
+        DialogSequenceID: int,
+        Performance: DialogPerformanceData,
+    ): ...
     def OnRep_InitialDialogInProgress(self): ...
-    def IsSpeakerClearToPlayDialog(self, ProposedStyle: DialogStyle, bProposingEcho: bool, ProposedConversation: DialogConversation, ReturnValue: bool) -> bool: ...
-    def IsSpeakerActive(self, bIncludePendingVO: bool, ReturnValue: bool) -> bool: ...
+    def IsSpeakerClearToPlayDialog(
+        self,
+        ProposedStyle: DialogStyle,
+        bProposingEcho: bool,
+        ProposedConversation: DialogConversation,
+    ) -> bool: ...
+    def IsSpeakerActive(self, bIncludePendingVO: bool) -> bool: ...
 
 
 class GbxDialogSettings(gbx_runtime.GbxDataAsset):
@@ -353,7 +503,6 @@ class GbxDialogSettings(gbx_runtime.GbxDataAsset):
     FlagsEnum: DialogEnumType
 
 
-
 class GlobalDialogParametersProviderInterface(core_uobject.Interface):
 
     def InitDialogContext(self, Parameters: DialogContext): ...
@@ -364,7 +513,6 @@ class MovieSceneDialogTrack(movie_scene.MovieSceneNameableTrack):
     Sections: unreal.WrappedArray[movie_scene.MovieSceneSection]
 
 
-
 class MovieSceneDialogSection(movie_scene.MovieSceneSection):
     Dialog: DialogTimeSlotReference
     bPlayThroughDialogSystem: bool
@@ -372,7 +520,6 @@ class MovieSceneDialogSection(movie_scene.MovieSceneSection):
     ManualSubtitleText: str
     ManualSubtitleDuration: float
     SubtitleNameTag: DialogNameTag
-
 
 
 class PerformanceEchoDataBase(gbx_runtime.GbxDataAsset): ...
@@ -391,7 +538,6 @@ class RecentDialogPerformanceInfo:
     Performance: DialogPerformanceData
 
 
-
 class RecentConversationInfo:
     ExpirationTime: float
     PreferredPlayer: engine.PlayerController
@@ -399,17 +545,18 @@ class RecentConversationInfo:
     LastKeyLocation: core_uobject.Vector
 
 
-
 class DistributedSpeakerInfo:
     DistributedSpeaker: GbxDialogComponent
     RepresentedSpeakers: unreal.WrappedArray[GbxDialogComponent]
 
 
+class DialogSequenceDelegates:
+    OnFinished: Any
+    Notifies: Any
 
-class DialogSequenceDelegates: ...
 
-
-class DialogSequenceNotifyDelegate: ...
+class DialogSequenceNotifyDelegate:
+    OnNotify: Any
 
 
 class DialogScriptPinnedRef:
@@ -417,11 +564,12 @@ class DialogScriptPinnedRef:
     Script: DialogScriptData
 
 
+class DialogBlackboardCounterValueMap:
+    Map: Any
 
-class DialogBlackboardCounterValueMap: ...
 
-
-class DialogBlackboardFlagValueMap: ...
+class DialogBlackboardFlagValueMap:
+    Map: Any
 
 
 class DialogBlackboardFlagValue: ...
@@ -433,14 +581,12 @@ class QuietTimeTracker:
     ScopePredicate: QuietTimePredicate
 
 
-
 class DialogThread:
     Context: DialogContext
     Speaker: GbxDialogComponent
     Performance: DialogPerformanceData
     QuietTimeKey: unreal.UObject
     GameCustomizationObject: unreal.UObject
-
 
 
 class DialogContext: ...
@@ -450,16 +596,13 @@ class DialogEventSubscription:
     ReferencerTimeSlot: core_uobject.SoftObjectPath
 
 
-
 class ConditionalEchoData:
     Condition: gbx_runtime.GbxCondition
     EchoData: CharacterEchoDataBase
 
 
-
 class DialogMoodInfo:
     Action: unreal.UClass
-
 
 
 class DialogPerformanceNotify:
@@ -467,11 +610,10 @@ class DialogPerformanceNotify:
     Name: str
 
 
-
 class DialogTimeSlotReference:
+    Script: Any
     Guid: core_uobject.Guid
     CachedTimeSlot: DialogTimeSlotData
-
 
 
 class InitialDialogInProgress:
@@ -481,23 +623,19 @@ class InitialDialogInProgress:
     PlayTime: float
 
 
-
 class DialogDecisionTree:
     Decisions: unreal.WrappedArray[DialogLookupDecision]
     Nodes: unreal.WrappedArray[DialogDecisionNode]
     ResultBuckets: unreal.WrappedArray[DialogLookupResultBucket]
 
 
-
 class DialogLookupResultBucket:
     Results: unreal.WrappedArray[DialogLookupResult]
-
 
 
 class DialogLookupResult:
     Line: DialogLineData
     Quality: int
-
 
 
 class DialogDecisionNode:
@@ -510,17 +648,15 @@ class DialogDecisionNode:
     MaxChildQuality: int
 
 
-
 class DialogLookupDecision:
     Call: DialogSelectorFunctionCallInstance
     CachedLifetime: ECachedResultLifetime
-
+    DecisionNumber: int
 
 
 class DialogSelectorFunctionCallInstance:
     Function: DialogSelectorFunction
     ParameterMappings: unreal.WrappedArray[DialogParameterMapping]
-
 
 
 class DialogParameterMapping:
@@ -531,10 +667,8 @@ class DialogParameterMapping:
     SourceNumber: float
 
 
-
 class DialogSelectionCondition:
     Requirements: unreal.WrappedArray[DialogConditionRequirement]
-
 
 
 class DialogConditionRequirement:
@@ -542,17 +676,14 @@ class DialogConditionRequirement:
     bRequiredResult: bool
 
 
-
 class DialogScopeParameterInfo:
     Target: unreal.UObject
     ParameterMappings: unreal.WrappedArray[DialogParameterMapping]
 
 
-
 class DialogParameterType:
     PrimaryType: EDialogParameterPrimaryType
     SecondaryType: DialogEnumType
-
 
 
 class CurrentDialogPerformanceInfo:
@@ -563,16 +694,13 @@ class CurrentDialogPerformanceInfo:
     bForcingOwnerRelevantForEcho: bool
 
 
-
 class DialogConversation:
     ConversationID: int
     ConversationWorld: engine.World
 
 
-
 class MovieSceneDialogSectionTemplate(movie_scene.MovieSceneEvalTemplate):
     TemplateData: MovieSceneDialogSectionTemplateData
-
 
 
 class MovieSceneDialogSectionTemplateData:
@@ -585,7 +713,6 @@ class MovieSceneDialogSectionTemplateData:
     RowIdx: int
     SectionStartFrame: core_uobject.FrameNumber
     SectionEndFrame: core_uobject.FrameNumber
-
 
 
 class EVoiceOfGodSpeaker(enum.Enum):

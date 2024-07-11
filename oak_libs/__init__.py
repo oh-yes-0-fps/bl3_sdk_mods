@@ -15,7 +15,7 @@ from unrealsdk import find_class
 T = TypeVar("T")
 
 def __get_static(cls: type[T]) -> T:
-    return cast(T, find_class(cls.__qualname__.split(".")[0]))
+    return cast(T, find_class(cls.__qualname__.split(".")[0]).ClassDefaultObject)
 
 
 OAK = __get_static(OakBlueprintLibrary)

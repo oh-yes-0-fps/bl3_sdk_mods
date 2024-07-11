@@ -1,10 +1,7 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
-
-
-
 
 
 class MeshDescription(unreal.UObject): ...
@@ -12,7 +9,6 @@ class MeshDescription(unreal.UObject): ...
 
 class ElementID:
     IDValue: int
-
 
 
 class PolygonGroupID(ElementID): ...
@@ -33,7 +29,6 @@ class VertexInstanceID(ElementID): ...
 class MeshTriangle:
     VertexInstanceID1: VertexInstanceID
     VertexInstanceID2: VertexInstanceID
-
 
 
 class EComputeNTBsOptions(enum.Enum):

@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -17,13 +17,20 @@ from . import gbx_level_sequence
 from . import gameplay_tags
 
 
-
 class AIActionBase(unreal.UObject):
+    OnInitializeInstanceEventBP: Any
+    OnCleanupInstanceEventBP: Any
+    OnStartedEventBP: Any
+    OnStoppedEventBP: Any
     ExecutionSettings: AIActionExecutionSettings
     BaseVersion: int
+    Version: int
     CreationMethod: EAIActionCreationMethod
-    def StopBP(self, Action: AIActionBase, Context: AIActionBlueprintContext, bSucceeded: bool): ...
-    def CreateSubobjectNoName(self, Class: unreal.UClass, ReturnValue: unreal.UObject) -> unreal.UObject: ...
+
+    def StopBP(
+        self, Action: AIActionBase, Context: AIActionBlueprintContext, bSucceeded: bool
+    ): ...
+    def CreateSubobjectNoName(self, Class: unreal.UClass) -> unreal.UObject: ...
 
 
 class AIAction(AIActionBase):
@@ -34,13 +41,15 @@ class AIAction(AIActionBase):
     bIsChildAction: bool
     SubActions: unreal.WrappedArray[AIAction]
     ActionVersion: int
-    def CreateSubAction(self, ActionClass: unreal.UClass, Name: str, ReturnValue: AIAction) -> AIAction: ...
+
+    def CreateSubAction(self, ActionClass: unreal.UClass, Name: str) -> AIAction: ...
 
 
 class AIAction_Composite(AIAction):
     Children: unreal.WrappedArray[AIAction_CompositeChild]
     CompositeVersion: int
-    def CreateChild(self, ChildName: str, ReturnValue: AIAction_CompositeChild) -> AIAction_CompositeChild: ...
+
+    def CreateChild(self, ChildName: str) -> AIAction_CompositeChild: ...
 
 
 class AIAction_Selector(AIAction_Composite): ...
@@ -49,7 +58,6 @@ class AIAction_Selector(AIAction_Composite): ...
 class AIAction_Sequence(AIAction_Selector):
     CanStartChecks: EAIActionSequenceCanStartCheck
     CanBeInterrupted: gbx_game_system_core.GbxParam
-
 
 
 class AIAction_GoToPoint(AIAction_Sequence):
@@ -77,8 +85,8 @@ class AIAction_GoToPoint(AIAction_Sequence):
     bUseRotation: bool
     bTestDirectPath: bool
     bDebugTestDirectPath: bool
+    OnArrivedEventBP: Any
     GoToPointVersion: int
-
 
 
 class AIAction_ActionAtPoint(AIAction_GoToPoint):
@@ -91,22 +99,18 @@ class AIAction_ActionAtPoint(AIAction_GoToPoint):
     ActionAtPointVersion: int
 
 
-
 class BTTask_AIAction(aimodule.BTTaskNode):
     ActionDecorator: BTDecorator_AIAction
-
 
 
 class BTTask_AIAction_ActionAtPoint(BTTask_AIAction):
     Action: AIAction_ActionAtPoint
 
 
-
 class AIAction_Priority(AIAction_Selector):
     TryInterruptPeriod: float
     TryInterruptInsignificantPeriod: float
     bInterruptWhileInsignificant: bool
-
 
 
 class AIAction_AITree(AIAction_Priority): ...
@@ -116,16 +120,15 @@ class AIAction_Charge(AIAction_GoToPoint):
     ChargeSettings: AIAspectSettings_Charge
 
 
-
 class BTTask_AIAction_Charge(BTTask_AIAction):
     Action: AIAction_Charge
-
 
 
 class AIAction_CompositeChild(AIAction):
     Action: AIAction
     bCanCauseParentToStop: bool
-    def CreateAction(self, ActionClass: unreal.UClass, ReturnValue: AIAction) -> AIAction: ...
+
+    def CreateAction(self, ActionClass: unreal.UClass) -> AIAction: ...
 
 
 class AIAction_Decorator(AIAction): ...
@@ -135,7 +138,6 @@ class AIAction_MoveNode(AIAction_Priority):
     NodeKey: gbx_game_system_core.GbxBlackboardKeySelector
     NavSettings: AIAspectSettings_Navigation
     MoveNodeVersion: int
-
 
 
 class AIAction_Dropship(AIAction_MoveNode): ...
@@ -153,17 +155,14 @@ class AIAction_Follow(AIAction_Priority):
     FollowVersion: int
 
 
-
 class BTTask_AIAction_GoToPoint(BTTask_AIAction):
     Action: AIAction_GoToPoint
-
 
 
 class AIAction_Land(AIAction_Sequence):
     FlyToNavMeshSettings: AIAspectSettings_FlyToNavMesh
     AnimSettings: AIAspectSettings_GbxAction
     NavSettings: AIAspectSettings_Navigation
-
 
 
 class AIAction_LeadRoute(AIAction_Priority):
@@ -177,20 +176,16 @@ class AIAction_LeadRoute(AIAction_Priority):
     LeadRouteVersion: int
 
 
-
 class BTTask_AIAction_LeadRoute(BTTask_AIAction):
     Action: AIAction_LeadRoute
-
 
 
 class AIAction_Leap(AIAction_GoToPoint):
     LeapSettings: AIAspectSettings_Leap
 
 
-
 class BTTask_AIAction_Leap(BTTask_AIAction):
     Action: AIAction_Leap
-
 
 
 class AIAction_LeapDirect(AIAction):
@@ -199,27 +194,30 @@ class AIAction_LeapDirect(AIAction):
     bUseQuery: bool
 
 
-
 class BTTask_AIAction_LeapDirect(BTTask_AIAction):
     Action: AIAction_LeapDirect
-
 
 
 class AIAction_LookAroundRandomly(AIAction):
     Settings: LookAroundRandomlySettings
 
 
-
 class BTTask_AIAction_MoveNode(BTTask_AIAction):
     Action: AIAction_MoveNode
-
 
 
 class AIAction_MoveSpline(AIAction):
     MoveSplineSettings: AIAspectSettings_MoveSpline
     NavSettings: AIAspectSettings_Navigation
-    def SetupMoveSpline(self, TargetActor: engine.Actor, TargetSpline: unreal.UObject, Offset: float, bIsReverse: bool, ReturnValue: bool) -> bool: ...
-    def ChangeSplineOffset(self, TargetActor: engine.Actor, Offset: float, ReturnValue: bool) -> bool: ...
+
+    def SetupMoveSpline(
+        self,
+        TargetActor: engine.Actor,
+        TargetSpline: unreal.UObject,
+        Offset: float,
+        bIsReverse: bool,
+    ) -> bool: ...
+    def ChangeSplineOffset(self, TargetActor: engine.Actor, Offset: float) -> bool: ...
 
 
 class AIAction_OnAggro(AIAction_Sequence):
@@ -229,17 +227,14 @@ class AIAction_OnAggro(AIAction_Sequence):
     ActionWhenSecondNoticer: AIAspectSettings_GbxAction
 
 
-
 class AIAction_Orbit(AIAction):
     OrbitSettings: AIAspectSettings_Orbit
     NavSettings: AIAspectSettings_Navigation
     RotationSettings: AIAspectSettings_Rotation
 
 
-
 class AIAction_Parallel(AIAction_Composite):
     bWaitForAllChildren: bool
-
 
 
 class AIAction_ParallelChild(AIAction_CompositeChild):
@@ -249,20 +244,16 @@ class AIAction_ParallelChild(AIAction_CompositeChild):
     bMustFinish: bool
 
 
-
 class AIAction_Plan(AIAction_Sequence):
     Settings: AIActionSettings_Plan
-
 
 
 class AIAction_PlayGbxAction(AIAction):
     ActionSettings: AIAspectSettings_GbxAction
 
 
-
 class BTTask_AIAction_PlayGbxAction(BTTask_AIAction):
     Action: AIAction_PlayGbxAction
-
 
 
 class AIAction_Random(AIAction_Selector):
@@ -270,12 +261,10 @@ class AIAction_Random(AIAction_Selector):
     ResetRunCountTime: float
 
 
-
 class AIAction_RandomChild(AIAction_CompositeChild):
     Weight: float
     MaxRunCount: int
     bUseMaxRunCount: bool
-
 
 
 class AIAction_Route(AIAction_Sequence):
@@ -291,10 +280,8 @@ class AIAction_Route(AIAction_Sequence):
     RouteVersion: int
 
 
-
 class BTTask_AIAction_Route(BTTask_AIAction):
     Action: AIAction_Route
-
 
 
 class AIAction_UseCover(AIAction_Priority):
@@ -309,7 +296,6 @@ class AIAction_UseCover(AIAction_Priority):
     bRotateDuringMovement: bool
 
 
-
 class AIAction_SimpleCover(AIAction_UseCover):
     bTakeRangesFromWeapon: bool
     MinRange: gbx_game_system_core.GbxParam
@@ -320,14 +306,12 @@ class AIAction_SimpleCover(AIAction_UseCover):
     SimpleCoverVersion: int
 
 
-
 class AIAction_WeaponAtPoint(AIAction_GoToPoint):
     bCanShootWhileMoving: bool
     WeaponSettings: AIAspectSettings_Weapon
     HoldDuration: gbx_game_system_core.GbxParam
     bUseHoldDuration: bool
     WeaponAtPointVersion: int
-
 
 
 class AIAction_SimpleHide(AIAction_WeaponAtPoint):
@@ -344,7 +328,6 @@ class AIAction_SimpleHide(AIAction_WeaponAtPoint):
     DefaultEnvQuery: core_uobject.SoftObjectPath
     DefaultEnvQueryAsset: aimodule.EnvQuery
     SimpleHideVersion: int
-
 
 
 class AIAction_SimpleMelee(AIAction_ActionAtPoint):
@@ -364,7 +347,6 @@ class AIAction_SimpleMelee(AIAction_ActionAtPoint):
     PlayRate: gbx_game_system_core.GbxParam
     bCanBeInterrupted: bool
     MeleeActionVersion: int
-
 
 
 class AIAction_SimpleRangedAttack(AIAction_ActionAtPoint):
@@ -389,7 +371,6 @@ class AIAction_SimpleRangedAttack(AIAction_ActionAtPoint):
     DefaultTraceTestsAsset: aimodule.EnvQuery
     TraceTestInstance: aimodule.EnvQueryTest_Trace
     SimpleRangedAttackVersion: int
-
 
 
 class AIAction_SimpleWeapon(AIAction_WeaponAtPoint):
@@ -421,19 +402,20 @@ class AIAction_SimpleWeapon(AIAction_WeaponAtPoint):
     SimpleWeaponVersion: int
 
 
-
 class AIAction_StateMachine(AIAction_Selector): ...
 
 
 class AIAction_StateMachineChild(AIAction_CompositeChild):
     OnSuccess: AIAction_StateMachineChild
     OnFailure: AIAction_StateMachineChild
-    def GetAvailableStates(self, Array: unreal.WrappedArray[AIAction_StateMachineChild]): ...
+
+    def GetAvailableStates(
+        self, Array: unreal.WrappedArray[AIAction_StateMachineChild]
+    ): ...
 
 
 class AIAction_Sweep(AIAction_Orbit):
     SweepSettings: AIAspectSettings_Sweep
-
 
 
 class AIAction_Swoop(AIAction_Sequence):
@@ -447,7 +429,6 @@ class AIAction_Swoop(AIAction_Sequence):
     bUsePassRotation: bool
 
 
-
 class AIAction_TargetSequence(AIAction_Sequence):
     TargetCountMin: gbx_game_system_core.GbxParam
     bUseTargetCountMin: bool
@@ -458,7 +439,6 @@ class AIAction_TargetSequence(AIAction_Sequence):
     bPlayersOnly: bool
 
 
-
 class AIAction_Teleport(AIAction):
     GoalKey: gbx_game_system_core.GbxBlackboardKeySelector
     TeleportSettings: AIAspectSettings_Teleport
@@ -466,15 +446,12 @@ class AIAction_Teleport(AIAction):
     bUseQuery: bool
 
 
-
 class BTTask_AIAction_Teleport(BTTask_AIAction):
     Action: AIAction_Teleport
 
 
-
 class BTTask_AIAction_UseCover(BTTask_AIAction):
     Action: AIAction_UseCover
-
 
 
 class AIAction_UseSmartObject(AIAction_Sequence):
@@ -494,15 +471,12 @@ class AIAction_UseSmartObject(AIAction_Sequence):
     UseSmartObjectVersion: int
 
 
-
 class BTTask_AIAction_UseSmartObject(BTTask_AIAction):
     Action: AIAction_UseSmartObject
 
 
-
 class BTTask_AIAction_WeaponAtPoint(BTTask_AIAction):
     Action: AIAction_WeaponAtPoint
-
 
 
 class AIAction_WeaponIdle(AIAction):
@@ -510,16 +484,15 @@ class AIAction_WeaponIdle(AIAction):
     RotationSettings: AIAspectSettings_Rotation
 
 
-
 class BTTask_AIAction_WeaponIdle(BTTask_AIAction):
     Action: AIAction_WeaponIdle
-
 
 
 class AIActionBlueprint(engine.Blueprint):
     ParentBlueprint: AIActionBlueprint
     Blackboard: aimodule.BlackboardData
-    def ShouldSkipBlackboardProperty(self, Property: core_uobject.Property, ReturnValue: bool) -> bool: ...
+
+    def ShouldSkipBlackboardProperty(self, Property: core_uobject.Property) -> bool: ...
 
 
 class AIActionBlueprintGeneratedClass(engine.BlueprintGeneratedClass): ...
@@ -528,10 +501,22 @@ class AIActionBlueprintGeneratedClass(engine.BlueprintGeneratedClass): ...
 class GameplayTask_RunScriptedAIAction(gameplay_tasks.GameplayTask):
     ActionComponent: AIActionComponent
     ActionToRun: unreal.UClass
-    def RunScriptedAIAction_Object(self, Object: unreal.UObject, Action: unreal.UClass, ReturnValue: GameplayTask_RunScriptedAIAction) -> GameplayTask_RunScriptedAIAction: ...
-    def RunScriptedAIAction_Controller(self, Controller: GbxAIController, Action: unreal.UClass, ReturnValue: GameplayTask_RunScriptedAIAction) -> GameplayTask_RunScriptedAIAction: ...
-    def RunScriptedAIAction_AIActionComponent(self, AIActionComponent: AIActionComponent, Action: unreal.UClass, ReturnValue: GameplayTask_RunScriptedAIAction) -> GameplayTask_RunScriptedAIAction: ...
-    def RunScriptedAIAction_Actor(self, Actor: engine.Actor, Action: unreal.UClass, ReturnValue: GameplayTask_RunScriptedAIAction) -> GameplayTask_RunScriptedAIAction: ...
+    Succeeded: Any
+    Failed: Any
+    Aborted: Any
+
+    def RunScriptedAIAction_Object(
+        self, Object: unreal.UObject, Action: unreal.UClass
+    ) -> GameplayTask_RunScriptedAIAction: ...
+    def RunScriptedAIAction_Controller(
+        self, Controller: GbxAIController, Action: unreal.UClass
+    ) -> GameplayTask_RunScriptedAIAction: ...
+    def RunScriptedAIAction_AIActionComponent(
+        self, AIActionComponent: AIActionComponent, Action: unreal.UClass
+    ) -> GameplayTask_RunScriptedAIAction: ...
+    def RunScriptedAIAction_Actor(
+        self, Actor: engine.Actor, Action: unreal.UClass
+    ) -> GameplayTask_RunScriptedAIAction: ...
 
 
 class AIActionComponent(aimodule.BrainComponent):
@@ -547,9 +532,11 @@ class AIActionComponent(aimodule.BrainComponent):
     ScriptedRouteAction: unreal.UClass
     ScriptedLeadAction: unreal.UClass
     ScriptedLandAction: unreal.UClass
+    TaggedActionTable: Any
     ActionStack: AIActionInstance
+
     def ReplaceMainAIAction(self, Action: unreal.UClass): ...
-    def GetBlackboardData(self, ReturnValue: aimodule.BlackboardData) -> aimodule.BlackboardData: ...
+    def GetBlackboardData(self) -> aimodule.BlackboardData: ...
     def AbortScriptedAIAction(self, bStopImmediately: bool): ...
 
 
@@ -557,46 +544,57 @@ class AIActionManager(unreal.UObject):
     MaxTickTimeMs: float
 
 
-
 class AIAspect(AIActionBase):
     AspectExecutionSettings: AIAspectExecutionSettings
 
 
-
 class AIAspect_ActorCollision(AIAspect):
     Settings: AIAspectSettings_ActorCollision
-    def OnPawnHit(self, SelfActor: engine.Actor, OtherActor: engine.Actor, NormalImpulse: core_uobject.Vector, Hit: engine.HitResult): ...
+
+    def OnPawnHit(
+        self,
+        SelfActor: engine.Actor,
+        OtherActor: engine.Actor,
+        NormalImpulse: core_uobject.Vector,
+        Hit: engine.HitResult,
+    ): ...
     def GetOnCollisionOptions(self, Options: unreal.WrappedArray[str]): ...
 
 
 class AIAspect_Condition(AIAspect):
     Settings: AIAspectSettings_Condition
-    def GetConditionDataDescription(self, ConditionData: AIAspectSettings_ConditionData, ReturnValue: str) -> str: ...
+
+    def GetConditionDataDescription(
+        self, ConditionData: AIAspectSettings_ConditionData
+    ) -> str: ...
 
 
 class AIAspect_AIGroupCondition(AIAspect_Condition):
     GroupSettings: AIAspectSettings_AIGroupCondition
 
 
-
 class AIAspect_AvoidWhileIdle(AIAspect):
     bAvoidWhileIdle: bool
 
 
-
 class AIAspect_BlackboardKey(AIAspect):
     Settings: AIAspectSettings_BlackboardKey
-    def GetSettingsDescription(self, BBKeySettings: AIAspectSettings_BlackboardKey, ReturnValue: str) -> str: ...
+
+    def GetSettingsDescription(
+        self, BBKeySettings: AIAspectSettings_BlackboardKey
+    ) -> str: ...
 
 
 class AIAspect_Charge(AIAspect):
     Settings: AIAspectSettings_Charge
 
 
-
 class AIAspect_Navigation(AIAspect):
     Settings: AIAspectSettings_Navigation
-    def GetNavSettingsDescription(self, NavSettings: AIAspectSettings_Navigation, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+
+    def GetNavSettingsDescription(
+        self, NavSettings: AIAspectSettings_Navigation, Property: core_uobject.Property
+    ) -> str: ...
 
 
 class AIAspect_Circle(AIAspect_Navigation):
@@ -612,7 +610,6 @@ class AIAspect_Circle(AIAspect_Navigation):
     Reach: gbx_nav.EGbxNavGoalReach
 
 
-
 class AIAspect_ClaimSmartObject(AIAspect):
     SmartObjectSettings: AIAspectSettings_UseSmartObject
     SmartAction: gbx_game_system_core.GbxBlackboardKeySelector
@@ -623,15 +620,12 @@ class AIAspect_ClaimSmartObject(AIAspect):
     LookEnabled: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_Cooldown(AIAspect):
     Settings: AIAspectSettings_Cooldown
 
 
-
 class AIAspect_Crouch(AIAspect):
     Settings: AIAspectSettings_Crouch
-
 
 
 class AIAspect_DisableAvoidance(AIAspect): ...
@@ -641,7 +635,6 @@ class AIAspect_MoveNode(AIAspect_Navigation):
     NodeKey: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_UseNode(AIAspect_MoveNode): ...
 
 
@@ -649,20 +642,21 @@ class AIAspect_DropshipSpawn(AIAspect_UseNode):
     DropshipSettings: AIAspectSettings_DropshipSpawn
 
 
-
 class AIAspect_EnvQuery(AIAspect):
     Settings: AIAspectSettings_EnvQuery
-    def GetQuerySettingsDescription(self, QuerySettings: AIAspectSettings_EnvQuery, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+    OnValueUpdatedBP: Any
+
+    def GetQuerySettingsDescription(
+        self, QuerySettings: AIAspectSettings_EnvQuery, Property: core_uobject.Property
+    ) -> str: ...
 
 
 class AIAspect_FaceNearbyCover(AIAspect):
     CoverKey: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_GbxAction(AIAspect):
     Settings: AIAspectSettings_GbxAction
-
 
 
 class AIAspect_FallToGround(AIAspect_GbxAction): ...
@@ -672,15 +666,12 @@ class AIAspect_FindClosestPlayer(AIAspect):
     Settings: AIAspectSettings_FindClosestPlayer
 
 
-
 class AIAspect_FindCover(AIAspect_EnvQuery):
     bCheckFlanking: bool
 
 
-
 class AIAspect_FlyToNavMesh(AIAspect_Navigation):
     FlyToNavMeshSettings: AIAspectSettings_FlyToNavMesh
-
 
 
 class AIAspect_FollowUpdate(AIAspect):
@@ -691,30 +682,24 @@ class AIAspect_FollowUpdate(AIAspect):
     Distance: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_GroupLocation(AIAspect):
     Settings: AIAspectSettings_GroupLocation
-
 
 
 class AIAspect_IntCompare(AIAspect):
     Settings: AIAspectSettings_IntCompare
 
 
-
 class AIAspect_IsInRange(AIAspect):
     Settings: AIAspectSettings_IsInRange
-
 
 
 class AIAspect_IsInTerritory(AIAspect):
     Settings: AIAspectSettings_IsInTerritory
 
 
-
 class AIAspect_Land(AIAspect_Navigation):
     LandSettings: AIAspectSettings_Land
-
 
 
 class AIAspect_LeadUpdate(AIAspect):
@@ -724,20 +709,20 @@ class AIAspect_LeadUpdate(AIAspect):
     TeleportTarget: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_Leap(AIAspect):
     Settings: AIAspectSettings_Leap
-    def GetQuerySettingsDescription(self, LeapSettings: AIAspectSettings_Leap, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+
+    def GetQuerySettingsDescription(
+        self, LeapSettings: AIAspectSettings_Leap, Property: core_uobject.Property
+    ) -> str: ...
 
 
 class AIAspect_Location(AIAspect):
     Settings: AIAspectSettings_Location
 
 
-
 class AIAspect_LockTarget(AIAspect):
     bFailOnTargetChange: bool
-
 
 
 class AIAspect_LookAroundRandomly(AIAspect): ...
@@ -745,12 +730,12 @@ class AIAspect_LookAroundRandomly(AIAspect): ...
 
 class AIAspect_Loop(AIAspect):
     Settings: AIAspectSettings_Loop
-    def GetSettingsDescription(self, LoopSettings: AIAspectSettings_Loop, ReturnValue: str) -> str: ...
+
+    def GetSettingsDescription(self, LoopSettings: AIAspectSettings_Loop) -> str: ...
 
 
 class AIAspect_MoveSpline(AIAspect_Navigation):
     MoveSplineSettings: AIAspectSettings_MoveSpline
-
 
 
 class AIAspect_NavBlackboard(AIAspect_Navigation):
@@ -761,31 +746,35 @@ class AIAspect_NavBlackboard(AIAspect_Navigation):
     Reach: gbx_nav.EGbxNavGoalReach
 
 
-
 class AIAspect_NavCover(AIAspect_Navigation):
     GoalKey: gbx_game_system_core.GbxBlackboardKeySelector
-
 
 
 class AIAspect_NavFlyOffset(AIAspect_Navigation):
     OffsetSettings: AIAspectSettings_NavFlyOffset
 
 
-
 class AIAspect_Orbit(AIAspect_Navigation):
     OrbitSettings: AIAspectSettings_Orbit
-
 
 
 class AIAspect_Plan(AIAspect):
     Settings: AIAspectSettings_Plan
 
 
-
 class AIAspect_Rotation(AIAspect):
     Settings: AIAspectSettings_Rotation
-    def GetRotationSettingsDescription(self, RotationSettings: AIAspectSettings_Rotation, Property: core_uobject.Property, ReturnValue: str) -> str: ...
-    def GetRotationChannelSettingsDescription(self, RotationChannelSettings: AIAspectSettings_RotationChannel, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+
+    def GetRotationSettingsDescription(
+        self,
+        RotationSettings: AIAspectSettings_Rotation,
+        Property: core_uobject.Property,
+    ) -> str: ...
+    def GetRotationChannelSettingsDescription(
+        self,
+        RotationChannelSettings: AIAspectSettings_RotationChannel,
+        Property: core_uobject.Property,
+    ) -> str: ...
 
 
 class AIAspect_Route(AIAspect):
@@ -799,60 +788,56 @@ class AIAspect_Route(AIAspect):
     LookTarget: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class AIAspect_Stance(AIAspect):
     Settings: AIAspectSettings_Stance
-
 
 
 class AIAspect_Sweep(AIAspect_Orbit):
     SweepSettings: AIAspectSettings_Sweep
 
 
-
 class AIAspect_Swoop(AIAspect_Navigation):
     SwoopSettings: AIAspectSettings_Swoop
-
+    OnReachedFarBP: Any
+    OnReachedNearBP: Any
 
 
 class AIAspect_TakeOff(AIAspect_GbxAction):
     NearFlightDistance: float
 
 
-
 class AIAspect_Teleport(AIAspect):
     Settings: AIAspectSettings_Teleport
-    def GetTeleportSettingsDescription(self, TeleportSettings: AIAspectSettings_Teleport, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+
+    def GetTeleportSettingsDescription(
+        self,
+        TeleportSettings: AIAspectSettings_Teleport,
+        Property: core_uobject.Property,
+    ) -> str: ...
 
 
 class AIAspect_Territory(AIAspect):
     TerritoryKeys: unreal.WrappedArray[gbx_game_system_core.GbxBlackboardKeySelector]
 
 
-
 class AIAspect_Ticket(AIAspect):
     Settings: AIAspectSettings_Ticket
-
 
 
 class AIAspect_TimedCondition(AIAspect):
     Settings: AIAspectSettings_TimedCondition
 
 
-
 class AIAspect_TimeLimit(AIAspect):
     Settings: AIAspectSettings_TimeLimit
-
 
 
 class AIAspect_Timer(AIAspect):
     Settings: AIAspectSettings_Timer
 
 
-
 class AIAspect_UseCover(AIAspect):
     Settings: AIAspectSettings_UseCover
-
 
 
 class AIAspect_UseSmartObject(AIAspect_GbxAction): ...
@@ -860,17 +845,18 @@ class AIAspect_UseSmartObject(AIAspect_GbxAction): ...
 
 class AIAspect_Weapon(AIAspect):
     Settings: AIAspectSettings_Weapon
-    def GetWeaponSettingsDescription(self, WeaponSettings: AIAspectSettings_Weapon, Property: core_uobject.Property, ReturnValue: str) -> str: ...
+
+    def GetWeaponSettingsDescription(
+        self, WeaponSettings: AIAspectSettings_Weapon, Property: core_uobject.Property
+    ) -> str: ...
 
 
 class AIAspect_ZeroRotation(AIAspect):
     Settings: AIAspectSettings_ZeroRotation
 
 
-
 class AIAspectBlueprint(engine.Blueprint):
     ParentBlueprint: AIAspectBlueprint
-
 
 
 class AICloakData(engine.DataAsset):
@@ -878,8 +864,9 @@ class AICloakData(engine.DataAsset):
     bDefaultCloaked: bool
 
 
-
 class AICloakComponent(engine.ActorComponent):
+    OnCloaked: Any
+    OnUncloaked: Any
     DefaultCloakData: AICloakData
     bRender: bool
     bCollide: bool
@@ -910,13 +897,14 @@ class AICloakComponent(engine.ActorComponent):
     SavedCollision: gbx_game_system_core.SavedCollision
     RepData: CloakRepData
     PrimCompData: unreal.WrappedArray[CloakPrimData]
+
     def SetCloakData(self, NewCloakData: AICloakData): ...
     def OnRep_Cloaked(self): ...
-    def IsPlayingAction(self, ReturnValue: bool) -> bool: ...
-    def IsCloakStateForced(self, ReturnValue: bool) -> bool: ...
-    def IsCloaked(self, ReturnValue: bool) -> bool: ...
+    def IsPlayingAction(self) -> bool: ...
+    def IsCloakStateForced(self) -> bool: ...
+    def IsCloaked(self) -> bool: ...
     def InterruptCloakAction(self): ...
-    def GetCloakData(self, ReturnValue: AICloakData) -> AICloakData: ...
+    def GetCloakData(self) -> AICloakData: ...
     def ForceUncloak(self, bInCanPlayActions: bool): ...
     def ForceCloak(self, bInCanPlayActions: bool): ...
     def ClearForcedState(self): ...
@@ -928,12 +916,37 @@ class AIConstraint(AIAspect): ...
 
 class AIGroupBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def IsUsingAITicket(self, AIUser: aimodule.AIController, Ticket: AITicketDataAsset, bInterruptible: bool, ReturnValue: bool) -> bool: ...
-    def IsTicketValid(self, TicketHandle: AITicketHandle, ReturnValue: bool) -> bool: ...
+    def IsUsingAITicket(
+        self,
+        AIUser: aimodule.AIController,
+        Ticket: AITicketDataAsset,
+        bInterruptible: bool,
+    ) -> bool: ...
+    def IsTicketValid(self, TicketHandle: AITicketHandle) -> bool: ...
     def ClearTicket(self, TicketHandle: AITicketHandle, HoldDuration: float): ...
-    def ClearAITicket(self, AIUser: aimodule.AIController, Ticket: AITicketDataAsset, HoldDuration: float): ...
-    def CanUseAITicket(self, AIUser: aimodule.AIController, Ticket: AITicketDataAsset, Value: float, bInterruptible: bool, ReturnValue: bool) -> bool: ...
-    def AddAITicket(self, OutTicketHandle: AITicketHandle, AIUser: aimodule.AIController, Ticket: AITicketDataAsset, Value: float, MaxDuration: float, bPriority: bool, bInterruptible: bool, ReturnValue: bool) -> bool: ...
+    def ClearAITicket(
+        self,
+        AIUser: aimodule.AIController,
+        Ticket: AITicketDataAsset,
+        HoldDuration: float,
+    ): ...
+    def CanUseAITicket(
+        self,
+        AIUser: aimodule.AIController,
+        Ticket: AITicketDataAsset,
+        Value: float,
+        bInterruptible: bool,
+    ) -> bool: ...
+    def AddAITicket(
+        self,
+        OutTicketHandle: AITicketHandle,
+        AIUser: aimodule.AIController,
+        Ticket: AITicketDataAsset,
+        Value: float,
+        MaxDuration: float,
+        bPriority: bool,
+        bInterruptible: bool,
+    ) -> bool: ...
 
 
 class AIGroupState(unreal.UObject):
@@ -941,21 +954,45 @@ class AIGroupState(unreal.UObject):
     TicketManager: AITicketManager
     CommunicationManager: AICommunicationManager
     PlanManager: AIPlanManager
-    TargetPersistentNotes: unreal.WrappedArray[gbx_game_system_core.TargetPersistentNotes]
-    def OnThreatActorDied(self, DamageReceiver: engine.Actor, DamageCauser: engine.Actor): ...
+    TargetPersistentNotes: unreal.WrappedArray[
+        gbx_game_system_core.TargetPersistentNotes
+    ]
+
+    def OnThreatActorDied(
+        self, DamageReceiver: engine.Actor, DamageCauser: engine.Actor
+    ): ...
 
 
 class AINode(engine.Actor):
     AINodeComponent: AINodeComponent
-    def OnPawnDepartedNodeCB(self, NodeActor: engine.Actor, DepartedPawn: engine.Pawn): ...
-    def OnPawnArrivedNodeCB(self, NodeActor: engine.Actor, ArrivedPawn: engine.Pawn): ...
+    OnPawnArrivedNode: Any
+    OnPawnDepartedNode: Any
+
+    def OnPawnDepartedNodeCB(
+        self, NodeActor: engine.Actor, DepartedPawn: engine.Pawn
+    ): ...
+    def OnPawnArrivedNodeCB(
+        self, NodeActor: engine.Actor, ArrivedPawn: engine.Pawn
+    ): ...
 
 
 class AINodeBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def FindNearestNode(self, WorldContextObject: unreal.UObject, Location: core_uobject.Vector, bIncludeDisabled: bool, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def FindAllNodes(self, OutputNodes: unreal.WrappedArray[engine.Actor], WorldContextObject: unreal.UObject, bIncludeDisabled: bool): ...
-    def ChooseRandomNode(self, WorldContextObject: unreal.UObject, bIncludeDisabled: bool, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def FindNearestNode(
+        self,
+        WorldContextObject: unreal.UObject,
+        Location: core_uobject.Vector,
+        bIncludeDisabled: bool,
+    ) -> engine.Actor: ...
+    def FindAllNodes(
+        self,
+        OutputNodes: unreal.WrappedArray[engine.Actor],
+        WorldContextObject: unreal.UObject,
+        bIncludeDisabled: bool,
+    ): ...
+    def ChooseRandomNode(
+        self, WorldContextObject: unreal.UObject, bIncludeDisabled: bool
+    ) -> engine.Actor: ...
 
 
 class AINodeComponent(engine.PrimitiveComponent):
@@ -970,24 +1007,26 @@ class AINodeComponent(engine.PrimitiveComponent):
     LinksTo: unreal.WrappedArray[AINodeLink]
     EditCache: unreal.WrappedArray[engine.Actor]
     LinksFrom: unreal.WrappedArray[AINodeComponent]
+    OnPawnArrivedNode: Any
+    OnPawnDepartedNode: Any
     bLinkOnAltDrag: bool
     bVisualizeWhileUnlinked: bool
     bRouteSelected: bool
     bSelected: bool
-    def SelectNextNode(self, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def HasLinkTo(self, Node: engine.Actor, ReturnValue: bool) -> bool: ...
-    def HasLinkFrom(self, Node: engine.Actor, ReturnValue: bool) -> bool: ...
-    def HasArrived(self, Point: core_uobject.Vector, Error: float, ReturnValue: bool) -> bool: ...
-    def GetLinkedNodeNum(self, ReturnValue: int) -> int: ...
-    def GetLinkedNode(self, I: int, ReturnValue: engine.Actor) -> engine.Actor: ...
+
+    def SelectNextNode(self) -> engine.Actor: ...
+    def HasLinkTo(self, Node: engine.Actor) -> bool: ...
+    def HasLinkFrom(self, Node: engine.Actor) -> bool: ...
+    def HasArrived(self, Point: core_uobject.Vector, Error: float) -> bool: ...
+    def GetLinkedNodeNum(self) -> int: ...
+    def GetLinkedNode(self, I: int) -> engine.Actor: ...
     def CreateLinkTo(self, Node: engine.Actor, Weight: float): ...
-    def BreakLinkTo(self, Node: engine.Actor, ReturnValue: bool) -> bool: ...
+    def BreakLinkTo(self, Node: engine.Actor) -> bool: ...
 
 
 class AIPlanData(gbx_runtime.GbxDataAsset):
     MaxNumberOfInstances: gbx_game_system_core.GbxParam
     RoleRequirements: unreal.WrappedArray[PlanRoleRequirements]
-
 
 
 class AISense_Proximity(aimodule.AISense): ...
@@ -998,11 +1037,9 @@ class AISense_Threat(aimodule.AISense):
     UpdatePeriod: float
 
 
-
 class AISenseConfig_Proximity(aimodule.AISenseConfig):
     SenseEnemyDistance: float
     DetectionByAffiliation: aimodule.AISenseAffiliationFilter
-
 
 
 class AISenseConfig_Threat(aimodule.AISenseConfig):
@@ -1010,30 +1047,55 @@ class AISenseConfig_Threat(aimodule.AISenseConfig):
     Implementation: unreal.UClass
 
 
-
 class AIStanceData(gbx_game_system_core.StanceData):
     AIPathFindData: gbx_nav.HavokPathFindingData
     AIStrafeType: gbx_nav.EGbxStrafeType
 
 
-
 class AITargetingBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def IsThreatenedByInfo(self, AIActor: engine.Actor, TargetInfo: gbx_game_system_core.TargetActorInfo, ReturnValue: bool) -> bool: ...
-    def IsThreatenedBy(self, AIActor: engine.Actor, Target: engine.Actor, ReturnValue: bool) -> bool: ...
-    def GetTargetSenseAge(self, TargetInfo: gbx_game_system_core.TargetActorInfo, Sense: unreal.UClass, ReturnValue: float) -> float: ...
-    def GetNumTargetsInRange(self, AIActor: engine.Actor, Radius: float, ReturnValue: int) -> int: ...
-    def GetBestKnownLocation(self, AIActor: engine.Actor, TargetActor: engine.Actor, Socket: str, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def CalcTargetGroupLocation(self, AIActor: engine.Actor, GroupDistance: float, Result: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def ApplyTargetScoringBoost(self, TargetActor: engine.Actor, BoostName: str, ScoringBoost: gbx_game_system_core.EAITargetScoringBoost, DurationInSeconds: float): ...
-    def AISetTargetInBlackboard(self, AIActor: engine.Actor, Key: gbx_game_system_core.GbxBlackboardKeySelector, TargetIndex: int): ...
+    def IsThreatenedByInfo(
+        self, AIActor: engine.Actor, TargetInfo: gbx_game_system_core.TargetActorInfo
+    ) -> bool: ...
+    def IsThreatenedBy(self, AIActor: engine.Actor, Target: engine.Actor) -> bool: ...
+    def GetTargetSenseAge(
+        self, TargetInfo: gbx_game_system_core.TargetActorInfo, Sense: unreal.UClass
+    ) -> float: ...
+    def GetNumTargetsInRange(self, AIActor: engine.Actor, Radius: float) -> int: ...
+    def GetBestKnownLocation(
+        self, AIActor: engine.Actor, TargetActor: engine.Actor, Socket: str
+    ) -> core_uobject.Vector: ...
+    def CalcTargetGroupLocation(
+        self, AIActor: engine.Actor, GroupDistance: float, Result: core_uobject.Vector
+    ) -> bool: ...
+    def ApplyTargetScoringBoost(
+        self,
+        TargetActor: engine.Actor,
+        BoostName: str,
+        ScoringBoost: gbx_game_system_core.EAITargetScoringBoost,
+        DurationInSeconds: float,
+    ): ...
+    def AISetTargetInBlackboard(
+        self,
+        AIActor: engine.Actor,
+        Key: gbx_game_system_core.GbxBlackboardKeySelector,
+        TargetIndex: int,
+    ): ...
     def AISetScriptedTarget(self, AIActor: engine.Actor, TargetActor: engine.Actor): ...
     def AISendCommunication(self, AIActor: engine.Actor, Radius: float): ...
-    def AIProvokeSpecificSense(self, AITarget: engine.Actor, Source: engine.Actor, SenseType: unreal.UClass, StimulusLocation: core_uobject.Vector): ...
+    def AIProvokeSpecificSense(
+        self,
+        AITarget: engine.Actor,
+        Source: engine.Actor,
+        SenseType: unreal.UClass,
+        StimulusLocation: core_uobject.Vector,
+    ): ...
     def AIProvoke(self, AITarget: engine.Actor, Source: engine.Actor): ...
     def AIPlayerProvoke(self, AITarget: engine.Actor): ...
-    def AIGetScriptedTarget(self, AIActor: engine.Actor, ReturnValue: engine.Actor) -> engine.Actor: ...
-    def AICanCommunicate(self, AIActor: engine.Actor, Radius: float, MinSenseAgeDelta: float, ReturnValue: bool) -> bool: ...
+    def AIGetScriptedTarget(self, AIActor: engine.Actor) -> engine.Actor: ...
+    def AICanCommunicate(
+        self, AIActor: engine.Actor, Radius: float, MinSenseAgeDelta: float
+    ) -> bool: ...
 
 
 class AITask_UseLookAtPoint(aimodule.AITask):
@@ -1043,13 +1105,11 @@ class AITask_UseLookAtPoint(aimodule.AITask):
     State: ESmartObjectTaskState
 
 
-
 class AITask_UsePerch(aimodule.AITask):
     PerchComponent: PerchComponent
     Tag: PerchTag
     MoveToTask: aimodule.AITask_MoveTo
     State: ESmartObjectTaskState
-
 
 
 class AITask_UseSmartObject(aimodule.AITask): ...
@@ -1062,25 +1122,35 @@ class AITicketDataAsset(gbx_runtime.GbxDataAsset):
     ActorBlackboardKeyName: str
 
 
-
 class AIUsableComponent(engine.ActorComponent):
     bEnabled: bool
     SmartObjectComponent: SmartObjectComponent
     UseSlots: unreal.WrappedArray[AIUseSlotComponent]
 
 
-
 class AIUseComponent(engine.ActorComponent):
+    ReserveEvent: Any
+    UnreserveEvent: Any
+    BeginEvent: Any
+    InterruptEvent: Any
+    SuccessEvent: Any
     CachedPawn: engine.Pawn
     CachedController: GbxAIController
     CachedActionComponent: gbx_game_system_core.GbxActionComponent
     UseState: ActionUseState
     bInitializingAction: bool
     GlobalCooldowns: unreal.WrappedArray[ActionCooldownInfo]
+
     def StopUse(self, bSucceeded: bool): ...
-    def RequestUse(self, SmartObject: engine.Actor, ActionName: gameplay_tags.GameplayTag, bAbortExisting: bool, bUntilInterrupted: bool, ReturnValue: bool) -> bool: ...
+    def RequestUse(
+        self,
+        SmartObject: engine.Actor,
+        ActionName: gameplay_tags.GameplayTag,
+        bAbortExisting: bool,
+        bUntilInterrupted: bool,
+    ) -> bool: ...
     def OnUseCompleted(self, Task: aimodule.AITask, Result: ESmartObjectTaskResult): ...
-    def GetCurrentObject(self, ReturnValue: engine.Actor) -> engine.Actor: ...
+    def GetCurrentObject(self) -> engine.Actor: ...
 
 
 class AIUseSlotComponent(engine.PrimitiveComponent):
@@ -1099,13 +1169,18 @@ class AIUseSlotComponent(engine.PrimitiveComponent):
     MaxUsers: int
     bForceUsePhysNoneWithRootMotion: bool
     Users: unreal.WrappedArray[engine.Controller]
+
     def GetAvailableSocketNames(self, Array: unreal.WrappedArray[str]): ...
 
 
 class AIWeaponUserComponent(engine.ActorComponent):
+    ReloadEvent: Any
+    BeginFiringEvent: Any
     AIController: GbxAIController
     GbxCharacter: gbx_game_system_core.GbxCharacter
     FireConeAngle: float
+    WeaponUser: Any
+    Weapon: Any
     DamageComponent: gbx_game_system_core.DamageComponent
     CoverUserComponent: CoverUserComponent
     BlackboardComponent: aimodule.BlackboardComponent
@@ -1123,13 +1198,13 @@ class AIWeaponUserComponent(engine.ActorComponent):
     bOverrideAccuracy: bool
     DesiredRangeOverride: gbx_runtime.NumericRange
     bOverrideDesiredRange: bool
-    def WantsToFire(self, ReturnValue: bool) -> bool: ...
+
+    def WantsToFire(self) -> bool: ...
     def OnWeaponUsed(self): ...
 
 
 class AnimNotify_SmartObject(engine.AnimNotifyState):
     Action: ESmartObjectNotify
-
 
 
 class AnimNotify_UseSmartAction(engine.AnimNotify): ...
@@ -1140,7 +1215,6 @@ class BlackboardKeyType_SmartAction(aimodule.BlackboardKeyType): ...
 
 class BTComposite_Random(aimodule.BTComposite_Selector):
     Entries: unreal.WrappedArray[BTRandomEntrySettings]
-
 
 
 class BTDecorator_AIAction(aimodule.BTDecorator): ...
@@ -1158,10 +1232,8 @@ class BTDecorator_GbxLoop(aimodule.BTDecorator):
     bUseLoopCondition: bool
 
 
-
 class BTDecorator_IsInRange(aimodule.BTDecorator_BlackboardBase):
     Range: gbx_game_system_core.GbxParam
-
 
 
 class BTService_GameFocus(aimodule.BTService_DefaultFocus): ...
@@ -1174,12 +1246,10 @@ class BTTask_AIAction_Custom(BTTask_AIAction):
     Action: AIAction
 
 
-
 class BTTask_LookAt(aimodule.BTTaskNode):
     AngleThresholdDegrees: float
     TargetActorKey: aimodule.BlackboardKeySelector
     TurnSpeedKey: aimodule.BlackboardKeySelector
-
 
 
 class BTTask_MoveToComponent(aimodule.BTTask_BlackboardBase):
@@ -1188,7 +1258,6 @@ class BTTask_MoveToComponent(aimodule.BTTask_BlackboardBase):
     bStopOnOverlap: bool
     bAllowPartialPath: bool
     bProjectGoalLocation: bool
-
 
 
 class BTTask_MoveToNode(aimodule.BTTask_MoveTo): ...
@@ -1216,8 +1285,9 @@ class Cover(engine.Actor):
     TargetTestActor: engine.Actor
     HostileTestActor: engine.Actor
     bAutoAdjust: bool
+
     def SetEnabled(self, bEnabled: bool): ...
-    def IsEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsEnabled(self) -> bool: ...
 
 
 class CoverSlotComponent(engine.PrimitiveComponent):
@@ -1232,8 +1302,9 @@ class CoverSlotComponent(engine.PrimitiveComponent):
     ExposedLosData: CoverLineOfSightData
     SlotOwnerUsing: engine.Pawn
     SlotOwnerClaimed: engine.Pawn
+
     def SetEnabled(self, bNewEnabled: bool): ...
-    def IsEnabled(self, ReturnValue: bool) -> bool: ...
+    def IsEnabled(self) -> bool: ...
 
 
 class CoverSlotData(gbx_runtime.GbxDataAsset):
@@ -1249,7 +1320,6 @@ class CoverSlotData(gbx_runtime.GbxDataAsset):
     NavSearchRadius: float
 
 
-
 class CoverStyleData(gbx_runtime.GbxDataAsset):
     AnimType: ECoverStyleAnimType
     View: CoverViewData
@@ -1258,15 +1328,14 @@ class CoverStyleData(gbx_runtime.GbxDataAsset):
     bForceFiring: bool
 
 
-
 class GbxCoverTransitionTable(gbx_game_system_core.GbxAnimTable):
     AnimSet: engine.GbxAnimSet
     Filters: CoverTransitionFilters
     DefaultHeight: float
 
 
-
 class CoverUserComponent(engine.ActorComponent):
+    OnCoverStateChanged: Any
     DesiredAction: CoverAction
     CurrentAction: CoverAction
     PreviousAction: CoverAction
@@ -1306,10 +1375,16 @@ class CoverUserComponent(engine.ActorComponent):
     NearCoverDistance: float
     EnterTransitionTable: GbxCoverTransitionTable
     BetweenTransitionTable: GbxCoverTransitionTable
+
     def SetEnterTransitionTable(self, NewTable: GbxCoverTransitionTable): ...
     def OnRep_ClientData(self): ...
-    def OnMovementModeChanged(self, Character: engine.Character, PrevMovementMode: int, PreviousCustomMode: int): ...
-    def GetStyle(self, ReturnValue: CoverStyleData) -> CoverStyleData: ...
+    def OnMovementModeChanged(
+        self,
+        Character: engine.Character,
+        PrevMovementMode: int,
+        PreviousCustomMode: int,
+    ): ...
+    def GetStyle(self) -> CoverStyleData: ...
 
 
 class CoverViewData(gbx_runtime.GbxDataAsset):
@@ -1318,7 +1393,6 @@ class CoverViewData(gbx_runtime.GbxDataAsset):
     TargetParams: CoverLineOfSightParams
     ForwardCheckDistance: float
     ForwardCheckExtent: core_uobject.Vector
-
 
 
 class EnvQueryContext_AllTargets(aimodule.EnvQueryContext): ...
@@ -1337,11 +1411,12 @@ class EnvQueryGenerator_AINodes(aimodule.EnvQueryGenerator):
     SearchCenter: unreal.UClass
     SearchRadius: aimodule.AIDataProviderFloatValue
     TagQuery: gbx_game_system_core.ActorTagCompositeQuery
+    AllowedTypes: unreal.WrappedArray[Any]
     bUseAllowedTypes: bool
+    DisallowedTypes: unreal.WrappedArray[Any]
     bUseDisallowedTypes: bool
     AllowedTypesCache: unreal.WrappedArray[unreal.UClass]
     DisallowedTypesCache: unreal.WrappedArray[unreal.UClass]
-
 
 
 class EnvQueryGenerator_Cover(aimodule.EnvQueryGenerator):
@@ -1349,7 +1424,6 @@ class EnvQueryGenerator_Cover(aimodule.EnvQueryGenerator):
     SearchRadius: aimodule.AIDataProviderFloatValue
     SearchCenter: unreal.UClass
     SlotType: CoverSlotData
-
 
 
 class EnvQueryGenerator_DynamicPoints(aimodule.EnvQueryGenerator_ProjectedPoints):
@@ -1369,12 +1443,10 @@ class EnvQueryGenerator_DynamicPoints(aimodule.EnvQueryGenerator_ProjectedPoints
     Center: unreal.UClass
 
 
-
 class EnvQueryGenerator_FindLookAtPoint(aimodule.EnvQueryGenerator):
     LookAtPointType: ELookAtPointType
     SearchRadius: aimodule.AIDataProviderFloatValue
     SearchCenter: unreal.UClass
-
 
 
 class EnvQueryGenerator_FindPerch(aimodule.EnvQueryGenerator):
@@ -1383,10 +1455,10 @@ class EnvQueryGenerator_FindPerch(aimodule.EnvQueryGenerator):
     SearchCenter: unreal.UClass
 
 
-
 class EnvQueryGenerator_SmartAction(aimodule.EnvQueryGenerator):
     CombatActions: aimodule.AIDataProviderBoolValue
     PassiveActions: aimodule.AIDataProviderBoolValue
+    ActorTypes: unreal.WrappedArray[Any]
     ActorTypesCache: unreal.WrappedArray[unreal.UClass]
     ActionNames: gameplay_tags.GameplayTagContainer
     SearchRadius: aimodule.AIDataProviderFloatValue
@@ -1395,10 +1467,8 @@ class EnvQueryGenerator_SmartAction(aimodule.EnvQueryGenerator):
     bUseTerritoryArea: bool
 
 
-
 class EnvQueryGenerator_SmartGrid(aimodule.EnvQueryGenerator_ProjectedPoints):
     SearchSets: unreal.WrappedArray[SmartGridSearchSet]
-
 
 
 class EnvQueryGenerator_Territory(aimodule.EnvQueryGenerator_ProjectedPoints):
@@ -1406,7 +1476,6 @@ class EnvQueryGenerator_Territory(aimodule.EnvQueryGenerator_ProjectedPoints):
     SpaceBetween: aimodule.AIDataProviderFloatValue
     EverywhereRadius: aimodule.AIDataProviderFloatValue
     MovementType: ETerritoryMovementType
-
 
 
 class EnvQueryItemType_SmartAction(aimodule.EnvQueryItemType_VectorBase): ...
@@ -1417,11 +1486,9 @@ class EnvQueryTest_ActorHealth(aimodule.EnvQueryTest):
     bHealthConsumed: bool
 
 
-
 class EnvQueryTest_AITicket(aimodule.EnvQueryTest):
     AITicket: AITicketDataAsset
     Value: aimodule.AIDataProviderFloatValue
-
 
 
 class EnvQueryTest_Angle(aimodule.EnvQueryTest):
@@ -1435,12 +1502,10 @@ class EnvQueryTest_Angle(aimodule.EnvQueryTest):
     bTestPitch: bool
 
 
-
 class EnvQueryTest_ArcTrace(aimodule.EnvQueryTest_Trace):
     ArcSpeed: aimodule.AIDataProviderFloatValue
     ArcAnglePercent: aimodule.AIDataProviderFloatValue
     NumSegments: int
-
 
 
 class EnvQueryTest_AttackerCountAgainstTarget(aimodule.EnvQueryTest): ...
@@ -1450,10 +1515,8 @@ class EnvQueryTest_BlackboardKey(aimodule.EnvQueryTest):
     BlackboardKey: gbx_game_system_core.GbxBlackboardKeySelector
 
 
-
 class EnvQueryTest_Boundary(aimodule.EnvQueryTest):
     Distance: aimodule.AIDataProviderFloatValue
-
 
 
 class EnvQueryTest_CoverCurrent(aimodule.EnvQueryTest): ...
@@ -1464,11 +1527,9 @@ class EnvQueryTest_CoverExposure(aimodule.EnvQueryTest):
     DoExposureTest: aimodule.AIDataProviderBoolValue
 
 
-
 class EnvQueryTest_CoverView(aimodule.EnvQueryTest):
     Context: unreal.UClass
     DoViewTest: aimodule.AIDataProviderBoolValue
-
 
 
 class EnvQueryTest_CurrentTarget(aimodule.EnvQueryTest): ...
@@ -1484,16 +1545,13 @@ class EnvQueryTest_CustomScoringBoost(aimodule.EnvQueryTest):
     AmplificationExtreme: float
 
 
-
 class EnvQueryTest_DirectPath(aimodule.EnvQueryTest):
     Context: unreal.UClass
     CloseEnoughDistance: float
 
 
-
 class EnvQueryTest_GbxPath(aimodule.EnvQueryTest):
     Context: unreal.UClass
-
 
 
 class EnvQueryTest_IsInGodMode(aimodule.EnvQueryTest): ...
@@ -1503,17 +1561,14 @@ class EnvQueryTest_MyMasterIsAttackingTarget(aimodule.EnvQueryTest):
     DecayRate: float
 
 
-
 class EnvQueryTest_PetModifier(aimodule.EnvQueryTest):
     PetTag: gameplay_tags.GameplayTag
     BossTag: gameplay_tags.GameplayTag
 
 
-
 class EnvQueryTest_PetOwnerDistance(aimodule.EnvQueryTest):
     MaxDistanceToOwner: aimodule.AIDataProviderFloatValue
     AnyDistanceTag: gameplay_tags.GameplayTag
-
 
 
 class EnvQueryTest_StandardCover(aimodule.EnvQueryTest):
@@ -1536,20 +1591,16 @@ class EnvQueryTest_StandardCover(aimodule.EnvQueryTest):
     ScoringWeight_CoverExposure: float
 
 
-
 class EnvQueryTest_TacticalCover(aimodule.EnvQueryTest):
     Context: unreal.UClass
-
 
 
 class EnvQueryTest_TargetIsAttackingMyMaster(aimodule.EnvQueryTest):
     DecayRate: float
 
 
-
 class EnvQueryTest_TargetIsCloseToMyMaster(aimodule.EnvQueryTest):
     DistanceThreshold: gbx_game_system_core.GbxParam
-
 
 
 class EnvQueryTest_TargetIsExposed(aimodule.EnvQueryTest): ...
@@ -1557,7 +1608,6 @@ class EnvQueryTest_TargetIsExposed(aimodule.EnvQueryTest): ...
 
 class EnvQueryTest_TargetIsHurtingMe(aimodule.EnvQueryTest):
     DecayRate: float
-
 
 
 class EnvQueryTest_TargetIsThreat(aimodule.EnvQueryTest): ...
@@ -1569,16 +1619,13 @@ class EnvQueryTest_TargetSensed(aimodule.EnvQueryTest):
     TimeToCareAboutStimuli: float
 
 
-
 class EnvQueryTest_UberTrace(aimodule.EnvQueryTest_Trace):
     TracesToPerform: unreal.WrappedArray[ExtendedTraceInfo]
     bWantsTracesToHit: bool
 
 
-
 class EnvQueryTest_WithinTerritory(aimodule.EnvQueryTest):
     TerritoryArea: gbx_game_system_core.ETerritoryType
-
 
 
 class AIResource_ScriptedAction(gameplay_tasks.GameplayTaskResource): ...
@@ -1588,50 +1635,100 @@ class GameplayTask_ScriptedAction(gameplay_tasks.GameplayTask):
     Controllers: unreal.WrappedArray[GbxAIController]
     AbortingControllers: unreal.WrappedArray[GbxAIController]
     ScriptedAIAction: AIAction
+
     def OnActorSpawned(self, Spawner: gbx_spawn.Spawner, Actor: engine.Actor): ...
 
 
 class GameplayTask_ScriptedCover(GameplayTask_ScriptedAction):
+    OnArrived: Any
     CoverSlot: CoverSlotComponent
     CoverUser: CoverUserComponent
+
     def TaskScriptedCoverDelegate__DelegateSignature(self): ...
     def EndScriptedCover(self, User: engine.Actor): ...
-    def BeginScriptedCover(self, User: engine.Actor, Cover: Cover, ReturnValue: GameplayTask_ScriptedCover) -> GameplayTask_ScriptedCover: ...
+    def BeginScriptedCover(
+        self, User: engine.Actor, Cover: Cover
+    ) -> GameplayTask_ScriptedCover: ...
 
 
 class GameplayTask_ScriptedFollow(GameplayTask_ScriptedAction):
+    OnStopped: Any
     ActorToFollow: engine.Actor
     StanceProvider: gbx_game_system_core.StanceDataProvider
+
     def TaskScriptedMoveDelegate__DelegateSignature(self): ...
-    def BeginScriptedFollow(self, Follower: engine.Actor, ActorToFollow: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedFollow) -> GameplayTask_ScriptedFollow: ...
+    def BeginScriptedFollow(
+        self,
+        Follower: engine.Actor,
+        ActorToFollow: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedFollow: ...
 
 
 class GameplayTask_ScriptedLand(GameplayTask_ScriptedAction):
+    OnAborted: Any
+    OnCompleted: Any
 
     def TaskScriptedLandDelegate__DelegateSignature(self): ...
-    def BeginScriptedLand(self, Lander: engine.Actor, ReturnValue: GameplayTask_ScriptedLand) -> GameplayTask_ScriptedLand: ...
+    def BeginScriptedLand(self, Lander: engine.Actor) -> GameplayTask_ScriptedLand: ...
 
 
 class GameplayTask_ScriptedLead(GameplayTask_ScriptedAction):
+    OnAborted: Any
+    OnCompleted: Any
     DestNode: engine.Actor
     ActorToLead: engine.Actor
     StanceProvider: gbx_game_system_core.StanceDataProvider
+
     def TaskScriptedLeadDelegate__DelegateSignature(self): ...
-    def BeginScriptedLead(self, Leader: engine.Actor, DestAINode: engine.Actor, ActorToLead: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedLead) -> GameplayTask_ScriptedLead: ...
+    def BeginScriptedLead(
+        self,
+        Leader: engine.Actor,
+        DestAINode: engine.Actor,
+        ActorToLead: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedLead: ...
 
 
 class GameplayTask_ScriptedMove(GameplayTask_ScriptedAction):
+    OnAborted: Any
+    OnCompleted: Any
     AINode: engine.Actor
     StanceProvider: gbx_game_system_core.StanceDataProvider
     LookAtActor: engine.Actor
     bTeleportOnFail: bool
+
     def TaskScriptedMoveDelegate__DelegateSignature(self): ...
-    def BeginScriptedMoveActor(self, Target: aimodule.AIController, StartNode: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider, OptionalLookAtActor: engine.Actor, ReturnValue: GameplayTask_ScriptedMove) -> GameplayTask_ScriptedMove: ...
-    def BeginScriptedMove2(self, User: engine.Actor, StartAINode: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider, OptionalLookAtActor: engine.Actor, ReturnValue: GameplayTask_ScriptedMove) -> GameplayTask_ScriptedMove: ...
-    def BeginScriptedMove(self, Target: engine.Actor, StartNode: engine.Actor, SuccessRule: EScriptedActionRule, FailRule: EScriptedActionRule, bAddSpawned: bool, OptionalStance: gbx_game_system_core.StanceDataProvider, OptionalLookAtActor: engine.Actor, bTeleportOnFail: bool, ReturnValue: GameplayTask_ScriptedMove) -> GameplayTask_ScriptedMove: ...
+    def BeginScriptedMoveActor(
+        self,
+        Target: aimodule.AIController,
+        StartNode: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+        OptionalLookAtActor: engine.Actor,
+    ) -> GameplayTask_ScriptedMove: ...
+    def BeginScriptedMove2(
+        self,
+        User: engine.Actor,
+        StartAINode: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+        OptionalLookAtActor: engine.Actor,
+    ) -> GameplayTask_ScriptedMove: ...
+    def BeginScriptedMove(
+        self,
+        Target: engine.Actor,
+        StartNode: engine.Actor,
+        SuccessRule: EScriptedActionRule,
+        FailRule: EScriptedActionRule,
+        bAddSpawned: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+        OptionalLookAtActor: engine.Actor,
+        bTeleportOnFail: bool,
+    ) -> GameplayTask_ScriptedMove: ...
 
 
 class GameplayTask_ScriptedMoveSpline(GameplayTask_ScriptedAction):
+    OnAborted: Any
+    OnCompleted: Any
     Target: engine.Actor
     SplineComponent: engine.SplineComponent
     StanceProvider: gbx_game_system_core.StanceDataProvider
@@ -1639,42 +1736,125 @@ class GameplayTask_ScriptedMoveSpline(GameplayTask_ScriptedAction):
     OptionalAIAction: unreal.UClass
     DropOffSpawner: GbxSpawner
     NextSpline: engine.Actor
+
     def TaskScriptedMoveDelegate__DelegateSignature(self, Targeted: engine.Actor): ...
-    def BeginScriptedMoveOnSpline(self, Target: engine.Actor, StartSpline: engine.Actor, SuccessRule: EScriptedActionRule, FailRule: EScriptedActionRule, Offset: float, bReverse: bool, bAddSpawned: bool, OptionalStance: gbx_game_system_core.StanceDataProvider, OptionalLookAtActor: engine.Actor, OptionalAIAction: unreal.UClass, ReturnValue: GameplayTask_ScriptedMoveSpline) -> GameplayTask_ScriptedMoveSpline: ...
+    def BeginScriptedMoveOnSpline(
+        self,
+        Target: engine.Actor,
+        StartSpline: engine.Actor,
+        SuccessRule: EScriptedActionRule,
+        FailRule: EScriptedActionRule,
+        Offset: float,
+        bReverse: bool,
+        bAddSpawned: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+        OptionalLookAtActor: engine.Actor,
+        OptionalAIAction: unreal.UClass,
+    ) -> GameplayTask_ScriptedMoveSpline: ...
 
 
 class AIAction_MoveToLevelSequence(AIAction_GoToPoint): ...
 
 
 class GameplayTask_ScriptedMoveToLevelSequence(GameplayTask_ScriptedAction):
+    OnActorArrived: Any
+    OnActorFailedToArrive: Any
+    OnAllActorsArrived: Any
+    OnCompleted: Any
+    OnFailed: Any
     LevelSequenceActor: gbx_level_sequence.GbxLevelSequenceActor
     StanceProvider: gbx_game_system_core.StanceDataProvider
+
     def TaskScriptedMoveDelegate__DelegateSignature(self): ...
     def TaskScriptedMoveActorsDelegate__DelegateSignature(self): ...
     def TaskScriptedMoveActorDelegate__DelegateSignature(self, Actor: engine.Actor): ...
     def OnLevelSequenceStopped(self): ...
     def OnLevelSequenceFinished(self): ...
-    def BeginScriptedMoveToLevelSequenceMulti(self, Targets: unreal.WrappedArray[engine.Actor], LevelSequenceActor: gbx_level_sequence.GbxLevelSequenceActor, bStartSequence: bool, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedMoveToLevelSequence) -> GameplayTask_ScriptedMoveToLevelSequence: ...
-    def BeginScriptedMoveToLevelSequence(self, Target: engine.Actor, LevelSequenceActor: gbx_level_sequence.GbxLevelSequenceActor, bStartSequence: bool, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedMoveToLevelSequence) -> GameplayTask_ScriptedMoveToLevelSequence: ...
+    def BeginScriptedMoveToLevelSequenceMulti(
+        self,
+        Targets: unreal.WrappedArray[engine.Actor],
+        LevelSequenceActor: gbx_level_sequence.GbxLevelSequenceActor,
+        bStartSequence: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedMoveToLevelSequence: ...
+    def BeginScriptedMoveToLevelSequence(
+        self,
+        Target: engine.Actor,
+        LevelSequenceActor: gbx_level_sequence.GbxLevelSequenceActor,
+        bStartSequence: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedMoveToLevelSequence: ...
 
 
 class GameplayTask_ScriptedRoute(GameplayTask_ScriptedAction):
+    OnAborted: Any
+    OnCompleted: Any
     AINode: engine.Actor
     StanceProvider: gbx_game_system_core.StanceDataProvider
+
     def TaskScriptedMoveDelegate__DelegateSignature(self): ...
-    def BeginScriptedRoute2(self, Target: engine.Actor, FirstAINode: engine.Actor, SuccessRule: EScriptedActionRule, FailRule: EScriptedActionRule, bAddSpawned: bool, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedRoute) -> GameplayTask_ScriptedRoute: ...
-    def BeginScriptedRoute(self, User: engine.Actor, FirstAINode: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider, ReturnValue: GameplayTask_ScriptedRoute) -> GameplayTask_ScriptedRoute: ...
+    def BeginScriptedRoute2(
+        self,
+        Target: engine.Actor,
+        FirstAINode: engine.Actor,
+        SuccessRule: EScriptedActionRule,
+        FailRule: EScriptedActionRule,
+        bAddSpawned: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedRoute: ...
+    def BeginScriptedRoute(
+        self,
+        User: engine.Actor,
+        FirstAINode: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ) -> GameplayTask_ScriptedRoute: ...
 
 
 class GameplayTask_SmartAction(GameplayTask_ScriptedAction):
+    OnReserve: Any
+    OnUnreserve: Any
+    OnBegin: Any
+    OnInterrupt: Any
+    OnSuccess: Any
     Action: SmartActionInfoContext
-    def UnreserveCallback(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag): ...
-    def SuccessCallback(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag): ...
-    def ReserveCallback(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag): ...
-    def InterruptCallback(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag): ...
+
+    def UnreserveCallback(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ): ...
+    def SuccessCallback(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ): ...
+    def ReserveCallback(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ): ...
+    def InterruptCallback(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ): ...
     def EndSmartAction(self, User: engine.Actor): ...
-    def BeginSmartAction(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag, ReturnValue: GameplayTask_SmartAction) -> GameplayTask_SmartAction: ...
-    def BeginCallback(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag): ...
+    def BeginSmartAction(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ) -> GameplayTask_SmartAction: ...
+    def BeginCallback(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+    ): ...
     def AITaskEvent__DelegateSignature(self): ...
 
 
@@ -1684,14 +1864,14 @@ class GbxAction_CoverHitReaction(gbx_game_system_core.GbxAction_SimpleAnim):
     BlendOutTime: float
 
 
-
 class GbxAction_CoverTransition(gbx_game_system_core.GbxAction): ...
 
 
 class GbxAction_Navigation(gbx_game_system_core.GbxAction_SimpleAnim):
     bMaintainRootVelocity: bool
-    def K2_GetExitLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
-    def K2_GetEntryLocation(self, ReturnValue: core_uobject.Vector) -> core_uobject.Vector: ...
+
+    def K2_GetExitLocation(self) -> core_uobject.Vector: ...
+    def K2_GetEntryLocation(self) -> core_uobject.Vector: ...
 
 
 class GbxAction_NavAnim(GbxAction_Navigation):
@@ -1706,7 +1886,6 @@ class GbxAction_NavAnim(GbxAction_Navigation):
     StretchBonesSettings: gbx_game_system_core.StretchBonesSettings
     NavAnim: engine.AnimSequenceBase
     NavAnimation: gbx_game_system_core.AnimActionDef
-
 
 
 class GbxAction_NavJump(GbxAction_Navigation):
@@ -1735,13 +1914,13 @@ class GbxAction_NavJump(GbxAction_Navigation):
     JumpEnterAnim: gbx_game_system_core.AnimActionDef
     JumpExitAnim: gbx_game_system_core.AnimActionDef
     JumpIdleAnim: gbx_game_system_core.AnimActionDef
+
     def OnIdle(self, Actor: engine.Actor): ...
     def OnExit(self, Actor: engine.Actor): ...
 
 
 class GbxAction_NavHomingJump(GbxAction_NavJump):
     MaxHomingDistance: float
-
 
 
 class GbxAction_NavLerp(GbxAction_Navigation):
@@ -1755,21 +1934,40 @@ class GbxAction_NavLerp(GbxAction_Navigation):
     bSpecifyLerpTime: bool
     LerpTime: float
     bVisible: bool
+
     def OnAlmostDone(self, Actor: engine.Actor): ...
 
 
 class GbxAIBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
     def SetPerceivableToAllAI(self, Actor: engine.Actor, bPerceivable: bool): ...
-    def SetAIPathFindingData(self, InActor: engine.Actor, PathFindingData: gbx_nav.HavokPathFindingData): ...
-    def SetAINavAreaData(self, InActor: engine.Actor, NavAreaData: gbx_nav.GbxNavAreaData): ...
+    def SetAIPathFindingData(
+        self, InActor: engine.Actor, PathFindingData: gbx_nav.HavokPathFindingData
+    ): ...
+    def SetAINavAreaData(
+        self, InActor: engine.Actor, NavAreaData: gbx_nav.GbxNavAreaData
+    ): ...
     def ResetTeamForAllAIChildren(self, Actor: engine.Actor): ...
-    def IsActorThreatened(self, InActor: engine.Actor, ReturnValue: bool) -> bool: ...
-    def GetValueAsActorAndLocation(self, Blackboard: aimodule.BlackboardComponent, Key: aimodule.BlackboardKeySelector, Actor: engine.Actor, Location: core_uobject.Vector, ReturnValue: bool) -> bool: ...
-    def GetBlackboardValueAsActorAndLocation(self, BTNode: aimodule.BTNode, Key: aimodule.BlackboardKeySelector, Actor: engine.Actor, Location: core_uobject.Vector, ReturnValue: bool) -> bool: ...
+    def IsActorThreatened(self, InActor: engine.Actor) -> bool: ...
+    def GetValueAsActorAndLocation(
+        self,
+        Blackboard: aimodule.BlackboardComponent,
+        Key: aimodule.BlackboardKeySelector,
+        Actor: engine.Actor,
+        Location: core_uobject.Vector,
+    ) -> bool: ...
+    def GetBlackboardValueAsActorAndLocation(
+        self,
+        BTNode: aimodule.BTNode,
+        Key: aimodule.BlackboardKeySelector,
+        Actor: engine.Actor,
+        Location: core_uobject.Vector,
+    ) -> bool: ...
     def AIScriptedUseWeapon(self, Actor: engine.Actor, bUseWeapon: bool): ...
     def AIScriptedAction(self, Actor: engine.Actor, Action: unreal.UClass): ...
-    def AIIsWithinTerritory(self, AIActor: engine.Actor, Zone: gbx_game_system_core.ETerritoryType, ReturnValue: bool) -> bool: ...
+    def AIIsWithinTerritory(
+        self, AIActor: engine.Actor, Zone: gbx_game_system_core.ETerritoryType
+    ) -> bool: ...
 
 
 class GbxAIController(aimodule.AIController):
@@ -1788,36 +1986,53 @@ class GbxAIController(aimodule.AIController):
     WeaponUserComponents: unreal.WrappedArray[AIWeaponUserComponent]
     GbxActionComponent: gbx_game_system_core.GbxActionComponent
     ChildActors: unreal.WrappedArray[engine.Actor]
+    OnAggro: Any
+    OnDeAggro: Any
     LevelSequencePlayerController: gbx_level_sequence.GbxLevelSequencePlayer
+
     def SetTerritory(self, Territory: gbx_game_system_core.TerritoryComponent): ...
     def SetTeam(self, Team: gbx_game_system_core.Team): ...
     def SetObstacleAvoidanceLock(self, bDisable: bool, Reason: str): ...
     def ResetTerritoryToDefault(self): ...
-    def OnMyWeaponHitSomething(self, HitActor: engine.Actor, HitLocation: core_uobject.Vector): ...
-    def GetWeaponUserComponent(self, ReturnValue: AIWeaponUserComponent) -> AIWeaponUserComponent: ...
-    def GetUseComponent(self, ReturnValue: AIUseComponent) -> AIUseComponent: ...
-    def GetTerritory(self, ReturnValue: gbx_game_system_core.TerritoryComponent) -> gbx_game_system_core.TerritoryComponent: ...
-    def GetTeamComponent(self, ReturnValue: gbx_game_system_core.TeamComponent) -> gbx_game_system_core.TeamComponent: ...
-    def GetTeam(self, ReturnValue: gbx_game_system_core.Team) -> gbx_game_system_core.Team: ...
-    def GetTargetingComponent(self, ReturnValue: gbx_game_system_core.TargetingComponent) -> gbx_game_system_core.TargetingComponent: ...
-    def GetTargetableComponent(self, ReturnValue: gbx_game_system_core.TargetableComponent) -> gbx_game_system_core.TargetableComponent: ...
-    def GetSpawnerComponent(self, ReturnValue: gbx_spawn.SpawnerComponent) -> gbx_spawn.SpawnerComponent: ...
-    def GetSpawner(self, ReturnValue: gbx_spawn.Spawner) -> gbx_spawn.Spawner: ...
-    def GetPerceptionComponent(self, ReturnValue: aimodule.AIPerceptionComponent) -> aimodule.AIPerceptionComponent: ...
-    def GetNumChildActors(self, ReturnValue: int) -> int: ...
-    def GetNavComponent(self, ReturnValue: gbx_nav.GbxNavComponent) -> gbx_nav.GbxNavComponent: ...
-    def GetMovementComponent(self, ReturnValue: gbx_game_system_core.GbxCharacterMovementComponent) -> gbx_game_system_core.GbxCharacterMovementComponent: ...
-    def GetGroupState(self, ReturnValue: AIGroupState) -> AIGroupState: ...
-    def GetGbxCharacter(self, ReturnValue: gbx_game_system_core.GbxCharacter) -> gbx_game_system_core.GbxCharacter: ...
-    def GetGbxActionComponent(self, ReturnValue: gbx_game_system_core.GbxActionComponent) -> gbx_game_system_core.GbxActionComponent: ...
-    def GetChildActors(self, ReturnValue: unreal.WrappedArray[engine.Actor]) -> unreal.WrappedArray[engine.Actor]: ...
-    def GetBlackboardComponent(self, ReturnValue: aimodule.BlackboardComponent) -> aimodule.BlackboardComponent: ...
-    def GetBlackboardAsset(self, ReturnValue: aimodule.BlackboardData) -> aimodule.BlackboardData: ...
-    def GetAIGroupSize(self, ReturnValue: int) -> int: ...
-    def GetAIGroupList(self, AIGroupList: unreal.WrappedArray[engine.Actor], bIncludeSelf: bool, InRadius: float): ...
-    def GetAIActionComponent(self, ReturnValue: AIActionComponent) -> AIActionComponent: ...
+    def OnMyWeaponHitSomething(
+        self, HitActor: engine.Actor, HitLocation: core_uobject.Vector
+    ): ...
+    def GetWeaponUserComponent(self) -> AIWeaponUserComponent: ...
+    def GetUseComponent(self) -> AIUseComponent: ...
+    def GetTerritory(self) -> gbx_game_system_core.TerritoryComponent: ...
+    def GetTeamComponent(self) -> gbx_game_system_core.TeamComponent: ...
+    def GetTeam(self) -> gbx_game_system_core.Team: ...
+    def GetTargetingComponent(self) -> gbx_game_system_core.TargetingComponent: ...
+    def GetTargetableComponent(self) -> gbx_game_system_core.TargetableComponent: ...
+    def GetSpawnerComponent(self) -> gbx_spawn.SpawnerComponent: ...
+    def GetSpawner(self) -> gbx_spawn.Spawner: ...
+    def GetPerceptionComponent(self) -> aimodule.AIPerceptionComponent: ...
+    def GetNumChildActors(self) -> int: ...
+    def GetNavComponent(self) -> gbx_nav.GbxNavComponent: ...
+    def GetMovementComponent(
+        self,
+    ) -> gbx_game_system_core.GbxCharacterMovementComponent: ...
+    def GetGroupState(self) -> AIGroupState: ...
+    def GetGbxCharacter(self) -> gbx_game_system_core.GbxCharacter: ...
+    def GetGbxActionComponent(self) -> gbx_game_system_core.GbxActionComponent: ...
+    def GetChildActors(self) -> unreal.WrappedArray[engine.Actor]: ...
+    def GetBlackboardComponent(self) -> aimodule.BlackboardComponent: ...
+    def GetBlackboardAsset(self) -> aimodule.BlackboardData: ...
+    def GetAIGroupSize(self) -> int: ...
+    def GetAIGroupList(
+        self,
+        AIGroupList: unreal.WrappedArray[engine.Actor],
+        bIncludeSelf: bool,
+        InRadius: float,
+    ): ...
+    def GetAIActionComponent(self) -> AIActionComponent: ...
     def ChildDestroyed(self, DestroyedActor: engine.Actor): ...
-    def CheckPauseWhileFalling(self, TheCharacter: engine.Character, PrevMovementMode: int, PreviousCustomMode: int): ...
+    def CheckPauseWhileFalling(
+        self,
+        TheCharacter: engine.Character,
+        PrevMovementMode: int,
+        PreviousCustomMode: int,
+    ): ...
     def AddChildActors(self, NewChildren: unreal.WrappedArray[engine.Actor]): ...
     def AddChildActor(self, NewChild: engine.Actor): ...
 
@@ -1830,7 +2045,6 @@ class GbxAISystem(gbx_game_system_core.GbxAISystemBase):
     PlayerAIGroupState: AIGroupState
 
 
-
 class GbxAnimStateManager_Cover(engine.GbxAnimStateManager):
     Type: ECoverUserAnimState
     Style: CoverStyleData
@@ -1840,6 +2054,7 @@ class GbxAnimStateManager_Cover(engine.GbxAnimStateManager):
     GbxCharAnimInstance: gbx_game_system_core.GbxCharacterAnimInstance
     GbxCharMoveComponent: gbx_game_system_core.GbxCharacterMovementComponent
     AnimSequence: engine.AnimSequence
+
     def Owner_PostBeginPlay(self): ...
 
 
@@ -1852,10 +2067,8 @@ class GbxCondition_AI_IsInRange(gbx_runtime.GbxCondition):
     bInvertRange: bool
 
 
-
 class GbxCondition_AI_IsMoving(gbx_runtime.GbxCondition):
     SpeedThreshold: float
-
 
 
 class GbxCondition_AIHasNearbyAllies(gbx_runtime.GbxCondition):
@@ -1864,11 +2077,9 @@ class GbxCondition_AIHasNearbyAllies(gbx_runtime.GbxCondition):
     bUseDistance: bool
 
 
-
 class GbxCondition_BlackboardKey(gbx_runtime.GbxCondition):
     Key: gbx_game_system_core.GbxBlackboardKeySelector
     bInvertResult: bool
-
 
 
 class GbxCondition_CanFidgetNow(gbx_runtime.GbxCondition): ...
@@ -1888,7 +2099,6 @@ class GbxCondition_HasTargetsInRange(gbx_runtime.GbxCondition):
     NumTargets: gbx_game_system_core.GbxParam
 
 
-
 class GbxCondition_IsActorThreatened(gbx_runtime.GbxCondition): ...
 
 
@@ -1906,7 +2116,6 @@ class GbxCondition_IsInStance(gbx_runtime.GbxCondition):
     OptionalSpeedThreshold: float
 
 
-
 class GbxEqsTestingPawn(aimodule.EQSTestingPawn):
     GbxCharacterMovement: gbx_game_system_core.GbxCharacterMovementComponent
     TargetableComponent: gbx_game_system_core.TargetableComponent
@@ -1917,26 +2126,28 @@ class GbxEqsTestingPawn(aimodule.EQSTestingPawn):
     AimHeightFromGround: float
 
 
-
 class SmartObject(engine.Actor):
     SmartObjectComponent: SmartObjectComponent
     GbxActionComponent: gbx_game_system_core.GbxActionComponent
-    def GetSmartObjectComponent(self, ReturnValue: SmartObjectComponent) -> SmartObjectComponent: ...
-    def GetGbxActionComponent(self, ReturnValue: gbx_game_system_core.GbxActionComponent) -> gbx_game_system_core.GbxActionComponent: ...
+
+    def GetSmartObjectComponent(self) -> SmartObjectComponent: ...
+    def GetGbxActionComponent(self) -> gbx_game_system_core.GbxActionComponent: ...
 
 
 class GbxSmartObject(SmartObject): ...
 
 
 class GbxSpawner(gbx_spawn.Spawner):
+    OnThreatened: Any
     GbxSpawnerComponent: GbxSpawnerComponent
     SpawnNodeComponent: SpawnNodeComponent
     BalanceStateComponent: gbx_game_system_core.BalanceStateComponent
     GameplayTasksComponent: gameplay_tasks.GameplayTasksComponent
-    def GetGameplayTasksComponent(self, ReturnValue: gameplay_tasks.GameplayTasksComponent) -> gameplay_tasks.GameplayTasksComponent: ...
-    def GetAINodeComponent(self, ReturnValue: AINodeComponent) -> AINodeComponent: ...
-    def GetAIGroupState(self, ReturnValue: AIGroupState) -> AIGroupState: ...
-    def DEPRECATED_IsThreatened(self, ReturnValue: bool) -> bool: ...
+
+    def GetGameplayTasksComponent(self) -> gameplay_tasks.GameplayTasksComponent: ...
+    def GetAINodeComponent(self) -> AINodeComponent: ...
+    def GetAIGroupState(self) -> AIGroupState: ...
+    def DEPRECATED_IsThreatened(self) -> bool: ...
 
 
 class GbxSpawnerComponent(gbx_spawn.SpawnerComponent):
@@ -1945,15 +2156,18 @@ class GbxSpawnerComponent(gbx_spawn.SpawnerComponent):
     AdditionalGameplayTags: gameplay_tags.GameplayTagContainer
 
 
-
 class GbxSpawnPoint(gbx_spawn.SpawnPoint):
     SpawnNodeComponent: SpawnNodeComponent
-    def HasNavNearSpawnPointFor(self, SpawnPointComp: gbx_spawn.SpawnPointComponent, SpawnOptions: gbx_spawn.SpawnOptionData, ReturnValue: bool) -> bool: ...
+
+    def HasNavNearSpawnPointFor(
+        self,
+        SpawnPointComp: gbx_spawn.SpawnPointComponent,
+        SpawnOptions: gbx_spawn.SpawnOptionData,
+    ) -> bool: ...
 
 
 class LookAtPoint(engine.Actor):
     LookAtPointComponent: LookAtPointComponent
-
 
 
 class LookAtPointComponent(engine.PrimitiveComponent):
@@ -1966,8 +2180,8 @@ class LookAtPointComponent(engine.PrimitiveComponent):
     UsageTimeOverride: gbx_game_system_core.GbxParam
     bUserCooldownTimeOverride: bool
     UserCooldownTimeOverride: gbx_game_system_core.GbxParam
+    CooldownMap: Any
     UserList: unreal.WrappedArray[SmartObjectUseRequest]
-
 
 
 class LookAtPointTag(gbx_runtime.GbxDataAsset):
@@ -1986,10 +2200,8 @@ class LookAtPointTag(gbx_runtime.GbxDataAsset):
     MaxUsers: int
 
 
-
 class Perch(engine.Actor):
     PerchComponent: PerchComponent
-
 
 
 class PerchComponent(engine.PrimitiveComponent):
@@ -2006,7 +2218,7 @@ class PerchComponent(engine.PrimitiveComponent):
     UserCooldownTimeOverride: gbx_game_system_core.GbxParam
     Claimant: SmartObjectUseRequest
     CooldownTime: float
-
+    CooldownMap: Any
 
 
 class PerchTag(gbx_runtime.GbxDataAsset):
@@ -2017,15 +2229,25 @@ class PerchTag(gbx_runtime.GbxDataAsset):
     UserCooldownTime: gbx_game_system_core.GbxParam
 
 
-
 class PerchType(gbx_runtime.GbxDataAsset): ...
 
 
 class ScriptedBehaviorTreeLibrary(engine.BlueprintFunctionLibrary):
 
     def PerformScriptedAbort(self, Target: engine.Actor, bStopImmediately: bool): ...
-    def BeginScriptedWait(self, Target: engine.Actor, OptionalStance: gbx_game_system_core.StanceDataProvider): ...
-    def BeginScriptedLook(self, Target: engine.Actor, LookAtActor: engine.Actor, bAimAtActor: bool, bFireWeaponAtActor: bool, OptionalStance: gbx_game_system_core.StanceDataProvider): ...
+    def BeginScriptedWait(
+        self,
+        Target: engine.Actor,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ): ...
+    def BeginScriptedLook(
+        self,
+        Target: engine.Actor,
+        LookAtActor: engine.Actor,
+        bAimAtActor: bool,
+        bFireWeaponAtActor: bool,
+        OptionalStance: gbx_game_system_core.StanceDataProvider,
+    ): ...
 
 
 class SmartObjectAction(gbx_runtime.GbxDataAsset):
@@ -2042,7 +2264,6 @@ class SmartObjectAction(gbx_runtime.GbxDataAsset):
     GlobalUserCooldownTime: gbx_game_system_core.GbxParam
 
 
-
 class AIResource_SmartObject(gameplay_tasks.GameplayTaskResource): ...
 
 
@@ -2051,11 +2272,22 @@ class SmartObjectInterface(core_uobject.Interface): ...
 
 class SmartObjectBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def UseSmartObject(self, User: engine.Actor, SmartObject: engine.Actor, ActionTag: gameplay_tags.GameplayTag, bAbortExisting: bool, bUntilInterrupted: bool, ReturnValue: bool) -> bool: ...
+    def UseSmartObject(
+        self,
+        User: engine.Actor,
+        SmartObject: engine.Actor,
+        ActionTag: gameplay_tags.GameplayTag,
+        bAbortExisting: bool,
+        bUntilInterrupted: bool,
+    ) -> bool: ...
     def AbortSmartObjectUse(self, User: engine.Actor): ...
 
 
 class SmartObjectComponent(engine.ActorComponent):
+    OnActionReserved: Any
+    OnActionUsageBegan: Any
+    OnObjectActionEnded: Any
+    OnActionUsageEnded: Any
     bUseInRoutes: bool
     LookAtRule: ESmartObjectLookAtRule
     LookAtSocket: str
@@ -2066,14 +2298,24 @@ class SmartObjectComponent(engine.ActorComponent):
     LookAtQuery: gbx_game_system_core.EnvQueryParams
     Actions: unreal.WrappedArray[SmartObjectActionState]
     UseSlots: unreal.WrappedArray[AIUseSlotComponent]
+
     def UnreserveEventSignature(self, User: engine.Pawn): ...
     def ToggleActionSet(self, ActionSet: SmartObjectActionSet): ...
     def SuccessEventSignature(self, User: engine.Pawn): ...
     def ReserveEventSignature(self, User: engine.Pawn): ...
-    def OnActionEnded(self, EndState: gbx_game_system_core.EGbxActionEndState, ActionName: gameplay_tags.GameplayTag, User: engine.Controller): ...
+    def OnActionEnded(
+        self,
+        EndState: gbx_game_system_core.EGbxActionEndState,
+        ActionName: gameplay_tags.GameplayTag,
+        User: engine.Controller,
+    ): ...
     def InterruptEventSignature(self, User: engine.Pawn): ...
     def GetAvailableSocketNames(self, Array: unreal.WrappedArray[str]): ...
-    def GetActionUsers(self, ActionTag: gameplay_tags.GameplayTag, OutUsers: unreal.WrappedArray[engine.Pawn]): ...
+    def GetActionUsers(
+        self,
+        ActionTag: gameplay_tags.GameplayTag,
+        OutUsers: unreal.WrappedArray[engine.Pawn],
+    ): ...
     def EnableAllActions(self): ...
     def EnableAction(self, ActionTag: gameplay_tags.GameplayTag): ...
     def DisableAllActions(self): ...
@@ -2091,6 +2333,7 @@ class SmartObjectPreviewComponent(gbx_game_system_core.PreviewComponent):
     bRepeatAction: bool
     ReplayAction: gbx_runtime.GbxTriggerProperty
     ActionComponent: gbx_game_system_core.GbxActionComponent
+
     def OnReplayAction(self): ...
     def OnCycleActor(self, Direction: gbx_game_system_core.ECycleDirection): ...
 
@@ -2100,31 +2343,39 @@ class SmartObjectUser(core_uobject.Interface): ...
 
 class SpawnBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def SetSpawnOptions(self, SpawnerActor: engine.Actor, SpawnOptions: gbx_spawn.SpawnOptionData): ...
-    def GenerateSpawnerByRadius(self, Instigator: engine.Actor, Style: gbx_spawn.SpawnerStyle, Radius: float, MinRequiredAttitude: int, ReturnValue: gbx_spawn.Spawner) -> gbx_spawn.Spawner: ...
-    def GenerateSpawnerByOwningSpawner(self, Instigator: engine.Actor, Style: gbx_spawn.SpawnerStyle, ReturnValue: gbx_spawn.Spawner) -> gbx_spawn.Spawner: ...
+    def SetSpawnOptions(
+        self, SpawnerActor: engine.Actor, SpawnOptions: gbx_spawn.SpawnOptionData
+    ): ...
+    def GenerateSpawnerByRadius(
+        self,
+        Instigator: engine.Actor,
+        Style: gbx_spawn.SpawnerStyle,
+        Radius: float,
+        MinRequiredAttitude: int,
+    ) -> gbx_spawn.Spawner: ...
+    def GenerateSpawnerByOwningSpawner(
+        self, Instigator: engine.Actor, Style: gbx_spawn.SpawnerStyle
+    ) -> gbx_spawn.Spawner: ...
 
 
 class SpawnNodeComponent(AINodeComponent):
     InitialPathAction: EInitialPathAction
 
 
-
 class Territory(engine.Info):
     TerritoryComponent: gbx_game_system_core.TerritoryComponent
-    def GetTerritoryComponent(self, ReturnValue: gbx_game_system_core.TerritoryComponent) -> gbx_game_system_core.TerritoryComponent: ...
+
+    def GetTerritoryComponent(self) -> gbx_game_system_core.TerritoryComponent: ...
 
 
 class AIActionBlueprintContext:
     Controller: GbxAIController
 
 
-
 class SmartActionInfoContext:
     SmartObject: engine.Actor
     UseInfo: SmartActionUseInfo
     ContextLoc: core_uobject.Vector
-
 
 
 class SmartActionUseInfo:
@@ -2136,11 +2387,9 @@ class SmartActionUseInfo:
     bCombatAction: bool
 
 
-
 class AIActionSettings_Plan:
     PlansAlwaysAvailableToMe: unreal.WrappedArray[AIPlanData]
     RoleTags: unreal.WrappedArray[gameplay_tags.GameplayTag]
-
 
 
 class AIActionExecutionSettings:
@@ -2151,11 +2400,9 @@ class AIActionExecutionSettings:
     CheckCanStartPeriod: float
 
 
-
 class AIActionInstance:
     ScriptedGameplayTask: gameplay_tasks.GameplayTask
     Action: AIAction
-
 
 
 class AIAspectExecutionSettings:
@@ -2166,17 +2413,14 @@ class AIAspectExecutionSettings:
     bMustFinish: bool
 
 
-
 class AIAspectSettings_ActorCollision:
     Target: gbx_game_system_core.GbxBlackboardKeySelector
     OnCollision: EAIActionResultDirective
 
 
-
 class AIAspectSettings_AIGroupCondition:
     FullfillmentQuantity: int
     bPartialFullfillment: bool
-
 
 
 class AIAspectSettings_BlackboardKey:
@@ -2188,11 +2432,9 @@ class AIAspectSettings_BlackboardKey:
     bRefreshImmediatelyOnChange: bool
 
 
-
 class AIAspectSettings_Charge:
     ChargeData: gbx_game_system_core.AIChargeData
     Target: gbx_game_system_core.GbxBlackboardKeySelector
-
 
 
 class AIAspectSettings_UseSmartObject:
@@ -2203,7 +2445,6 @@ class AIAspectSettings_UseSmartObject:
     SmartObjectQuery: gbx_game_system_core.EnvQueryParams
     bUseQuery: bool
     QuerySettings: AIAspectSettings_EnvQuery
-
 
 
 class AIAspectSettings_EnvQuery:
@@ -2225,7 +2466,6 @@ class AIAspectSettings_EnvQuery:
     bMigrated: bool
 
 
-
 class AIAspectSettings_Condition:
     CanStartCondition: AIAspectSettings_ConditionData
     SucceedCondition: AIAspectSettings_ConditionData
@@ -2237,12 +2477,10 @@ class AIAspectSettings_Condition:
     bUseCanAbortCondition: bool
 
 
-
 class AIAspectSettings_ConditionData:
     Condition: gbx_game_system_core.GbxParam
     ContextResolver: gbx_game_system_core.AttributeContextResolver
     bInvertCondition: bool
-
 
 
 class AIAspectSettings_Cooldown:
@@ -2256,18 +2494,15 @@ class AIAspectSettings_Cooldown:
     bUseInitialTimer: bool
 
 
-
 class AIAspectSettings_Crouch:
     CanCrouchWhileIdle: gbx_game_system_core.GbxParam
     bUseCanCrouchWhileMoving: bool
     CanCrouchWhileMoving: gbx_game_system_core.GbxParam
 
 
-
 class AIAspectSettings_DropshipSpawn:
     StartAction: unreal.UClass
     StopAction: unreal.UClass
-
 
 
 class AIAspectSettings_FindClosestPlayer:
@@ -2278,13 +2513,11 @@ class AIAspectSettings_FindClosestPlayer:
     bIsInternal: bool
 
 
-
 class AIAspectSettings_FlyToNavMesh:
     GroundSearchDistance: float
     LookAheadDistance: float
     FlySearchDistance: float
     UpdatePeriod: float
-
 
 
 class AIAspectSettings_Follow:
@@ -2301,7 +2534,6 @@ class AIAspectSettings_Follow:
     bContinueWhileClose: bool
 
 
-
 class AIAspectSettings_GbxAction:
     ActionType: unreal.UClass
     bUseActionType: bool
@@ -2315,13 +2547,11 @@ class AIAspectSettings_GbxAction:
     PlayRate: gbx_game_system_core.GbxParam
 
 
-
 class AIAspectSettings_GroupLocation:
     GroupLocationKey: gbx_game_system_core.GbxBlackboardKeySelector
     GroupDistance: gbx_game_system_core.GbxParam
     UpdatePeriod: float
     bUpdateWhileActive: bool
-
 
 
 class AIAspectSettings_IntCompare:
@@ -2333,14 +2563,12 @@ class AIAspectSettings_IntCompare:
     bRefreshImmediatelyOnChange: bool
 
 
-
 class AIAspectSettings_IsInRange:
     Target: gbx_game_system_core.GbxBlackboardKeySelector
     DistanceTest: EIsInRangeAspectDistanceTest
     CanRunRange: AIAspectSettings_IsInRangeData
     AdvancedRanges: AIAspectIsInRangeAdvancedData
     bUseAdvancedRanges: bool
-
 
 
 class AIAspectIsInRangeAdvancedData:
@@ -2352,11 +2580,9 @@ class AIAspectIsInRangeAdvancedData:
     bUseFailRange: bool
 
 
-
 class AIAspectSettings_IsInRangeData:
     Range: gbx_game_system_core.GbxParam
     bInvertRange: bool
-
 
 
 class AIAspectSettings_IsInTerritory:
@@ -2365,12 +2591,10 @@ class AIAspectSettings_IsInTerritory:
     TimeThreshold: float
 
 
-
 class AIAspectSettings_Land:
     GroundSearchDistance: float
     FlySearchDistance: float
     UpdatePeriod: float
-
 
 
 class AIAspectSettings_LeadRoute:
@@ -2386,7 +2610,6 @@ class AIAspectSettings_LeadRoute:
     bAllowBackwards: bool
     bAllowTeleport: bool
     FindNavRadius: float
-
 
 
 class AIAspectSettings_Leap:
@@ -2406,7 +2629,6 @@ class AIAspectSettings_Leap:
     bCanStartWhileFalling: bool
 
 
-
 class AIAspectSettings_Location:
     Target: gbx_game_system_core.GbxBlackboardKeySelector
     TargetChangeTransition: EAIActionResultTransition
@@ -2418,7 +2640,6 @@ class AIAspectSettings_Location:
     bCanMove: bool
 
 
-
 class AIAspectSettings_Move:
     PathUpdateThreshold: float
     bStopWhenInPosition: bool
@@ -2427,12 +2648,10 @@ class AIAspectSettings_Move:
     bRequireDirectPath: bool
 
 
-
 class LookAroundRandomlySettings:
     MinAngleChangeEachIterationDeg: float
     MaxAngleChangeEachIterationDeg: float
     MaxTimeSpentEachScan: float
-
 
 
 class AIAspectSettings_Loop:
@@ -2444,7 +2663,6 @@ class AIAspectSettings_Loop:
     bUseLoopDuration: bool
     bStopImmediately: bool
     bIgnoreFailure: bool
-
 
 
 class AIAspectSettings_MoveSpline:
@@ -2461,7 +2679,6 @@ class AIAspectSettings_MoveSpline:
     Reach: gbx_nav.EGbxNavGoalReach
 
 
-
 class AIAspectSettings_NavFlyOffset:
     CenterKey: gbx_game_system_core.GbxBlackboardKeySelector
     Distance: gbx_game_system_core.GbxParam
@@ -2470,7 +2687,6 @@ class AIAspectSettings_NavFlyOffset:
     bLimitSearchRadius: bool
     UpdatePeriod: float
     bForward: float
-
 
 
 class AIAspectSettings_Navigation:
@@ -2484,7 +2700,6 @@ class AIAspectSettings_Navigation:
     bStopWhenReached: bool
     bCanRunWhenAtGoal: bool
     bUpdateGoalWhileRunning: bool
-
 
 
 class AIAspectSettings_NavigationAdvanced:
@@ -2501,7 +2716,6 @@ class AIAspectSettings_NavigationAdvanced:
     bMoveEvenIfUnreachable: bool
 
 
-
 class AIAspectSettings_Orbit:
     CenterKey: gbx_game_system_core.GbxBlackboardKeySelector
     HeightOffset: gbx_game_system_core.GbxParam
@@ -2513,11 +2727,9 @@ class AIAspectSettings_Orbit:
     bRespectCombatTerritory: bool
 
 
-
 class AIAspectSettings_Plan:
     PlansAlwaysAvailableToMe: unreal.WrappedArray[AIPlanData]
     RoleTags: unreal.WrappedArray[gameplay_tags.GameplayTag]
-
 
 
 class AIAspectSettings_Rotation:
@@ -2535,7 +2747,6 @@ class AIAspectSettings_Rotation:
     bKeepFacingTargetOnStop: bool
 
 
-
 class AIAspectSettings_RotationChannel:
     Target: gbx_game_system_core.GbxBlackboardKeySelector
     TargetOffset: core_uobject.Vector
@@ -2545,7 +2756,6 @@ class AIAspectSettings_RotationChannel:
     bUseMaxRotateAngle: bool
     ConditionalEnable: gbx_game_system_core.GbxParam
     bUseConditionalEnable: bool
-
 
 
 class AIAspectSettings_Route:
@@ -2558,11 +2768,9 @@ class AIAspectSettings_Route:
     bCombatAction: bool
 
 
-
 class AIAspectSettings_Stance:
     Stance: gbx_game_system_core.StanceDataProvider
     bOverrideBlueprint: bool
-
 
 
 class AIAspectSettings_Sweep:
@@ -2573,7 +2781,6 @@ class AIAspectSettings_Sweep:
     SweepAngleInterval: float
     Direction: ESweepDirection
     SearchRadius: float
-
 
 
 class AIAspectSettings_Swoop:
@@ -2587,7 +2794,6 @@ class AIAspectSettings_Swoop:
     SearchRadius: float
     bLimitSearchRadius: bool
     UpdatePeriod: float
-
 
 
 class AIAspectSettings_Teleport:
@@ -2604,7 +2810,6 @@ class AIAspectSettings_Teleport:
     bUpdateGoal: bool
 
 
-
 class AIAspectSettings_Ticket:
     bPriority: bool
     bInterruptible: bool
@@ -2619,7 +2824,6 @@ class AIAspectSettings_Ticket:
     bAcquireTicket: bool
 
 
-
 class AIAspectSettings_TimedCondition:
     Condition: AIAspectSettings_ConditionData
     Timer: gbx_game_system_core.GbxParam
@@ -2627,13 +2831,11 @@ class AIAspectSettings_TimedCondition:
     FalseResult: EAIActionResult
 
 
-
 class AIAspectSettings_TimeLimit:
     SucceedTime: gbx_game_system_core.GbxParam
     FailTime: gbx_game_system_core.GbxParam
     bUseSucceedTime: bool
     bUseFailTime: bool
-
 
 
 class AIAspectSettings_Timer:
@@ -2657,12 +2859,10 @@ class AIAspectSettings_Timer:
     bUseFailTimeLimit: bool
 
 
-
 class AIAspectSettings_UseCover:
     Target: gbx_game_system_core.GbxBlackboardKeySelector
     Cover: gbx_game_system_core.GbxBlackboardKeySelector
     UseParams: CoverUseParams
-
 
 
 class CoverUseParams:
@@ -2673,7 +2873,6 @@ class CoverUseParams:
     IdleTimeOverride: gbx_game_system_core.GbxParam
     bOverrideFireTime: bool
     FireTimeOverride: gbx_game_system_core.GbxParam
-
 
 
 class AIWeaponUseSettings:
@@ -2692,7 +2891,6 @@ class AIWeaponUseSettings:
     MaxWeaponLeadingDistance: float
 
 
-
 class AIAspectSettings_Weapon(AIWeaponUseSettings):
     WeaponSlots: unreal.WrappedArray[gbx_game_system_core.GbxWeaponSlotData]
     WeaponUseModeIndex: gbx_game_system_core.GbxParam
@@ -2700,7 +2898,6 @@ class AIAspectSettings_Weapon(AIWeaponUseSettings):
     CanUseWeaponWhileMoving: gbx_game_system_core.GbxParam
     bUseCanUseWeaponWhileMoving: bool
     bOnlyShootWhenTargetIsKnown: bool
-
 
 
 class AIAspectSettings_ZeroRotation:
@@ -2712,12 +2909,10 @@ class AIAspectSettings_ZeroRotation:
     bUseLook: bool
 
 
-
 class AIAspectSettings_ZeroRotationChannel:
     bZeroPitch: bool
     bZeroYaw: bool
     bZeroRoll: bool
-
 
 
 class CloakRepData:
@@ -2725,17 +2920,14 @@ class CloakRepData:
     bCanPlayActions: bool
 
 
-
 class CloakPrimData:
     bWasHidden: bool
     PrimComp: engine.PrimitiveComponent
 
 
-
 class CloakCondition:
     Condition: gbx_runtime.GbxCondition
     bCloaked: bool
-
 
 
 class AICommunicationManager: ...
@@ -2746,7 +2938,6 @@ class AITicketHandle:
     AIController: GbxAIController
 
 
-
 class AINodeLink:
     Weight: float
     PrevWeight: float
@@ -2754,12 +2945,10 @@ class AINodeLink:
     SmartObjects: unreal.WrappedArray[AINodeSmartObjectData]
 
 
-
 class AINodeSmartObjectData:
     Object: engine.Actor
     Distance: float
     Offset: float
-
 
 
 class PlanRoleRequirements:
@@ -2774,11 +2963,10 @@ class PlanRoleRequirements:
     MemberReplacementStrategy: EPlanMemberReplacement
 
 
-
 class AIPlanManager:
     AvailablePlans: unreal.WrappedArray[AIPlanData]
     ActivePlans: unreal.WrappedArray[PlanState]
-
+    PotentialCandidatesByRole: Any
 
 
 class RoleCandidates: ...
@@ -2808,7 +2996,6 @@ class AITicketUseData:
     Ticket: AITicketDataAsset
 
 
-
 class AITicketManager: ...
 
 
@@ -2820,12 +3007,10 @@ class ActionUseState:
     State: ESmartObjectTaskState
 
 
-
 class ActionCooldownInfo:
     ActorClass: unreal.UClass
     ActionTag: gameplay_tags.GameplayTag
     CooldownTime: float
-
 
 
 class BTRandomEntrySettings:
@@ -2835,11 +3020,9 @@ class BTRandomEntrySettings:
     bUseLoopCountMax: bool
 
 
-
 class BTGbxLoopConditionData:
     Condition: gbx_runtime.GbxCondition
     bInvert: bool
-
 
 
 class CoverFaceDirections:
@@ -2848,13 +3031,11 @@ class CoverFaceDirections:
     HighRight: ECoverFaceDirection
 
 
-
 class CoverLineOfSightData:
     LocalToWorld: core_uobject.Transform
     WorldToLocal: core_uobject.Matrix
     Sections: unreal.WrappedArray[CoverLineOfSightSectionData]
     Params: CoverLineOfSightParams
-
 
 
 class CoverLineOfSightParams:
@@ -2868,15 +3049,12 @@ class CoverLineOfSightParams:
     RotationOffset: core_uobject.Rotator
 
 
-
 class CoverLineOfSightSectionData:
     Blocks: unreal.WrappedArray[CoverLineOfSightBlockData]
 
 
-
 class CoverLineOfSightBlockData:
     Distance: float
-
 
 
 class CoverAdjustParams:
@@ -2900,12 +3078,10 @@ class CoverAdjustParams:
     BlockTestAngleThreshold: int
 
 
-
 class CoverSlotViewFailData:
     View: CoverViewData
     FailReason: ECoverAdjustFailReason
     FailDescription: str
-
 
 
 class CoverSlotViewData:
@@ -2913,12 +3089,10 @@ class CoverSlotViewData:
     LosData: CoverLineOfSightData
 
 
-
 class CoverTransitionData:
     DataTable: engine.DataTable
     AnimSet: engine.GbxAnimSet
     Filters: CoverTransitionFilters
-
 
 
 class CoverTransitionFilters:
@@ -2929,11 +3103,9 @@ class CoverTransitionFilters:
     Stances: unreal.WrappedArray[CoverTransitionStanceFilter]
 
 
-
 class CoverTransitionStanceFilter:
     Filter: str
     Stance: gbx_game_system_core.StanceDataProvider
-
 
 
 class CoverTransitionTableRow(gbx_game_system_core.GbxAnimTableRow):
@@ -2952,7 +3124,6 @@ class CoverTransitionTableRow(gbx_game_system_core.GbxAnimTableRow):
     AutoFillDistance: gbx_runtime.NumericRange
 
 
-
 class CoverTransitionInput: ...
 
 
@@ -2964,13 +3135,11 @@ class CoverClientData:
     bFlanked: bool
 
 
-
 class CoverAction:
     Slot: CoverSlotComponent
     Style: CoverStyleData
     Target: engine.Actor
     Params: CoverUseParams
-
 
 
 class CoverStyleUserData:
@@ -2984,7 +3153,6 @@ class CoverStyleUserData:
     ForceUseCondition: gbx_runtime.GbxCondition
 
 
-
 class CoverWalk: ...
 
 
@@ -2993,7 +3161,6 @@ class EQSDynamicPointRange:
     MaxPoints: int
     IdealSpacing: float
     MinSpacing: float
-
 
 
 class SmartGridSearchSet:
@@ -3010,7 +3177,6 @@ class SmartGridSearchSet:
     PointSeparationDistanceDenseSpots: float
     RadiusApplyDenserSeparation: float
     DenseSpotProvider: unreal.UClass
-
 
 
 class ExtendedTraceInfo:
@@ -3031,14 +3197,12 @@ class ExtendedTraceInfo:
     FailTestIfTrue: gbx_game_system_core.GbxParam
 
 
-
 class ActionState_CoverHitReaction(gbx_game_system_core.ActionState_SimpleAnim): ...
 
 
 class CoverHitReactionItem:
     Anims: gbx_game_system_core.AnimMeshList
     Styles: unreal.WrappedArray[CoverStyleData]
-
 
 
 class ActionState_CoverTransition(gbx_game_system_core.ActionState_Base): ...
@@ -3062,7 +3226,6 @@ class ReplicatedJumpParams:
     TargetVel: core_uobject.Vector
 
 
-
 class ActionState_NavLerp(ActionState_Navigation): ...
 
 
@@ -3073,7 +3236,7 @@ class SmartObjectActionState:
     DebugColor: core_uobject.Color
     CooldownTime: float
     Users: unreal.WrappedArray[SmartActionUser]
-
+    CooldownMap: Any
 
 
 class SmartActionUser:
@@ -3082,11 +3245,9 @@ class SmartActionUser:
     State: ESmartObjectTaskState
 
 
-
 class RouteSection:
     Start: engine.Actor
     End: engine.Actor
-
 
 
 class SmartObjectPreviewState(gbx_game_system_core.PreviewState):
@@ -3094,11 +3255,9 @@ class SmartObjectPreviewState(gbx_game_system_core.PreviewState):
     PreviewFactories: unreal.WrappedArray[gbx_spawn.SpawnFactory]
 
 
-
 class SmartAction:
     SmartObject: engine.Actor
     ActionTag: gameplay_tags.GameplayTag
-
 
 
 class SmartObjectUseRequest: ...
@@ -3106,7 +3265,6 @@ class SmartObjectUseRequest: ...
 
 class SmartObjectActionSet:
     Actions: gameplay_tags.GameplayTagContainer
-
 
 
 class Default__AIActionBlueprintGeneratedClass: ...

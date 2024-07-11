@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -13,7 +13,6 @@ from . import gbx_level_sequence
 from . import oak_game
 from . import gbx_ui
 from . import gbx_inventory
-
 
 
 class CSAction(unreal.UObject): ...
@@ -38,9 +37,10 @@ class CSConsole(oak_game.AdvancedInteractiveObject):
     CSMenuData: gbx_ui.GbxMenuData
 
 
-
 class CSConsoleProxy(oak_game.AdvancedInteractiveObjectProxy):
     CurrentOpponent: str
+    CSMenuData: Any
+
     def OnUnderParScoreReached(self): ...
     def OnSumbitPuzzleSolution(self, bIsOptimal: bool): ...
     def OnQuitCitizenScienceArcade(self): ...
@@ -53,7 +53,6 @@ class CSConsoleProxy(oak_game.AdvancedInteractiveObjectProxy):
 
 class CSLevelData(gbx_runtime.GbxDataAsset):
     LevelInfos: unreal.WrappedArray[CSLevelInfo]
-
 
 
 class CSPuzzleFeedbackManager(unreal.UObject):
@@ -80,16 +79,13 @@ class CSPuzzleFeedbackManager(unreal.UObject):
     TweeningTiles: unreal.WrappedArray[GFxCSPuzzleTile]
 
 
-
 class CSPuzzleIntroManager(unreal.UObject):
     Settings: CSPuzzleIntroSettings
-
 
 
 class CSPuzzleSession(unreal.UObject):
     PuzzleActions: unreal.WrappedArray[CSAction]
     TutorialPuzzle: TutorialPuzzle
-
 
 
 class CSTutorialBPLib(engine.BlueprintFunctionLibrary):
@@ -102,13 +98,19 @@ class CSTutorialBPLib(engine.BlueprintFunctionLibrary):
     def HighlightCSTutorialElement(self, TutorialElement: ECSTutorialElement): ...
     def HideCSTutorialTooltip(self, Tooltip: str): ...
     def HideCSTutorialElement(self, TutorialElement: ECSTutorialElement): ...
-    def CSWaitForScore(self, World: engine.World, ScoreCondition: ECSScoreCondition, LatentInfo: engine.LatentActionInfo): ...
+    def CSWaitForScore(
+        self,
+        World: engine.World,
+        ScoreCondition: ECSScoreCondition,
+        LatentInfo: engine.LatentActionInfo,
+    ): ...
     def BlockCSPuzzleIntro(self): ...
     def BlockCSPuzzleInputs(self): ...
 
 
 class GFxCSButton(gbx_ui.GbxGFxListCell):
     HintText: gbx_ui.GbxTextField
+
     def OnInputDeviceChanged(self, NewInputDevice: gbx_ui.EGbxMenuInputDevice): ...
 
 
@@ -121,10 +123,8 @@ class GFxCSBoosterItem(GFxCSButton):
     BoosterTimer: gbx_ui.GbxTextField
 
 
-
 class GFxCSSubMenu(gbx_ui.GbxGFxMenuSwitcherSubmenu):
     Buttons: unreal.WrappedArray[GFxCSButton]
-
 
 
 class GFxCSBoosterShopMenu(GFxCSSubMenu):
@@ -134,9 +134,17 @@ class GFxCSBoosterShopMenu(GFxCSSubMenu):
     BoosterData: oak_game.BoosterData
     BoosterList: gbx_ui.GbxGFxGridScrollingList
     ClickedBoosterItem: GFxCSBoosterItem
+
     def OnCSBucksAmountChanged(self, NewAmount: int): ...
-    def OnConfirmPurchase(self, SourceDialog: oak_game.GbxGFxDialogBox, ChoiceNameId: str, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnBoosterItemClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+    def OnConfirmPurchase(
+        self,
+        SourceDialog: oak_game.GbxGFxDialogBox,
+        ChoiceNameId: str,
+        InputInfo: gbx_ui.GbxMenuInputEvent,
+    ): ...
+    def OnBoosterItemClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
 
 
 class GFxCSHelpMenu(gbx_ui.GbxGFxMenu):
@@ -146,7 +154,10 @@ class GFxCSHelpMenu(gbx_ui.GbxGFxMenu):
     HelpContainer: gbx_ui.GbxGFxObject
     ControlsContainer: gbx_ui.GbxGFxObject
     CloseButton: GFxCSButton
-    def OnCloseClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnCloseClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
 
 
 class GFxCSHUD(gbx_ui.GbxGFxMenuSwitcher):
@@ -160,9 +171,14 @@ class GFxCSHUD(gbx_ui.GbxGFxMenuSwitcher):
     CSBucksObject: gbx_ui.GbxGFxObject
     PlayerIdPanel: gbx_ui.GbxGFxObject
     PlayerIdText: gbx_ui.GbxTextField
-    def OnHelpClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnHelpClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
     def OnCSBucksAmountChanged(self, NewAmount: int): ...
-    def OnBackClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+    def OnBackClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
 
 
 class GFxCSLevelButton(GFxCSButton):
@@ -177,7 +193,6 @@ class GFxCSLevelButton(GFxCSButton):
     RewardPicture: gbx_ui.GbxGFxObject
 
 
-
 class GFxCSLevelList(gbx_ui.GbxGFxGridScrollingList): ...
 
 
@@ -185,7 +200,10 @@ class GFxCSLevelSelectorMenu(GFxCSSubMenu):
     LevelData: CSLevelData
     DelayBeforeLoadingPuzzleMenu: float
     LevelList: GFxCSLevelList
-    def OnLevelItemClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnLevelItemClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
 
 
 class GFxCSMainMenu(GFxCSSubMenu):
@@ -197,10 +215,22 @@ class GFxCSMainMenu(GFxCSSubMenu):
     DidYouKnowTitle: gbx_ui.GbxTextField
     DidYouKnowText: gbx_ui.GbxTextField
     SparkAuthenticatingDialog: oak_game.GbxGFxDialogBox
-    def OnWhatsThisClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnPlayClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnErrorDialogClicked(self, SourceDialog: oak_game.GbxGFxDialogBox, ChoiceNameId: str, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnBuyBoosterClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnWhatsThisClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnPlayClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnErrorDialogClicked(
+        self,
+        SourceDialog: oak_game.GbxGFxDialogBox,
+        ChoiceNameId: str,
+        InputInfo: gbx_ui.GbxMenuInputEvent,
+    ): ...
+    def OnBuyBoosterClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
 
 
 class GFxCSProgressBar(gbx_ui.GbxGFxObject):
@@ -208,12 +238,10 @@ class GFxCSProgressBar(gbx_ui.GbxGFxObject):
     Marker: gbx_ui.GbxGFxObject
 
 
-
 class GFxCSPuzzle(gbx_ui.GbxGFxObject):
     PuzzleGrid: GFxCSPuzzleGrid
     PuzzleGuide: GFxCSPuzzleGuide
     TokenPool: GFxCSTokenPool
-
 
 
 class GFxCSPuzzleGrid(gbx_ui.GbxGFxObject):
@@ -223,13 +251,12 @@ class GFxCSPuzzleGrid(gbx_ui.GbxGFxObject):
     LooseToken: GFxCSTokenTile
 
 
-
 class GFxCSPuzzleGuide(gbx_ui.GbxGFxObject):
     GuideTiles: unreal.WrappedArray[GFxCSTileArray]
 
 
-
 class GFxCSPuzzleMenu(GFxCSSubMenu):
+    OnQuit: Any
     RequestingPuzzleDialog: oak_game.GbxGFxDialogBox
     PuzzleFeedbackManager: CSPuzzleFeedbackManager
     PuzzleIntroManager: CSPuzzleIntroManager
@@ -270,11 +297,31 @@ class GFxCSPuzzleMenu(GFxCSSubMenu):
     NumTokensContainer: gbx_ui.GbxGFxObject
     NumTokensText: gbx_ui.GbxTextField
     NumTotalTokensText: gbx_ui.GbxTextField
-    def OnSubmitClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnQuitConfirmed(self, SourceDialog: oak_game.GbxGFxDialogBox, ChoiceNameId: str, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnQuickPassClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnErrorDialogClicked(self, SourceDialog: oak_game.GbxGFxDialogBox, ChoiceNameId: str, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnConfirmQuickPass(self, SourceDialog: oak_game.GbxGFxDialogBox, ChoiceNameId: str, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnSubmitClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnQuitConfirmed(
+        self,
+        SourceDialog: oak_game.GbxGFxDialogBox,
+        ChoiceNameId: str,
+        InputInfo: gbx_ui.GbxMenuInputEvent,
+    ): ...
+    def OnQuickPassClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnErrorDialogClicked(
+        self,
+        SourceDialog: oak_game.GbxGFxDialogBox,
+        ChoiceNameId: str,
+        InputInfo: gbx_ui.GbxMenuInputEvent,
+    ): ...
+    def OnConfirmQuickPass(
+        self,
+        SourceDialog: oak_game.GbxGFxDialogBox,
+        ChoiceNameId: str,
+        InputInfo: gbx_ui.GbxMenuInputEvent,
+    ): ...
     def GoToRewardScreenMenu(self): ...
     def GoToMainMenu(self): ...
     def extTokenTileTurnedOn(self): ...
@@ -285,7 +332,6 @@ class GFxCSPuzzleTile(gbx_ui.GbxGFxObject):
     AnimObject: gbx_ui.GbxGFxObject
     FocusedFeedback: gbx_ui.GbxGFxObject
     PlayerIds: unreal.WrappedArray[gbx_ui.GbxTextField]
-
 
 
 class GFxCSGridTile(GFxCSPuzzleTile): ...
@@ -300,7 +346,6 @@ class GFxCSTokenTile(GFxCSPuzzleTile): ...
 class GFxCSRewardScreenItem(gbx_ui.GbxGFxObject):
     ItemLabel: gbx_ui.GbxTextField
     ItemValue: gbx_ui.GbxTextField
-
 
 
 class GFxCSRewardScreenMenu(GFxCSSubMenu):
@@ -329,9 +374,16 @@ class GFxCSRewardScreenMenu(GFxCSSubMenu):
     TotalPuzzleRewardItem: GFxCSRewardScreenItem
     BonusItems: unreal.WrappedArray[GFxCSRewardScreenItem]
     ButtonList: gbx_ui.GbxGFxGridScrollingList
-    def OnPlayNextCharacterClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnPlayAgainClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
-    def OnMainMenuButtonClicked(self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent): ...
+
+    def OnPlayNextCharacterClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnPlayAgainClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
+    def OnMainMenuButtonClicked(
+        self, PressedButton: gbx_ui.GbxGFxButton, InputInfo: gbx_ui.GbxMenuInputEvent
+    ): ...
     def GoToPuzzleMenu(self): ...
     def GoToMainMenu(self): ...
     def extRefreshNumCompletedPuzzle(self): ...
@@ -361,12 +413,10 @@ class GFxCSSubtitles(gbx_ui.GbxGFxObject):
     CachedSubtitle: str
 
 
-
 class GFxCSTokenPool(gbx_ui.GbxGFxObject):
     TokenPoolMask: gbx_ui.GbxGFxObject
     TokenTiles: unreal.WrappedArray[GFxCSTokenTile]
     GridTiles: unreal.WrappedArray[GFxCSGridTile]
-
 
 
 class GFxCSWhatsThisMenu(GFxCSSubMenu):
@@ -383,6 +433,7 @@ class GFxCSWhatsThisMenu(GFxCSSubMenu):
     ScreenParticleManagerComponent: gbx_game_system_core.ScreenParticleManagerComponent
     MovieSequencePlayer: level_sequence.LevelSequencePlayer
     MovieSequenceActor: level_sequence.LevelSequenceActor
+
     def OnMovieMediaOpenFailed(self, FailedUrl: str): ...
     def OnMovieMediaOpened(self): ...
     def OnMovieEndReached(self): ...
@@ -391,7 +442,8 @@ class GFxCSWhatsThisMenu(GFxCSSubMenu):
 class OakCitizenScienceManager(unreal.UObject):
     CurrentPuzzleSession: CSPuzzleSession
     CSGlobals: CSGlobals
-    def GetCitizenScienceManager(self, ReturnValue: OakCitizenScienceManager) -> OakCitizenScienceManager: ...
+
+    def GetCitizenScienceManager(self) -> OakCitizenScienceManager: ...
 
 
 class TutorialPuzzle(unreal.UObject):
@@ -402,9 +454,10 @@ class TutorialPuzzle(unreal.UObject):
     ScoringPerfectAlignment: float
     ScoringParScore: int
     ScoringBestScore: int
+
     def OnTutorialStart(self): ...
     def OnTutorialEnd(self): ...
-    def GetTutorialWorld(self, ReturnValue: engine.World) -> engine.World: ...
+    def GetTutorialWorld(self) -> engine.World: ...
 
 
 class CSGlobals(gbx_runtime.GbxDataAsset):
@@ -434,7 +487,6 @@ class CSGlobals(gbx_runtime.GbxDataAsset):
     DidYouKnowMessages: unreal.WrappedArray[str]
 
 
-
 class CSLevelInfo:
     NameId: str
     RewardTextureName: str
@@ -449,9 +501,9 @@ class CSLevelInfo:
     HighestScoreBeatenModifier: int
     PuzzleGridHeight: int
     PuzzleGridWidth: int
+    CosmeticRewardItemPoolData: Any
     CosmeticRewardCongratulationMessageTitle: str
     CosmeticRewardCongratulationMessageBody: str
-
 
 
 class CSPuzzleFeedbackSettings:
@@ -465,7 +517,6 @@ class CSPuzzleFeedbackSettings:
     DelayBetweenEachTilePerfectAlignmentAnim: float
 
 
-
 class CSPuzzleIntroSettings:
     DelayBeforeStartingIntro: float
     DelayBetweenEachPuzzleColumn: float
@@ -474,10 +525,8 @@ class CSPuzzleIntroSettings:
     FallingSpeed: float
 
 
-
 class GFxCSTileArray:
     Tiles: unreal.WrappedArray[GFxCSPuzzleTile]
-
 
 
 class DebugPuzzle:
@@ -488,7 +537,6 @@ class DebugPuzzle:
     ScoringPerfectAlignment: float
     ScoringParScore: int
     ScoringBestScore: int
-
 
 
 class EDialogEventEnum(enum.Enum):

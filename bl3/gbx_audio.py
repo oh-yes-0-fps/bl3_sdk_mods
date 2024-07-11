@@ -1,6 +1,6 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
@@ -11,39 +11,54 @@ from . import wwise_audio
 from . import gbx_fluid_simulation
 
 
-
 class ActiveAmbientLocationChooser(unreal.UObject): ...
 
 
 class ActiveAmbientLocationChooser_Blueprint(ActiveAmbientLocationChooser):
 
-    def NominateSoundLocation(self, ActiveAmbientComponent: ActiveAmbientSoundComponent, Out_Location: core_uobject.Vector, Out_Radius: float, ReturnValue: bool) -> bool: ...
-    def InitLocationChooser(self, ActiveAmbientComponent: ActiveAmbientSoundComponent): ...
+    def NominateSoundLocation(
+        self,
+        ActiveAmbientComponent: ActiveAmbientSoundComponent,
+        Out_Location: core_uobject.Vector,
+        Out_Radius: float,
+    ) -> bool: ...
+    def InitLocationChooser(
+        self, ActiveAmbientComponent: ActiveAmbientSoundComponent
+    ): ...
 
 
-class ActiveAmbientLocationChooser_RandomWithinActor(ActiveAmbientLocationChooser): ...
+class ActiveAmbientLocationChooser_RandomWithinActor(ActiveAmbientLocationChooser):
+    WithinActor: Any
 
 
-class ActiveAmbientLocationChooser_RandomWithTrace(ActiveAmbientLocationChooser_RandomWithinActor):
+class ActiveAmbientLocationChooser_RandomWithTrace(
+    ActiveAmbientLocationChooser_RandomWithinActor
+):
     TraceVector: core_uobject.Vector
 
 
+class ActiveAmbientLocationChooser_RandomOnCeiling(
+    ActiveAmbientLocationChooser_RandomWithTrace
+): ...
 
-class ActiveAmbientLocationChooser_RandomOnCeiling(ActiveAmbientLocationChooser_RandomWithTrace): ...
 
-
-class ActiveAmbientLocationChooser_RandomOnFloor(ActiveAmbientLocationChooser_RandomWithTrace): ...
+class ActiveAmbientLocationChooser_RandomOnFloor(
+    ActiveAmbientLocationChooser_RandomWithTrace
+): ...
 
 
 class ActiveAmbientLocationChooser_PreselectedLocation(ActiveAmbientLocationChooser):
     Locations: unreal.WrappedArray[core_uobject.Vector]
     Radii: unreal.WrappedArray[float]
+
     def UpdateLocations(self): ...
     def DrawLocations(self): ...
-    def AddLocation(self, InLocation: core_uobject.Vector, InRadius: float, ReturnValue: bool) -> bool: ...
+    def AddLocation(self, InLocation: core_uobject.Vector, InRadius: float) -> bool: ...
 
 
-class ActiveAmbientLocationChooser_Party(ActiveAmbientLocationChooser_PreselectedLocation):
+class ActiveAmbientLocationChooser_Party(
+    ActiveAmbientLocationChooser_PreselectedLocation
+):
     PartierWeight: float
     PartierRadius: float
     IntensityRange: core_uobject.FloatInterval
@@ -54,23 +69,28 @@ class ActiveAmbientLocationChooser_Party(ActiveAmbientLocationChooser_Preselecte
     TotalPartyWeight: float
 
 
-
 class ActiveAmbientLocationValidator(unreal.UObject): ...
 
 
 class ActiveAmbientLocationValidator_Blueprint(ActiveAmbientLocationValidator):
 
-    def IsProposedLocationValid(self, ActiveAmbientComponent: ActiveAmbientSoundComponent, Location: core_uobject.Vector, ReturnValue: bool) -> bool: ...
+    def IsProposedLocationValid(
+        self,
+        ActiveAmbientComponent: ActiveAmbientSoundComponent,
+        Location: core_uobject.Vector,
+    ) -> bool: ...
 
 
-class ActiveAmbientLocationValidator_DistanceFromListener(ActiveAmbientLocationValidator):
+class ActiveAmbientLocationValidator_DistanceFromListener(
+    ActiveAmbientLocationValidator
+):
     Range: core_uobject.FloatInterval
-
 
 
 class ActiveAmbientSound(engine.Actor):
     TargetInstances: int
     ActiveAmbientSound: ActiveAmbientSoundComponent
+
     def EnableSounds(self): ...
     def DisableSounds(self): ...
 
@@ -96,6 +116,7 @@ class ActiveAmbientSoundComponent(engine.ActorComponent):
     NextSpawnTime: float
     TimeSinceLastSpawn: float
     RemainingStartleRecovery: float
+
     def Startle(self, Location: core_uobject.Vector, Radius: float): ...
 
 
@@ -104,13 +125,21 @@ class ActiveAmbientUpdater(unreal.UObject): ...
 
 class ActiveAmbientUpdater_Blueprint(ActiveAmbientUpdater):
 
-    def UpdateActiveAmbientInstance(self, ActiveAmbientComponent: ActiveAmbientSoundComponent, ActiveAmbientInstance: ActiveAmbientInstance, DeltaTime: float): ...
-    def InitializeActiveAmbientInstance(self, ActiveAmbientComponent: ActiveAmbientSoundComponent, ActiveAmbientInstance: ActiveAmbientInstance): ...
+    def UpdateActiveAmbientInstance(
+        self,
+        ActiveAmbientComponent: ActiveAmbientSoundComponent,
+        ActiveAmbientInstance: ActiveAmbientInstance,
+        DeltaTime: float,
+    ): ...
+    def InitializeActiveAmbientInstance(
+        self,
+        ActiveAmbientComponent: ActiveAmbientSoundComponent,
+        ActiveAmbientInstance: ActiveAmbientInstance,
+    ): ...
 
 
 class ActiveAmbientUpdater_MoveInRandomDirection(ActiveAmbientUpdater):
     SpeedRange: core_uobject.FloatInterval
-
 
 
 class ActiveAmbientUpdater_MoveWithWobble(ActiveAmbientUpdater_MoveInRandomDirection):
@@ -118,15 +147,12 @@ class ActiveAmbientUpdater_MoveWithWobble(ActiveAmbientUpdater_MoveInRandomDirec
     DirectionUpdateCone: float
 
 
-
 class AmbientSoundBox(wwise_audio.WwiseAmbientSound):
     BoxComponent: engine.BoxComponent
 
 
-
 class AmbientSoundSphere(wwise_audio.WwiseAmbientSound):
     SphereComponent: engine.SphereComponent
-
 
 
 class AmbientSoundSpline(wwise_audio.WwiseAmbientSound):
@@ -135,10 +161,8 @@ class AmbientSoundSpline(wwise_audio.WwiseAmbientSound):
     CachedBounds: core_uobject.BoxSphereBounds
 
 
-
 class AnimNotify_CharacterSound(engine.AnimNotify):
     Tag: CharacterSoundTag
-
 
 
 class AnimNotify_Foley(engine.AnimNotify):
@@ -146,10 +170,8 @@ class AnimNotify_Foley(engine.AnimNotify):
     bRestrictToMatchingPlayerPerspective: bool
 
 
-
 class AnimNotify_FootFoley(AnimNotify_Foley):
     FootIndex: int
-
 
 
 class AnimNotify_WwiseEvent(engine.AnimNotify):
@@ -163,7 +185,6 @@ class AnimNotify_WwiseEvent(engine.AnimNotify):
     AcousticsMode: wwise_audio.EAcousticsMode
 
 
-
 class AnimNotifyState_LoopingSound(engine.AnimNotifyState):
     StartEvent: wwise_audio.WwiseEvent
     StopEvent: wwise_audio.WwiseEvent
@@ -172,7 +193,7 @@ class AnimNotifyState_LoopingSound(engine.AnimNotifyState):
     SocketName: str
     bAttachToOwner: bool
     EmitterRadius: float
-
+    ActivePlaybackInstances: Any
 
 
 class AudioDistanceThresholdSubscriberInterface(core_uobject.Interface): ...
@@ -183,18 +204,17 @@ class AudioDistanceThresholdManager(unreal.UObject):
     SubscriberData: unreal.WrappedArray[ADMSubscriberData]
 
 
-
 class AudioOcclusionVoxelDataProvider(gbx_fluid_simulation.VoxelDataProvider):
     DataResolution: core_uobject.IntVector
     bUseMaterialLibrary: bool
     TritonMaterialLibraryFile: str
+    ExtraTritonMaterialEquivalences: Any
     CheckCollisionChannel: int
     CheckCollisionResponse: int
     bVoxelizeFoliage: bool
     ExtraTerrainThickness: int
     bFlagMatchingVoxels: bool
     FlagVoxelsForComponentsFilter: AudioPrepComponentFilter
-
 
 
 class AudioOcclusionVoxelizerZone(engine.Actor):
@@ -211,14 +231,24 @@ class AudioPrepLocationFinder(unreal.UObject): ...
 
 
 class AudioPrepLocationFinder_Blueprint(AudioPrepLocationFinder):
+    CurrentConsumer: Any
 
-    def AddLocation(self, Location: core_uobject.Vector, Rotation: core_uobject.Rotator, Radius: float): ...
+    def AddLocation(
+        self,
+        Location: core_uobject.Vector,
+        Rotation: core_uobject.Rotator,
+        Radius: float,
+    ): ...
     def AddFoundLocations(self): ...
 
 
 class ActiveAmbientLocationFinder_Blueprint(AudioPrepLocationFinder):
 
-    def AddFoundLocations(self, ActiveAmbientComponent: ActiveAmbientSoundComponent, PreselectedLocationChooser: ActiveAmbientLocationChooser_PreselectedLocation): ...
+    def AddFoundLocations(
+        self,
+        ActiveAmbientComponent: ActiveAmbientSoundComponent,
+        PreselectedLocationChooser: ActiveAmbientLocationChooser_PreselectedLocation,
+    ): ...
 
 
 class AudioPrepLocationFinder_ActorList(AudioPrepLocationFinder): ...
@@ -259,6 +289,7 @@ class CharacterSoundData(gbx_runtime.GbxDataAsset):
     InheritData: CharacterSoundData
     Sounds: InheritableSoundMap
     VocalLoops: InheritableVocalLoopList
+
     def RefreshAll(self): ...
 
 
@@ -270,14 +301,12 @@ class CharacterSoundLogicComponent(engine.ActorComponent):
     CurrentVocalLoop: CurrentVocalLoopInfo
 
 
-
 class CharacterSoundTag(gbx_runtime.GbxDataAsset):
     Type: ECharacterSoundType
     ChanceToPlay: float
     bHighPriorityInterruptingVox: bool
     bPainVox: bool
     bDeathVox: bool
-
 
 
 class DistributedAmbientSound(engine.Actor):
@@ -294,6 +323,7 @@ class DistributedAmbientSound(engine.Actor):
     AudioComponents: unreal.WrappedArray[wwise_audio.WwiseAudioComponent]
     PackedTreeData: unreal.WrappedArray[int]
     Bounds: core_uobject.Box
+
     def DoUpdateTree(self): ...
     def DoFindNewLocationsAndRebuild(self): ...
 
@@ -312,7 +342,6 @@ class FoleyAccessoryComponent(engine.SceneComponent):
     AccesoryPitch: float
     AccessoryRadius: float
     MyFoleyMain: FoleyMainComponent
-
 
 
 class FoleyImplementerInterface(core_uobject.Interface): ...
@@ -339,18 +368,47 @@ class FoleyMainComponent(engine.ActorComponent):
     SurfaceModifierVolume: float
     SurfaceModifierFootstepVolumeMultiplier: float
     AssociatedFoleyAccessories: unreal.WrappedArray[FoleyAccessoryComponent]
-    def SetSurfaceModifier(self, PlayEvent: wwise_audio.WwiseEvent, Volume: float, FootstepVolumeMultiplier: float): ...
+
+    def SetSurfaceModifier(
+        self,
+        PlayEvent: wwise_audio.WwiseEvent,
+        Volume: float,
+        FootstepVolumeMultiplier: float,
+    ): ...
     def PlayFootstepEvent(self, EventParams: FoleyEventParams): ...
-    def PlayFootstep(self, FootstepLocation: core_uobject.Vector, FootstepRotation: core_uobject.Rotator, MaterialSwitch: wwise_audio.WwiseSwitch, VolumeAdjustment: float, PitchAdjustment: float, ConfigureEvent: wwise_audio.WwiseEvent, bPreview: bool): ...
+    def PlayFootstep(
+        self,
+        FootstepLocation: core_uobject.Vector,
+        FootstepRotation: core_uobject.Rotator,
+        MaterialSwitch: wwise_audio.WwiseSwitch,
+        VolumeAdjustment: float,
+        PitchAdjustment: float,
+        ConfigureEvent: wwise_audio.WwiseEvent,
+        bPreview: bool,
+    ): ...
 
 
 class GbxAudioBlueprintLibrary(engine.BlueprintFunctionLibrary):
 
-    def TriggerCharacterSound(self, Character: engine.Actor, SoundTag: CharacterSoundTag): ...
-    def RemoveListenerAudioEffect(self, Character: engine.Actor, Efx: wwise_audio.WwiseAuxBus): ...
-    def PassesAudioPreparationHitFilter(self, Hit: engine.HitResult, Filter: AudioPrepHitResultFilter, ReturnValue: bool) -> bool: ...
-    def PassesAudioPreparationComponentFilter(self, Component: engine.PrimitiveComponent, Filter: AudioPrepComponentFilter, ReturnValue: bool) -> bool: ...
-    def ApplyListenerAudioEffect(self, Character: engine.Actor, Efx: wwise_audio.WwiseAuxBus, WetVolume: float, DryVolume: float): ...
+    def TriggerCharacterSound(
+        self, Character: engine.Actor, SoundTag: CharacterSoundTag
+    ): ...
+    def RemoveListenerAudioEffect(
+        self, Character: engine.Actor, Efx: wwise_audio.WwiseAuxBus
+    ): ...
+    def PassesAudioPreparationHitFilter(
+        self, Hit: engine.HitResult, Filter: AudioPrepHitResultFilter
+    ) -> bool: ...
+    def PassesAudioPreparationComponentFilter(
+        self, Component: engine.PrimitiveComponent, Filter: AudioPrepComponentFilter
+    ) -> bool: ...
+    def ApplyListenerAudioEffect(
+        self,
+        Character: engine.Actor,
+        Efx: wwise_audio.WwiseAuxBus,
+        WetVolume: float,
+        DryVolume: float,
+    ): ...
 
 
 class GbxAudioGlobalsData(gbx_runtime.GbxDataAsset):
@@ -413,7 +471,6 @@ class GbxAudioGlobalsData(gbx_runtime.GbxDataAsset):
     OutdoornessRTPC: wwise_audio.WwiseRtpc
 
 
-
 class GbxAudioSettings(unreal.UObject):
     AudioGlobalsData: GbxAudioGlobalsData
     DefaultAudioGlobalsData: core_uobject.SoftObjectPath
@@ -423,14 +480,24 @@ class GbxAudioSettings(unreal.UObject):
     SkipCinematicEvents: unreal.WrappedArray[core_uobject.SoftObjectPath]
 
 
-
 class LightAudioComponent(engine.SceneComponent):
+    PersistentRTPCValues: Any
     Loops: unreal.WrappedArray[wwise_audio.WwiseEvent]
     RelativeDetailedLocations: unreal.WrappedArray[wwise_audio.WwiseLocationOverride]
     bDynamicPosition: bool
     SubscribedToManager: AudioDistanceThresholdManager
-    def SetRTPCValue(self, GameParameter: wwise_audio.WwiseRtpc, Value: float, bPersistent: bool, ValueChangeDuration: float, FadeCurve: wwise_audio.EWwiseCurveInterpolation): ...
-    def PostWwiseEvent(self, WwiseEvent: wwise_audio.WwiseEvent, ReturnValue: wwise_audio.WwisePlaybackInstance) -> wwise_audio.WwisePlaybackInstance: ...
+
+    def SetRTPCValue(
+        self,
+        GameParameter: wwise_audio.WwiseRtpc,
+        Value: float,
+        bPersistent: bool,
+        ValueChangeDuration: float,
+        FadeCurve: wwise_audio.EWwiseCurveInterpolation,
+    ): ...
+    def PostWwiseEvent(
+        self, WwiseEvent: wwise_audio.WwiseEvent
+    ) -> wwise_audio.WwisePlaybackInstance: ...
 
 
 class MusicSequencerComponent(engine.ActorComponent):
@@ -438,13 +505,23 @@ class MusicSequencerComponent(engine.ActorComponent):
     SequencerLatencyInSeconds: float
     bKillLateEvents: bool
     bRegisteredWithAudioDevice: bool
+
     def StopSequence(self): ...
-    def PostSequenceEvent(self, WwiseComponent: wwise_audio.WwiseAudioComponent, WwiseEvent: wwise_audio.WwiseEvent, Note: int, Velocity: int, Channel: int, StartBeat: float, Duration: float): ...
+    def PostSequenceEvent(
+        self,
+        WwiseComponent: wwise_audio.WwiseAudioComponent,
+        WwiseEvent: wwise_audio.WwiseEvent,
+        Note: int,
+        Velocity: int,
+        Channel: int,
+        StartBeat: float,
+        Duration: float,
+    ): ...
     def PlaySequence(self): ...
     def PauseSequence(self): ...
-    def IsPlaying(self, ReturnValue: bool) -> bool: ...
-    def GetRealTimeUntilBeat(self, Beat: float, ReturnValue: float) -> float: ...
-    def GetCurrentBeat(self, ReturnValue: float) -> float: ...
+    def IsPlaying(self) -> bool: ...
+    def GetRealTimeUntilBeat(self, Beat: float) -> float: ...
+    def GetCurrentBeat(self) -> float: ...
 
 
 class ParticleModuleGbxAudioBase(engine.ParticleModule): ...
@@ -458,7 +535,6 @@ class ParticleModuleGbxAudioLoop(ParticleModuleGbxAudioBase):
     GainOverLifetime: engine.RawDistributionFloat
 
 
-
 class ParticleModuleGbxAudioPool(ParticleModuleGbxAudioBase):
     AudioEvent: wwise_audio.WwiseEvent
     MaxNumberOfAudioComponents: int
@@ -467,20 +543,21 @@ class ParticleModuleGbxAudioPool(ParticleModuleGbxAudioBase):
     GainOverLifetime: engine.RawDistributionFloat
 
 
-
 class WindAudioLoopComponent(LightAudioComponent):
     WindSpeedAudioParameter: wwise_audio.WwiseRtpc
     WindAccelerationAudioParameter: wwise_audio.WwiseRtpc
     WindSensitivity: WindDirectionalSensitivity
 
 
-
 class WwiseListenerEffectComponent(engine.ActorComponent):
     bRegisteredWithAudioDevice: bool
     WwiseEffects: unreal.WrappedArray[wwise_audio.WwiseEffectInfo]
+
     def RemoveAudioEffect(self, Efx: wwise_audio.WwiseAuxBus): ...
     def RemoveAllAudioEffects(self): ...
-    def ApplyAudioEffect(self, Efx: wwise_audio.WwiseAuxBus, WetPercent: float, DryPercent: float): ...
+    def ApplyAudioEffect(
+        self, Efx: wwise_audio.WwiseAuxBus, WetPercent: float, DryPercent: float
+    ): ...
 
 
 class ActiveAmbientInstance: ...
@@ -490,17 +567,19 @@ class ActiveLoopingSoundNotifyData:
     Instances: unreal.WrappedArray[wwise_audio.WwisePlaybackInstance]
 
 
-
-class ADMSubscriberData: ...
+class ADMSubscriberData:
+    Subscriber: Any
 
 
 class AudioPrepHitResultFilter:
     HitAssetNameFilter: unreal.WrappedArray[str]
     SurfaceTypeFilter: unreal.WrappedArray[int]
+    PhysMatFilter: unreal.WrappedArray[Any]
+    MaterialFilter: unreal.WrappedArray[Any]
     WithinActorBoundsBlueprint: unreal.WrappedArray[engine.Actor]
+    WithinActorBounds: unreal.WrappedArray[Any]
     NormalDirectionLimits: unreal.WrappedArray[AudioPropHitFilter_DirectionLimit]
     bAllowHitsWithinGeometry: bool
-
 
 
 class AudioPropHitFilter_DirectionLimit:
@@ -508,16 +587,18 @@ class AudioPropHitFilter_DirectionLimit:
     DotProductLimits: core_uobject.FloatInterval
 
 
-
 class AudioPrepComponentFilter:
     AssetNameFilter: unreal.WrappedArray[str]
     SurfaceTypeFilter: unreal.WrappedArray[int]
+    PhysMatFilter: unreal.WrappedArray[Any]
+    MaterialFilter: unreal.WrappedArray[Any]
     MaterialName: unreal.WrappedArray[str]
     WithinActorBoundsBlueprint: unreal.WrappedArray[engine.Actor]
+    WithinActorBounds: unreal.WrappedArray[Any]
+    AttachedToActors: unreal.WrappedArray[Any]
     ActorClassName: unreal.WrappedArray[str]
     ComponentClassName: unreal.WrappedArray[str]
     bOnlyWorldGeometry: bool
-
 
 
 class ResultGridFilter:
@@ -526,10 +607,8 @@ class ResultGridFilter:
     StructuringElements: unreal.WrappedArray[str]
 
 
-
 class InheritableVocalLoopList:
     VocalLoops: unreal.WrappedArray[CharacterVocalLoopImplementation]
-
 
 
 class CharacterVocalLoopImplementation:
@@ -549,8 +628,8 @@ class CharacterVocalLoopImplementation:
     StopEvent: wwise_audio.WwiseEvent
 
 
-
-class InheritableSoundMap: ...
+class InheritableSoundMap:
+    CharacterSounds: Any
 
 
 class CharacterSoundImplementation:
@@ -558,7 +637,6 @@ class CharacterSoundImplementation:
     DefaultWwiseEvent: wwise_audio.WwiseEvent
     bOverrideWwiseEvent: bool
     WwiseEvent: wwise_audio.WwiseEvent
-
 
 
 class CharacterSoundLoopDetails: ...
@@ -569,12 +647,10 @@ class CurrentVocalization:
     PlayingInstance: wwise_audio.WwisePlaybackInstance
 
 
-
 class CurrentVocalLoopInfo:
     LoopID: core_uobject.Guid
     PlayingInstance: wwise_audio.WwisePlaybackInstance
     Details: CharacterSoundLoopDetails
-
 
 
 class CharacterVocalLoop:
@@ -585,7 +661,6 @@ class CharacterVocalLoop:
     bPainLoop: bool
 
 
-
 class FoleyEventParams:
     WwiseEvent: wwise_audio.WwiseEvent
     OptionalMaterialSwitch: wwise_audio.WwiseSwitch
@@ -594,11 +669,9 @@ class FoleyEventParams:
     ComponentTags: unreal.WrappedArray[str]
 
 
-
 class ExtraFoleyParameter:
     RtpcParam: wwise_audio.WwiseRtpc
     Value: float
-
 
 
 class WindDirectionalSensitivity:
@@ -607,11 +680,9 @@ class WindDirectionalSensitivity:
     LocalZ: WindLocalAxisSensitivity
 
 
-
 class WindLocalAxisSensitivity:
     PositiveDirectionSensitivity: float
     NegativeDirectionSensitivity: float
-
 
 
 class EDistributedSoundDebugVisualizationMode(enum.Enum):

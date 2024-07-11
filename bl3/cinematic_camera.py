@@ -1,12 +1,11 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
-
 
 
 class CameraRig_Crane(engine.Actor):
@@ -21,7 +20,6 @@ class CameraRig_Crane(engine.Actor):
     CraneCameraMount: engine.SceneComponent
 
 
-
 class CameraRig_Rail(engine.Actor):
     CurrentPositionOnRail: float
     bLockOrientationToRail: bool
@@ -30,10 +28,10 @@ class CameraRig_Rail(engine.Actor):
     RailCameraMount: engine.SceneComponent
 
 
-
 class CineCameraActor(engine.CameraActor):
     LookatTrackingSettings: CameraLookatTrackingSettings
-    def GetCineCameraComponent(self, ReturnValue: CineCameraComponent) -> CineCameraComponent: ...
+
+    def GetCineCameraComponent(self) -> CineCameraComponent: ...
 
 
 class CineCameraComponent(engine.CameraComponent):
@@ -53,12 +51,13 @@ class CineCameraComponent(engine.CameraComponent):
     DefaultLensPresetName: str
     DefaultLensFocalLength: float
     DefaultLensFStop: float
+
     def SetLensPresetByName(self, InPresetName: str): ...
     def SetFilmbackPresetByName(self, InPresetName: str): ...
-    def GetVerticalFieldOfView(self, ReturnValue: float) -> float: ...
-    def GetLensPresetName(self, ReturnValue: str) -> str: ...
-    def GetHorizontalFieldOfView(self, ReturnValue: float) -> float: ...
-    def GetFilmbackPresetName(self, ReturnValue: str) -> str: ...
+    def GetVerticalFieldOfView(self) -> float: ...
+    def GetLensPresetName(self) -> str: ...
+    def GetHorizontalFieldOfView(self) -> float: ...
+    def GetFilmbackPresetName(self) -> str: ...
 
 
 class CameraLookatTrackingSettings:
@@ -68,7 +67,6 @@ class CameraLookatTrackingSettings:
     ActorToTrack: engine.Actor
     RelativeOffset: core_uobject.Vector
     bAllowRoll: bool
-
 
 
 class CameraFocusSettings:
@@ -82,18 +80,15 @@ class CameraFocusSettings:
     FocusOffset: float
 
 
-
 class CameraTrackingFocusSettings:
     ActorToTrack: engine.Actor
     RelativeOffset: core_uobject.Vector
     bDrawDebugTrackingFocusPoint: bool
 
 
-
 class NamedLensPreset:
     Name: str
     LensSettings: CameraLensSettings
-
 
 
 class CameraLensSettings:
@@ -105,18 +100,15 @@ class CameraLensSettings:
     DiaphragmBladeCount: int
 
 
-
 class NamedFilmbackPreset:
     Name: str
     FilmbackSettings: CameraFilmbackSettings
-
 
 
 class CameraFilmbackSettings:
     SensorWidth: float
     SensorHeight: float
     SensorAspectRatio: float
-
 
 
 class ECameraFocusMethod(enum.Enum):

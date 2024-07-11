@@ -1,12 +1,11 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
-
 
 
 class MovieSceneCaptureProtocolSettings(unreal.UObject): ...
@@ -21,7 +20,6 @@ class CompositionGraphCaptureSettings(MovieSceneCaptureProtocolSettings):
     bDisableScreenPercentage: bool
 
 
-
 class FrameGrabberProtocolSettings(MovieSceneCaptureProtocolSettings): ...
 
 
@@ -30,7 +28,6 @@ class BmpImageCaptureSettings(MovieSceneCaptureProtocolSettings): ...
 
 class ImageCaptureSettings(FrameGrabberProtocolSettings):
     CompressionQuality: int
-
 
 
 class MovieSceneCaptureInterface(core_uobject.Interface): ...
@@ -46,17 +43,15 @@ class MovieSceneCapture(unreal.UObject):
     InheritedCommandLineArguments: str
 
 
-
 class LevelCapture(MovieSceneCapture):
     bAutoStartCapture: bool
     PrerequisiteActorId: core_uobject.Guid
 
 
-
 class MovieSceneCaptureEnvironment(unreal.UObject):
 
-    def GetCaptureFrameNumber(self, ReturnValue: int) -> int: ...
-    def GetCaptureElapsedTime(self, ReturnValue: float) -> float: ...
+    def GetCaptureFrameNumber(self) -> int: ...
+    def GetCaptureElapsedTime(self) -> float: ...
 
 
 class VideoCaptureSettings(FrameGrabberProtocolSettings):
@@ -65,15 +60,12 @@ class VideoCaptureSettings(FrameGrabberProtocolSettings):
     VideoCodec: str
 
 
-
 class CompositionGraphCapturePasses:
     Value: unreal.WrappedArray[str]
 
 
-
 class CaptureProtocolID:
     Identifier: str
-
 
 
 class MovieSceneCaptureSettings:
@@ -95,11 +87,9 @@ class MovieSceneCaptureSettings:
     bShowHUD: bool
 
 
-
 class CaptureResolution:
     ResX: int
     ResY: int
-
 
 
 class EHDRCaptureGamut(enum.Enum):

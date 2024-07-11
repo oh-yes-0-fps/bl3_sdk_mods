@@ -1,13 +1,12 @@
-from __future__ import annotations # type: ignore
+from __future__ import annotations  # type: ignore
 from unrealsdk import unreal
-import typing
+from typing import Any
 import enum
 
 
 from . import core_uobject
 from . import engine
 from . import anim_graph_runtime
-
 
 
 class AnimNode_RigidBody(anim_graph_runtime.AnimNode_SkeletalControlBase):
@@ -26,7 +25,6 @@ class AnimNode_RigidBody(anim_graph_runtime.AnimNode_SkeletalControlBase):
     bTransferBoneVelocities: bool
     bFreezeIncomingPoseOnStart: bool
     bComponentSpaceSimulation: bool
-
 
 
 class ESimulationSpace(enum.Enum):

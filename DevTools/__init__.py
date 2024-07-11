@@ -2,15 +2,18 @@
 import contextlib
 import importlib
 import json
+from math import e
 import os
 import sys
 import traceback
 import mods_base
-from unrealsdk import logging, find_class, unreal
+from unrealsdk import logging, hooks
+from unrealsdk.unreal import UObject, WrappedStruct, BoundFunction, UFunction
 from pathlib import Path
 from typing import Collection
 import zipfile
-from mods_base import ENGINE, build_mod, command
+from mods_base import ENGINE, build_mod, command, keybind
+from mods_base.hook import Type
 from argparse import Namespace
 from typing import Any
 
@@ -205,6 +208,92 @@ def list_mods(_: Namespace) -> None:
     mods = mods_base.get_ordered_mod_list()
     for mod in mods:
         logging.info(f"{mod.name} : {mod.module_name}")
+
+@keybind("Enable Log All Hooks")
+def enable_log_all_hooks() -> None:
+    hooks.log_all_calls(True)
+
+@keybind("Disable Log All Hooks")
+def disable_log_all_hooks() -> None:
+    hooks.log_all_calls(False)
+
+@command()
+def start_log(_: Namespace):
+    hooks.log_all_calls(True)
+
+@command()
+def stop_log(_: Namespace):
+    hooks.log_all_calls(False)
+
+LAST_HOOK = ""
+
+def dump_call_pre(caller: UObject, params: WrappedStruct, _3: Any, _4: BoundFunction):
+    print(LAST_HOOK + " Pre")
+    print("Args:")
+    for field in params._type.Class._fields():
+        if isinstance(field, UFunction):
+            continue
+        try:
+            print("    " + field.Name + " = " + str(params._get_field(field)))
+        except Exception as e:
+            print("    " + field.Name + " = ", e)
+    print("Caller")
+    for field in caller.Class._fields():
+        if isinstance(field, UFunction):
+            continue
+        try:
+            print("    " + field.Name + " = " + str(caller._get_field(field)))
+        except Exception as e:
+            print("    " + field.Name + " = ", e)
+
+def dump_call_post(caller: UObject, params: WrappedStruct, _3: Any, _4: BoundFunction):
+    print(LAST_HOOK + " Post")
+    print("Args:")
+    for field in params._type.Class._fields():
+        if isinstance(field, UFunction):
+            continue
+        try:
+            print("    " + field.Name + " = " + str(params._get_field(field)))
+        except Exception as e:
+            print("    " + field.Name + " = ", e)
+    print("Caller")
+    for field in caller.Class._fields():
+        if isinstance(field, UFunction):
+            continue
+        try:
+            print("    " + field.Name + " = " + str(caller._get_field(field)))
+        except Exception as e:
+            print("    " + field.Name + " = ", e)
+
+@command(splitter=lambda line: [line.strip()])
+def dump_hook(args: Namespace) -> None:
+    global LAST_HOOK
+    hooks.remove_hook(LAST_HOOK, Type.PRE, "dump_call_pre")
+    hooks.remove_hook(LAST_HOOK, Type.POST_UNCONDITIONAL, "dump_call_post")
+
+    LAST_HOOK = args.hook
+    hooks.add_hook(LAST_HOOK, Type.PRE, "dump_call_pre", dump_call_pre)
+    hooks.add_hook(LAST_HOOK, Type.POST_UNCONDITIONAL, "dump_call_post", dump_call_post)
+
+    print(f"Dumping hook: {LAST_HOOK}")
+
+dump_hook.add_argument("hook", help="The hook to dump")
+
+@command()
+def clear_dump(_: Namespace) -> None:
+    global LAST_HOOK
+    hooks.remove_hook(LAST_HOOK, Type.PRE, "dump_call_pre")
+    hooks.remove_hook(LAST_HOOK, Type.POST_UNCONDITIONAL, "dump_call_post")
+    print(f"Cleared dump_hook: {LAST_HOOK}")
+    LAST_HOOK = ""
+
+def on_disable():
+    global LAST_HOOK
+    hooks.remove_hook(LAST_HOOK, Type.PRE, "dump_call_pre")
+    hooks.remove_hook(LAST_HOOK, Type.POST_UNCONDITIONAL, "dump_call_post")
+    print(f"Cleared dump_hook: {LAST_HOOK}")
+    LAST_HOOK = ""
+
 
 build_mod(
     mod_type=mods_base.ModType.Library
