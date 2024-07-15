@@ -11,7 +11,7 @@ def main():
         sys.exit(1)
 
     # Get the paths to the mod directory and the output file
-    mod_name = sys.argv[1]
+    mod_name = sys.argv[1].removesuffix("/").removesuffix("\\")
     mod_dir = parent_dir / mod_name
     output_file = parent_dir / f"{mod_name}.sdkmod"
 

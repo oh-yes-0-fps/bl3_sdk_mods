@@ -4,16 +4,13 @@ from argparse import Namespace
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Self, Set, Tuple, cast
+from typing import Self, cast
 import mods_base
 from mods_base import command
-from unrealsdk import find_all, find_class, unreal, load_package
+from unrealsdk import find_all, find_class, unreal
 import json
 
-OUTPUT_PYI = False
-
 def pascal_case_to_snake_case(text: str) -> str:
-    # keep acronyms as 1 word, if a capital letter has a capital letter before it, make it lowercase
     last_upper = False
     for i, char in enumerate(text):
         this_upper = char.isupper()
@@ -21,33 +18,6 @@ def pascal_case_to_snake_case(text: str) -> str:
             text = text[:i] + char.lower() + text[i + 1:]
         last_upper = this_upper
     return "".join(["_" + char.lower() if char.isupper() else char for char in text]).lstrip("_")
-
-def function_writer(ident: str, return_type: Optional[str], args: List[Tuple[str, str]]) -> str:
-    return_type_str = f" -> {return_type}" if return_type else ""
-    arg_str = ", ".join([f"{name}: {type}" for name, type in args])
-    if len(args) == 0:
-        return f"def {ident}(self){return_type_str}: ..."
-    return f"def {ident}(self, {arg_str}){return_type_str}: ..."
-
-def class_writer(ident: str, parent: str, fields: List[Tuple[str, str]], functions: List[str]) -> str:
-    ident = convert_to_valid_py_ident(ident)
-    parent_str = f"({convert_to_valid_py_ident(parent)})" if parent else ""
-    if len(fields) == 0 and len(functions) == 0:
-        return f"\nclass {ident}{parent_str}: ..."
-    field_str = "\n".join([f"    {name}: {type}" for name, type in fields])
-    function_str = "\n".join([f"    {func}" for func in functions])
-    return f"\nclass {ident}{parent_str}:\n{field_str}\n{function_str}"
-
-def enum_writer(ident: str, values: List[str]) -> str:
-    def fix_none(value: str) -> str:
-        if value == "None":
-            return "None_"
-        return value
-    ident = convert_to_valid_py_ident(ident)
-    if len(values) == 0:
-        return f"\nclass {ident}(enum.Enum): ..."
-    value_str = "\n".join([f"    {fix_none(name)} = {i}" for i, name in enumerate(values)])
-    return f"\nclass {ident}(enum.Enum):\n{value_str}"
 
 def is_valid_py_ident(ident: str) -> bool:
         WHITE_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789"
@@ -63,6 +33,53 @@ def convert_to_valid_py_ident(ident: str) -> str:
     if ident[0].isdigit():
         ident = f"_{ident}"
     return "".join([char if char in WHITE_LIST else "_" for char in ident])
+
+def function_writer_v2(
+        ident: str,
+        return_type: str | None,
+        args: list[tuple[str, str]],
+        path: str
+    ) -> str:
+    return_type_str = f" -> {return_type}" if return_type else ""
+    arg_str = ", ".join([f"{name}: {type}" for name, type in args])
+    if len(args) == 0:
+        call = f"def __call__(self){return_type_str}: ..."
+    else:
+        call = f"def __call__(self, {arg_str}){return_type_str}: ..."
+    output = f"""
+    class __{ident}(TypedUFunction, Protocol):
+        @staticmethod
+        def _path_name() -> str: return \"{path}\"
+        {call}
+        class Params(unreal.WrappedStruct):
+        
+"""
+    output += "\n            ".join([f"{name}: {type}" for name, type in args])
+
+    return output
+
+def class_writer(ident: str, parent: str, fields: list[tuple[str, str]], functions: list[str], is_struct: bool) -> str:
+    extra_parent = "TypedUStruct" if is_struct else "TypedUClass"
+    ident = convert_to_valid_py_ident(ident)
+    parent_str = f"({convert_to_valid_py_ident(parent)}, {extra_parent})" if parent \
+        else f"({extra_parent})"
+    if len(fields) == 0 and len(functions) == 0:
+        return f"\nclass {ident}{parent_str}: ..."
+    field_str = "\n".join([f"    {name}: {type}" for name, type in fields])
+    function_str = "\n".join(functions)
+    return f"\nclass {ident}{parent_str}:\n{field_str}\n{function_str}"
+
+
+def enum_writer(ident: str, values: list[str]) -> str:
+    def fix_none(value: str) -> str:
+        if value == "None":
+            return "None_"
+        return value
+    ident = convert_to_valid_py_ident(ident)
+    if len(values) == 0:
+        return f"\nclass {ident}(TypedUEnum, enum.Enum): ..."
+    value_str = "\n".join([f"    {fix_none(name)} = {i}" for i, name in enumerate(values)])
+    return f"\nclass {ident}(TypedUEnum, enum.Enum):\n{value_str}"
 
 @dataclass(slots=True, frozen=True)
 class TyPath:
@@ -167,7 +184,7 @@ class TyGenericPath(TyPath):
 @dataclass(slots=True, frozen=True)
 class TyStruct(TyPath):
     parent: Self | None
-    properties: List[TyProperty]
+    properties: list[TyProperty]
 
     def to_json(self) -> dict:
         return {
@@ -178,10 +195,13 @@ class TyStruct(TyPath):
             "fields": [f.to_json() for f in self.properties],
         }
 
-    def valid_properties(self) -> List[TyProperty]:
+    def valid_properties(self) -> list[TyProperty]:
         return [prop for prop in self.properties if prop.is_valid_py()]
 
-    def get_parents(self) -> List[Self]:
+    def invalid_properties(self) -> list[TyProperty]:
+        return [prop for prop in self.properties if not prop.is_valid_py()]
+
+    def get_parents(self) -> list[Self]:
         parents = []
         current = self
         while current.parent:
@@ -235,7 +255,7 @@ class TyStruct(TyPath):
 
 @dataclass(slots=True, frozen=True)
 class TyClass(TyStruct):
-    functions: List[TyFunction]
+    functions: list[TyFunction]
     blueprint_generated: bool
 
     def to_json(self) -> dict:
@@ -249,7 +269,7 @@ class TyClass(TyStruct):
             "blueprint_generated": self.blueprint_generated,
         }
 
-    def valid_functions(self) -> List[TyFunction]:
+    def valid_functions(self) -> list[TyFunction]:
         return [func for func in self.functions if func.is_valid_py()]
 
     @staticmethod
@@ -408,7 +428,7 @@ class TyProperty:
 class TyFunction:
     name: str
     return_type: TyProperty | None
-    params: List[TyProperty]
+    params: list[TyProperty]
 
     def to_json(self) -> dict:
         return {
@@ -468,7 +488,7 @@ class TyFunction:
 
 @dataclass(slots=True, frozen=True)
 class TyEnum(TyPath):
-    values: List[str]
+    values: list[str]
 
     def to_json(self) -> dict:
         return {
@@ -496,7 +516,7 @@ class TyEnum(TyPath):
 
 @dataclass
 class TypingDatabase:
-    types: Dict[TyPath, TyStruct | TyClass | TyEnum]
+    types: dict[TyPath, TyStruct | TyClass | TyEnum]
 
     def to_json(self) -> dict:
         return {
@@ -508,7 +528,7 @@ class TypingDatabase:
 
 @dataclass
 class TyPackageOrganizer:
-    packages: Dict[str, str]
+    packages: dict[str, str]
 
     def add_to_package(self, package: str, cls: str) -> None:
         old = self.packages.get(package, "")
@@ -516,13 +536,20 @@ class TyPackageOrganizer:
         self.packages[package] = old
 
     def make_modules(self) -> None:
-        suffix = "pyi" if OUTPUT_PYI else "py"
+        suffix = "py"
         alpha = \
 """from __future__ import annotations # type: ignore
 from unrealsdk import unreal
-from typing import Any
+from typing import Any, Protocol, override
 import enum
 
+from . import (
+    TypedUStruct,
+    TypedUClass,
+    TypedUEnum,
+    TypedUFunction,
+    FuncProxy
+)
 
 """
         for package, content in self.packages.items():
@@ -547,20 +574,75 @@ import enum
 import mods_base
 import unrealsdk
 import typing
+from abc import ABC, abstractmethod
 
-def get_pc() -> oak_game.OakPlayerController:
-    return typing.cast(oak_game.OakPlayerController, mods_base.get_pc())
+class TypedUStruct(ABC):
+    @classmethod
+    def ustruct(cls) -> unrealsdk.unreal.UStruct:
+        return unrealsdk.find_object(unrealsdk.unreal.UStruct.Class, cls._path_name()) # type: ignore
 
-T = typing.TypeVar("T")
+    @abstractmethod
+    @staticmethod
+    def _path_name() -> str:
+        raise NotImplementedError
 
-def ty_find_class(cls: type[T]) -> T:
-    return typing.cast(T, unrealsdk.find_class(cls.__qualname__.split(".")[0]))
+class TypedUClass(ABC):
+    @classmethod
+    def uclass(cls) -> unrealsdk.unreal.UClass:
+        return unrealsdk.find_class(cls._path_name(), True)
 
-def ty_find_object(cls: type[T], name: str) -> T:
-    return typing.cast(T, unrealsdk.find_object(cls.__qualname__.split(".")[0], name))
+    @abstractmethod
+    @staticmethod
+    def _path_name() -> str:
+        raise NotImplementedError
 
-def ty_find_all(cls: type[T]) -> typing.Iterator[T]:
-    return typing.cast(typing.Iterator[T], unrealsdk.find_all(cls.__qualname__.split(".")[0]))
+class TypedUFunction(typing.Protocol):
+    @classmethod
+    def ufunction(cls) -> unrealsdk.unreal.UFunction:
+        path = cls._path_name().split(":")
+        return unrealsdk.find_class(path[0], True)._find(path[1]) # type: ignore
+
+    @abstractmethod
+    @staticmethod
+    def _path_name() -> str:
+        raise NotImplementedError
+
+class TypedUEnum(enum.Enum):
+    @classmethod
+    def uenum(cls) -> unrealsdk.unreal.UEnum:
+        return unrealsdk.find_enum(cls._path_name(), True) # type: ignore
+
+    @abstractmethod
+    @staticmethod
+    def _path_name() -> str:
+        raise NotImplementedError
+
+class StaticUFunctionCallError(NotImplementedError):
+    pass
+
+@dataclass
+class FuncProxy:
+    path: str
+    Params: type[typing.Any] = unrealsdk.unreal.WrappedStruct
+
+    def _path_name(self) -> str:
+        return self.path
+
+    def __call__(self, *args, **kwargs) -> typing.Never:
+        raise StaticUFunctionCallError
+
+    @classmethod
+    def ufunction(cls) -> unrealsdk.unreal.UFunction:
+        raise StaticUFunctionCallError
+
+def get_pc() -> bp.BPCont_Player_C:
+    return typing.cast(bp.BPCont_Player_C, mods_base.get_pc())
+
+def find_object[T: TypedUClass](cls: type[T], name: str) -> T:
+    return typing.cast(T, unrealsdk.find_object(cls.uclass(), name))
+
+def find_all[T: TypedUClass](cls: type[T], exact: bool = True) -> typing.Iterator[T]:
+    return typing.cast(typing.Iterator[T], unrealsdk.find_all(cls.uclass(), exact))
 
 mods_base.build_mod(
     mod_type=mods_base.ModType.Library,
@@ -582,17 +664,17 @@ def get_ouput_path(file: str) -> str:
     return str(output_dir / file)
 
 
-def get_all_structs() -> List[unreal.UStruct]:
+def get_all_structs() -> list[unreal.UStruct]:
     struct = find_class("Struct")
     return list(find_all(struct, False))  # type: ignore
 
 
-def get_all_enums() -> List[unreal.UEnum]:
+def get_all_enums() -> list[unreal.UEnum]:
     struct = find_class("Enum")
     return list(find_all(struct, False))  # type: ignore
 
 
-def get_parents(obj: unreal.UStruct) -> List[unreal.UStruct]:
+def get_parents(obj: unreal.UStruct) -> list[unreal.UStruct]:
     return list(obj._superfields())[1:]
 
 
@@ -638,12 +720,14 @@ def bind(_: Namespace) -> None:
                         obj.parent.py_type() if obj.parent else "",
                         [(p.name, p.type.py_type()) for p in obj.valid_properties()],
                         [
-                            function_writer(
+                            function_writer_v2(
                                 f.name,
                                 f.return_type.type.py_type() if f.return_type else None,
-                                [(p.name, p.type.py_type()) for p in f.params]
+                                [(p.name, p.type.py_type()) for p in f.params],
+                                f"{obj.package}.{obj.name}:{f.name}"
                             ) for f in obj.valid_functions()
-                        ]
+                        ],
+                        False
                     )
                 )
             elif isinstance(obj, TyStruct):
@@ -653,7 +737,8 @@ def bind(_: Namespace) -> None:
                         obj.name,
                         obj.parent.py_type() if obj.parent else "",
                         [(p.name, p.type.py_type()) for p in obj.valid_properties()],
-                        []
+                        [],
+                        True
                     )
                 )
             elif isinstance(obj, TyEnum):

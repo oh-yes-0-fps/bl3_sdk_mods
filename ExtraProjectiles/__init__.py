@@ -3,12 +3,11 @@ from typing import Any, List, cast
 from unrealsdk import find_all, hooks, find_object
 from unrealsdk.unreal import UObject, WrappedStruct, BoundFunction, UFunction
 from mods_base import build_mod, command
-from bl3.gbx_weapon import LightProjectileData
 
 HOOKS_TO_DISABLE: List[str] = []
 
 def OnDamage(caller: UObject, params: WrappedStruct, _3: Any, _4: BoundFunction):
-    cast(LightProjectileData, caller).bCallOnDamageEventOncePerHit = False
+    caller.bCallOnDamageEventOncePerHit = False
     data = params.Projectile.Data
     if data:
         data.bCallOnDamageEventOncePerHit = False

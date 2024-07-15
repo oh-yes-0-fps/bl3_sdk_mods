@@ -180,7 +180,7 @@ load_mod.add_argument("mod", help="The mod to load")
 def unload_mod(args: Namespace) -> None:
     mods = mods_base.get_ordered_mod_list()
     for mod in mods:
-        if mod.module_name == args.mod:
+        if mod.module_name == args.mod: #type: ignore
             mods_base.deregister_mod(mod)
             modules_to_remove = [module for module in sys.modules if module.startswith(args.mod)]
             for module in modules_to_remove:
@@ -193,7 +193,7 @@ unload_mod.add_argument("mod", help="The mod to kill")
 def reload_mod(args: Namespace) -> None:
     mods = mods_base.get_ordered_mod_list()
     for mod in mods:
-        if mod.module_name == args.mod:
+        if mod.module_name == args.mod: #type: ignore
             mods_base.deregister_mod(mod)
             modules_to_remove = [module for module in sys.modules if module.startswith(args.mod)]
             for module in modules_to_remove:
@@ -207,7 +207,7 @@ reload_mod.add_argument("mod", help="The mod to reload")
 def list_mods(_: Namespace) -> None:
     mods = mods_base.get_ordered_mod_list()
     for mod in mods:
-        logging.info(f"{mod.name} : {mod.module_name}")
+        logging.info(f"{mod.name} : {mod.module_name}") #type: ignore
 
 @keybind("Enable Log All Hooks")
 def enable_log_all_hooks() -> None:
