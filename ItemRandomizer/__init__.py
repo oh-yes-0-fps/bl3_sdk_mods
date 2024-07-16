@@ -554,7 +554,7 @@ class Randomizer:
         Options: Artifacts, Assault Rifles, Class Mods, Grenade Mods, \n
         Heavy Weapons, Pistols, Shields, Shotguns,SMGs, Sniper Rifles.
         """
-        avail_categories = game.ty_find_all(GearBuilderCategoryData)
+        avail_categories = game.find_all(GearBuilderCategoryData)
         final_list = set()
         for cat in avail_categories:
             if cat.CategoryName in whitelist:
@@ -580,7 +580,7 @@ class Randomizer:
         """
         Finds all balances within the parameters of the whitelist.
         """
-        all_bal = game.ty_find_all(InventoryBalanceData)
+        all_bal = game.find_all(InventoryBalanceData)
         out_bal = []
         for bal in all_bal:
             if bal.GearBuilderCategory is None:
@@ -649,7 +649,7 @@ class Randomizer:
             part.Dependencies.clear()
             part.Excluders.clear()
         if "Class Mods" in self.whitelist:
-            uistats = game.ty_find_all(UIStatData)
+            uistats = game.find_all(UIStatData)
             for stat in uistats:
                 if stat.SectionName == "LegendaryClassModInfo":
                     stat.SectionName = "Secondary"

@@ -1,8 +1,9 @@
 from os import getlogin, mkdir
 from os.path import exists
-from typing import Any, Callable, Optional, cast
+from typing import Any, Callable, Optional, cast, reveal_type
 from bl3 import get_pc
-from bl3.oak_game import OakSaveGame
+from bl3.oak_game import GFxPauseMenu, OakSaveGame
+from bl3.scaleform_ui import GFxMoviePlayer
 from unrealsdk import logging
 from unrealsdk.hooks import Type
 from unrealsdk.unreal import BoundFunction, UObject, WrappedStruct
@@ -179,16 +180,16 @@ class PySaveGame:
         return list(self.json_properties) + list(self.savegame_properties)
 
 SAVE_GAME = PySaveGame()
-
+  
 @hook("/Game/Common/_Design/BPCont_Player.BPCont_Player_C:UserConstructionScript", auto_enable=True, hook_type=Type.PRE)
 def refresh_map_load(_1: UObject, _2: WrappedStruct, _3: Any, _4: BoundFunction):
-    SAVE_GAME.savegame = list(game.ty_find_all(OakSaveGame))[-1]
+    SAVE_GAME.savegame = list(game.find_all(OakSaveGame))[-1]
     SAVE_GAME.read_json()
     for callback in SAVE_GAME.save_open_callbakcs:
         callback()
 
-@hook("/Script/OakGame.GFxPauseMenu:OnQuitChoiceMade", auto_enable=True, hook_type=Type.PRE)
-def save_quit(_1: UObject, _2: WrappedStruct, _3: Any, _4: BoundFunction):
+@hook(GFxPauseMenu.OnQuitChoiceMade._path_name(), auto_enable=True, hook_type=Type.PRE)
+def save_quit(_1, _2, _3, _4):
     for callback in SAVE_GAME.save_close_callbacks:
         callback()
     SAVE_GAME.write_json()

@@ -9,10 +9,13 @@ import uuid
 import json
 import csv
 
+import bl3
+from bl3.gbx_game_system_core import DamageComponent
+from bl3.oak_game import OakCharacter, OakPlayerController
 import mods_base
 import unrealsdk
-from mods_base import SETTINGS_DIR, build_mod, hook, get_pc, keybind
-from typing import Any
+from mods_base import SETTINGS_DIR, build_mod, hook, keybind
+from typing import Any, cast
 from unrealsdk.hooks import Type
 from unrealsdk.unreal import BoundFunction, UObject, WrappedStruct, WrappedArray
 
@@ -87,7 +90,7 @@ class CombatLogConfig:
 class CombatLogger:
     config: CombatLogConfig
     memory: list[CombatLogEntry]
-    player: UObject
+    player: OakPlayerController
     id: uuid.UUID
     flusher: Thread
     enabled = False
@@ -95,7 +98,7 @@ class CombatLogger:
     def __init__(self, config: CombatLogConfig):
         self.config = config
         self.memory = []
-        self.player = get_pc()
+        self.player = bl3.get_pc()
         self.id = uuid.uuid4()
         self.flusher = Thread(target=self.flush_runner)
 
@@ -155,7 +158,7 @@ class CombatLogger:
     def start(self):
         self.config = CombatLogConfig.from_settings()
         self.enabled = True
-        self.player = get_pc()
+        self.player = bl3.get_pc()
         self.id = uuid.uuid4()
         self.flusher = Thread(target=self.flush_runner)
         self.flusher.start()
@@ -180,16 +183,17 @@ def toggle_combat_logger():
 
 
 @hook(
-    "/Script/GbxGameSystemCore.DamageComponent:ReceiveAnyDamage",
+    DamageComponent.ReceiveAnyDamage._path_name(),
     Type.POST_UNCONDITIONAL
 )
+@bl3.hook_compat()
 def OnDamage(
-    caller: UObject, params: WrappedStruct, _3: Any, _4: BoundFunction
+    caller: DamageComponent, params: DamageComponent.ReceiveAnyDamage.Params, _3: Any, _4: BoundFunction
 ) -> None:
     if COMBAT_LOGGER.enabled:
         cl: CombatLogger = COMBAT_LOGGER  # type: ignore
         if (
-            bool(caller == cl.player.Pawn.OakDamageComponent)
+            bool(caller == cast(OakCharacter, cl.player.Pawn).OakDamageComponent)
             and cl.config.allow_self_damage == False
         ):
             return
@@ -200,11 +204,11 @@ def OnDamage(
 
         # TODO add dot and damagetype checks
 
-        # damage_per_health_type = []
-        # for i in params.Details.DamagePerHealthType:
-        #     damage_per_health_type.append(
-        #         HealthTypeDamageSummary(i.HealthType.Name, i.Damage)
-        #     )
+        damage_per_health_type = []
+        for i in params.Details.DamagePerHealthType:
+            damage_per_health_type.append(
+                HealthTypeDamageSummary(i.HealthType.Name, i.Damage)
+            )
         entry = CombatLogEntry(
             enemy=caller.GetOwner().Name,
             damage=params.Damage,
@@ -216,7 +220,7 @@ def OnDamage(
                 .removeprefix("Default__"),
             critical=params.Details.bWasCrit,
             radius=params.Details.DamageRadius,
-            damage_per_health_type=[],
+            damage_per_health_type=damage_per_health_type,
         )
         cl.add_entry(entry)
 

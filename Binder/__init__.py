@@ -9,77 +9,34 @@ import mods_base
 from mods_base import command
 from unrealsdk import find_all, find_class, unreal
 import json
+from .fmt import (
+    class_writer,
+    function_writer,
+    enum_writer
+)
+
 
 def pascal_case_to_snake_case(text: str) -> str:
     last_upper = False
     for i, char in enumerate(text):
         this_upper = char.isupper()
         if this_upper and last_upper:
-            text = text[:i] + char.lower() + text[i + 1:]
+            text = text[:i] + char.lower() + text[i + 1 :]
         last_upper = this_upper
-    return "".join(["_" + char.lower() if char.isupper() else char for char in text]).lstrip("_")
+    return "".join(
+        ["_" + char.lower() if char.isupper() else char for char in text]
+    ).lstrip("_")
+
 
 def is_valid_py_ident(ident: str) -> bool:
-        WHITE_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789"
-        if ident[0].isdigit():
-            return False
-        for char in ident:
-            if char not in WHITE_LIST:
-                return False
-        return True
-
-def convert_to_valid_py_ident(ident: str) -> str:
-    WHITE_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789."
+    WHITE_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789"
     if ident[0].isdigit():
-        ident = f"_{ident}"
-    return "".join([char if char in WHITE_LIST else "_" for char in ident])
+        return False
+    for char in ident:
+        if char not in WHITE_LIST:
+            return False
+    return True
 
-def function_writer_v2(
-        ident: str,
-        return_type: str | None,
-        args: list[tuple[str, str]],
-        path: str
-    ) -> str:
-    return_type_str = f" -> {return_type}" if return_type else ""
-    arg_str = ", ".join([f"{name}: {type}" for name, type in args])
-    if len(args) == 0:
-        call = f"def __call__(self){return_type_str}: ..."
-    else:
-        call = f"def __call__(self, {arg_str}){return_type_str}: ..."
-    output = f"""
-    class __{ident}(TypedUFunction, Protocol):
-        @staticmethod
-        def _path_name() -> str: return \"{path}\"
-        {call}
-        class Params(unreal.WrappedStruct):
-        
-"""
-    output += "\n            ".join([f"{name}: {type}" for name, type in args])
-
-    return output
-
-def class_writer(ident: str, parent: str, fields: list[tuple[str, str]], functions: list[str], is_struct: bool) -> str:
-    extra_parent = "TypedUStruct" if is_struct else "TypedUClass"
-    ident = convert_to_valid_py_ident(ident)
-    parent_str = f"({convert_to_valid_py_ident(parent)}, {extra_parent})" if parent \
-        else f"({extra_parent})"
-    if len(fields) == 0 and len(functions) == 0:
-        return f"\nclass {ident}{parent_str}: ..."
-    field_str = "\n".join([f"    {name}: {type}" for name, type in fields])
-    function_str = "\n".join(functions)
-    return f"\nclass {ident}{parent_str}:\n{field_str}\n{function_str}"
-
-
-def enum_writer(ident: str, values: list[str]) -> str:
-    def fix_none(value: str) -> str:
-        if value == "None":
-            return "None_"
-        return value
-    ident = convert_to_valid_py_ident(ident)
-    if len(values) == 0:
-        return f"\nclass {ident}(TypedUEnum, enum.Enum): ..."
-    value_str = "\n".join([f"    {fix_none(name)} = {i}" for i, name in enumerate(values)])
-    return f"\nclass {ident}(TypedUEnum, enum.Enum):\n{value_str}"
 
 @dataclass(slots=True, frozen=True)
 class TyPath:
@@ -225,7 +182,7 @@ class TyStruct(TyPath):
 
         equal_struct = TyStruct(name, package, None, [])
         if equal_struct in DATA_BASE.types:
-            return DATA_BASE.types[equal_struct] # type: ignore
+            return DATA_BASE.types[equal_struct]  # type: ignore
         else:
             parent = None
             super_fields = list(unreal_struct._superfields())
@@ -290,7 +247,7 @@ class TyClass(TyStruct):
 
         equal_class = TyClass(name, package, None, [], [], False)
         if equal_class in DATA_BASE.types:
-            return DATA_BASE.types[equal_class] # type: ignore
+            return DATA_BASE.types[equal_class]  # type: ignore
 
         parent = None
         super_fields = list(unreal_class._superfields())
@@ -320,7 +277,14 @@ class TyClass(TyStruct):
                     break
                 functions.append(func)
 
-        new_class = TyClass(name, package, parent, properties, functions, isinstance(unreal_class, unreal.UBlueprintGeneratedClass))
+        new_class = TyClass(
+            name,
+            package,
+            parent,
+            properties,
+            functions,
+            isinstance(unreal_class, unreal.UBlueprintGeneratedClass),
+        )
         DATA_BASE.types[new_class] = new_class
         return new_class
 
@@ -372,7 +336,9 @@ class TyProperty:
                 cast(unreal.UEnumProperty, unreal_property).Enum
             )
         elif isinstance(unreal_property, unreal.UArrayProperty):
-            inner_type = TyProperty.create(cast(unreal.UArrayProperty, unreal_property).Inner).type
+            inner_type = TyProperty.create(
+                cast(unreal.UArrayProperty, unreal_property).Inner
+            ).type
             prop_type = TyGenericPath(
                 inner_type.name,
                 inner_type.package,
@@ -459,7 +425,13 @@ class TyFunction:
 
     @staticmethod
     def create(unreal_function: unreal.UFunction) -> TyFunction:
-        PARAM_PREFIX_BLACKLIST = ["Temp_struct", "CallFunc", "K2Node", "ReturnValue", "Return"]
+        PARAM_PREFIX_BLACKLIST = [
+            "Temp_struct",
+            "CallFunc",
+            "K2Node",
+            "ReturnValue",
+            "Return",
+        ]
         name = unreal_function.Name
         return_type = None
         if unreal_function._find_return_param():
@@ -480,7 +452,11 @@ class TyFunction:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, TyFunction):
             return False
-        return self.name == other.name and self.return_type == other.return_type and self.params == other.params
+        return (
+            self.name == other.name
+            and self.return_type == other.return_type
+            and self.params == other.params
+        )
 
     def __hash__(self) -> int:
         return hash((self.name, self.return_type, tuple(self.params)))
@@ -519,12 +495,11 @@ class TypingDatabase:
     types: dict[TyPath, TyStruct | TyClass | TyEnum]
 
     def to_json(self) -> dict:
-        return {
-            "types": [t.to_json() for t in self.types]
-        }
+        return {"types": [t.to_json() for t in self.types]}
 
     def clear(self) -> None:
         self.types.clear()
+
 
 @dataclass
 class TyPackageOrganizer:
@@ -537,8 +512,7 @@ class TyPackageOrganizer:
 
     def make_modules(self) -> None:
         suffix = "py"
-        alpha = \
-"""from __future__ import annotations # type: ignore
+        alpha = """from __future__ import annotations # type: ignore
 from unrealsdk import unreal
 from typing import Any, Protocol, override
 import enum
@@ -562,18 +536,24 @@ from . import (
                 f.write(beta)
                 f.write(content.replace(f"{package}.", ""))
         with open(get_ouput_path(f"__init__.{suffix}"), "w") as f:
-            f.write("\n".join([f"from . import {package}" for package in self.packages.keys()]))
+            f.write(
+                "\n".join(
+                    [f"from . import {package}" for package in self.packages.keys()]
+                )
+            )
             f.write("\n")
             f.write("__all__: tuple[str, ...] = (\n")
             for package in self.packages.keys():
-                f.write(f"    \"{package}\",\n")
+                f.write(f'    "{package}",\n')
             f.write(")")
             f.write(
-"""
+                """
 
 import mods_base
 import unrealsdk
 import typing
+import enum
+from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
 class TypedUStruct(ABC):
@@ -688,6 +668,7 @@ def is_function(obj: unreal.UStruct) -> bool:
 
 import timeit
 
+
 @command()
 def bind(_: Namespace) -> None:
     DATA_BASE.clear()
@@ -702,7 +683,11 @@ def bind(_: Namespace) -> None:
                 obj = TyStruct.get_or_create(struct)
             DATA_BASE.types[obj] = obj
         for enum in get_all_enums():
-            obj = TyEnum(enum.Name, enum.Outer.Name if enum.Outer else "", enum._as_py()._member_names_)
+            obj = TyEnum(
+                enum.Name,
+                enum.Outer.Name if enum.Outer else "",
+                enum._as_py()._member_names_,
+            )
             DATA_BASE.types[obj] = obj
 
     def debug_write_out():
@@ -716,38 +701,37 @@ def bind(_: Namespace) -> None:
                 packages.add_to_package(
                     obj.resolve_package(),
                     class_writer(
+                        obj.package,
                         obj.name,
                         obj.parent.py_type() if obj.parent else "",
                         [(p.name, p.type.py_type()) for p in obj.valid_properties()],
                         [
-                            function_writer_v2(
+                            function_writer(
                                 f.name,
                                 f.return_type.type.py_type() if f.return_type else None,
                                 [(p.name, p.type.py_type()) for p in f.params],
-                                f"{obj.package}.{obj.name}:{f.name}"
-                            ) for f in obj.valid_functions()
+                                f"{obj.package}.{obj.name}:{f.name}",
+                            )
+                            for f in obj.valid_functions()
                         ],
-                        False
-                    )
+                        False,
+                    ),
                 )
             elif isinstance(obj, TyStruct):
                 packages.add_to_package(
                     obj.resolve_package(),
                     class_writer(
+                        obj.package,
                         obj.name,
                         obj.parent.py_type() if obj.parent else "",
                         [(p.name, p.type.py_type()) for p in obj.valid_properties()],
                         [],
-                        True
-                    )
+                        True,
+                    ),
                 )
             elif isinstance(obj, TyEnum):
                 packages.add_to_package(
-                    obj.resolve_package(),
-                    enum_writer(
-                        obj.name,
-                        obj.values
-                    )
+                    obj.resolve_package(), enum_writer(obj.name, obj.values)
                 )
 
         packages.make_modules()
@@ -755,6 +739,7 @@ def bind(_: Namespace) -> None:
     print(timeit.timeit(search_and_parse, number=1))
     # print(timeit.timeit(debug_write_out, number=1))
     print(timeit.timeit(write_pyi, number=1))
+
 
 @command()
 def binds_available(_: Namespace) -> None:
